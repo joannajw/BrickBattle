@@ -52,8 +52,8 @@ SystemSettings.basic = {
     },
 
     // Scene
-    maxParticles :  100,
-    particlesFreq : 10,
+    maxParticles :  1000,
+    particlesFreq : 100,
     createScene : function () {},
 };
 
@@ -316,25 +316,25 @@ SystemSettings.mySystem = {
     // Particle material
     particleMaterial :  SystemSettings.standardMaterial,
 
+    // // Initialization
+    // initializerFunction : FountainInitializer,
+    // initializerSettings : {
+    //     sphere:   new THREE.Vector4 ( 0.0, 30.0, 0.0, 1.0 ),
+    //     color:    new THREE.Vector4 ( 0.0, 0.0, 1.0, 1.0 ),
+    //     velocity: new THREE.Vector3 ( 0.0, 30.0, 0.0),
+    //     lifetime: 7,
+    //     size:     5.0,
+    // },
+
     // Initialization
     initializerFunction : SphereInitializer,
     initializerSettings : {
-        sphere: new THREE.Vector4 ( 0, 10, 0, 3.0),
+        sphere: new THREE.Vector4 ( 0, 0, 0, 3.0),
         color:    new THREE.Vector4 ( 0.0, 1.0, 1.0, 0.5 ),
         velocity: new THREE.Vector3 ( 0.0, 0.0, 0.0),
         lifetime: 20,
         size:     12.0,
     },
-
-    // // Initialization
-    // initializerFunction : FountainInitializer,
-    // initializerSettings : {
-    //     sphere:   new THREE.Vector4 ( 0.0, 30.0, 0.0, 1.0 ),
-    //     color:    new THREE.Vector4 ( 1.0, 1.0, 1.0, 1.0 ),
-    //     velocity: new THREE.Vector3 ( 0.0, 20.0, 0.0),
-    //     lifetime: 7,
-    //     size:     5.0,
-    // },
 
     // Update
     updaterFunction : EulerUpdater,
@@ -344,69 +344,58 @@ SystemSettings.mySystem = {
             // gravity :     new THREE.Vector3( 0, 0, 0),
             attractors : [],
         },
-        // http://localhost:8000/batch.html?system=mySystem&texture=base&blending=Additive&depthTest=true&transparent=true&sorting=true&size=full
         collidables: {
-            // bouncePlanes: [ {plane : new THREE.Vector4( 0, 1, 0, 0 ), damping : 0.8 } ],
-            // bounceSpheres: [
-            //     {sphere : new THREE.Vector4( -40, 0, -20, 40.0 ), damping : 0.8},
-            //     {sphere : new THREE.Vector4( 40, 0, 20, 40.0 ), damping : 0.8 },
-            //     // {sphere : new THREE.Vector4( 30, 30, 30, 30.0 ), damping : 0.8 }
-            //     ],
-            bounceBoxes: [
-                // {box: {xMin: 5, xMax: 100, yMin: 5, yMax: 15, zMin: 5, zMax: 100}, damping: 0.8}
-                {box: {xMin: -50, xMax: 50, yMin: -10, yMax: 0, zMin: -50, zMax: 50}, damping: 0.9},
-                {box: {xMin: -100, xMax: 100, yMin: -20, yMax: -10, zMin: -100, zMax: 100}, damping: 0.9},
-                {box: {xMin: -150, xMax: 150, yMin: -30, yMax: -20, zMin: -150, zMax: 150}, damping: 0.9}
-                // {xMin: -100, xMax: 100, yMin: -10, yMax: 10, zMin: -100, zMax: 100}
-                // {xMin: -10, xMax: 10, yMin: -10, yMax: 10, zMin: -10, zMax: 10}
-            ]
-            // sinkBoxes: [
-            //     {xMin: 5, xMax: 20, yMin: 5, yMax: 15, zMin: 5, zMax: 20}
-            //     // {xMin: -100, xMax: 100, yMin: -10, yMax: 10, zMin: -100, zMax: 100}
-            //     // {xMin: -10, xMax: 10, yMin: -10, yMax: 10, zMin: -10, zMax: 10}
+            bouncePlanes: [ {plane : new THREE.Vector4( 0, 1, 0, 0 ), damping : 1.0 },
+            //                 // {plane : new THREE.Vector4( 0, 1, 0, 0 ), damping : 1.0 },
+            //                 // {plane : new THREE.Vector4( 0, 1, 0, 0 ), damping : 1.0 }
+                            ]
+
+            // bounceBoxes: [
+            //     {box: {xMin: -50, xMax: 50, yMin: -10, yMax: 0, zMin: -50, zMax: 50}, damping: 0.9},
+            //     {box: {xMin: -100, xMax: 100, yMin: -20, yMax: -10, zMin: -100, zMax: 100}, damping: 0.9},
+            //     {box: {xMin: -150, xMax: 150, yMin: -30, yMax: -20, zMin: -150, zMax: 150}, damping: 0.9}
             // ]
         },
     },
 
     // Scene
-    maxParticles :  50000,
-    particlesFreq : 500,
+    maxParticles :  1000,
+    particlesFreq : 100,
     createScene : function () {
-        var phong     = new THREE.MeshPhongMaterial( {color: 0x444444, emissive: 0x222222, side: THREE.DoubleSide } );
+        var material_red     = new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: 0x222222, side: THREE.DoubleSide } );
+        var material_blue     = new THREE.MeshPhongMaterial( {color: 0xabcdef, emissive: 0x222222, side: THREE.DoubleSide } );
 
-        var box_geo, box;
+        var roomHeight = 300;
+        var roomWidth = 500;
+        var roomDepth = 300;
 
-        box_geo   = new THREE.BoxGeometry(100,10,100)
-        box       = new THREE.Mesh( box_geo, phong );
-        box.position.set( 0, -5, 0 );
-        Scene.addObject( box );
+        var y_offset = -100;
 
-        box_geo   = new THREE.BoxGeometry(200,10,200)
-        box       = new THREE.Mesh( box_geo, phong );
-        box.position.set( 0, -15, 0 );
-        Scene.addObject( box );
+        var plane_geo_top = new THREE.PlaneBufferGeometry( roomWidth, roomDepth, 1, 1 );
+        var plane_top     = new THREE.Mesh( plane_geo_top, material_blue );
+        plane_top.rotation.x = Math.PI / 2;
+        plane_top.position.y = roomHeight + y_offset;
+        Scene.addObject( plane_top );
 
-        box_geo   = new THREE.BoxGeometry(300,10,300)
-        box       = new THREE.Mesh( box_geo, phong );
-        box.position.set( 0, -25, 0 );
-        Scene.addObject( box );
+        var plane_geo_bottom = new THREE.PlaneBufferGeometry( roomWidth, roomDepth, 1, 1 );
+        var plane_bottom     = new THREE.Mesh( plane_geo_bottom, material_blue );
+        plane_bottom.rotation.x = -Math.PI / 2;
+        plane_bottom.position.y = 0 + y_offset;
+        Scene.addObject( plane_bottom );
 
-        // var phong      = new THREE.MeshPhongMaterial( {color: 0x444444, emissive:0x442222, side: THREE.DoubleSide } );
+        var plane_geo_left = new THREE.PlaneBufferGeometry( roomDepth, roomHeight, 1, 1 );
+        var plane_left     = new THREE.Mesh( plane_geo_left, material_red );
+        plane_left.rotation.y = Math.PI / 2;
+        plane_left.position.x = -roomWidth / 2;
+        plane_left.position.y = roomHeight / 2 + y_offset;
+        Scene.addObject( plane_left );
 
-        // var sphere_geo1 = new THREE.SphereGeometry( 50.0, 32, 32 );
-        // var sphere1 = new THREE.Mesh( sphere_geo1, phong );
-        // sphere1.position.set(0, 0, 0);
-        // Scene.addObject(sphere1);
-
-        // var sphere_geo2 = new THREE.SphereGeometry( 50.0, 32, 32 );
-        // var sphere2 = new THREE.Mesh( sphere_geo2, phong );
-        // sphere2.position.set(50, 0, 0);
-        // Scene.addObject(sphere2);
-
-        // var sphere_geo3 = new THREE.SphereGeometry( 30.0, 32, 32 );
-        // var sphere3 = new THREE.Mesh( sphere_geo3, phong );
-        // sphere3.position.set(30, 30, 30);
-        // Scene.addObject(sphere3);
+        var plane_geo_right = new THREE.PlaneBufferGeometry( roomDepth, roomHeight, 1, 1 );
+        var plane_right     = new THREE.Mesh( plane_geo_right, material_red );
+        plane_right.rotation.y = -Math.PI / 2;
+        plane_right.position.x = roomWidth / 2;
+        plane_right.position.y = roomHeight / 2 + y_offset;
+        Scene.addObject( plane_right );
     },
 
 };

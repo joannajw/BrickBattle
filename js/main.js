@@ -16,7 +16,7 @@ Main.particleSystemChangeCallback = function ( InputSettings ) {
     // Get rid of old models
     Scene.removeObjects();
 
-    // If we specified animated model, then lets load it first
+    // If we specified animated model, then let's load it first
     if ( InputSettings.animatedModelName ) {
         var loader = new THREE.JSONLoader( true );
         loader.load( InputSettings.animatedModelName, InputSettings.animationLoadFunction );
@@ -59,15 +59,15 @@ Main.particleSystemChangeCallback = function ( InputSettings ) {
 
 // when HTML is finished loading, do this
 window.onload = function() {
-    Student.updateHTML();
 
     // Setup renderer, scene and gui
-    Gui.init( Main.controlsChangeCallback,
-              Main.displayChangeCallback );
+    // Gui.init( Main.controlsChangeCallback,
+              // Main.displayChangeCallback );
+
     Scene.create();
 
     // Add particle system
-    Main.particleSystemChangeCallback( SystemSettings.basic );
+    Main.particleSystemChangeCallback( SystemSettings.mySystem );
 
     Renderer.create( Scene, document.getElementById("canvas") );
 
