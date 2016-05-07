@@ -98,31 +98,40 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
 
 }
 
+// if collision with plane, return new position prior to collision
+function intersectPlane(rayOrigin, velocity, plane, delta_t) {
+
+    // check if the particle is on the same side of the plane normal
+    var normal = new THREE.Vector3(plane.x, plane.y, plane.z).normalize();
+    var relPos = rayOrigin.clone().sub(normal.clone().multiplyScalar(plane.w));
+    // collision, so put particle back on other side of plane
+    if (relPos.dot(normal) < 0) {
+        return rayOrigin.clone().sub(velocity.clone().multiplyScalar(delta_t));
+    }
+    // no collision
+    return undefined;
+}
+
 Collisions.BouncePlane = function ( particleAttributes, alive, delta_t, plane, damping ) {
     var positions    = particleAttributes.position;
     var velocities   = particleAttributes.velocity;
 
-    var normal = new THREE.Vector3(plane.x, plane.y, plane.z).normalize();
-
-    var EPS = 0.1;
-
     for ( var i = 0 ; i < alive.length ; ++i ) {
 
         if ( !alive[i] ) continue;
-        // ----------- STUDENT CODE BEGIN ------------
         var pos = getElement( i, positions );
         var vel = getElement( i, velocities );
 
-        // Flip the particle if it's on the wrong side of the normal
-        // and put it back on the right side of the plane
-        if (normal.dot(pos) <= 0) {
-            vel.reflect(normal).multiplyScalar(damping);
-            pos.add(normal.clone().multiplyScalar(Math.abs(normal.dot(pos)) + EPS));
+        var new_pos = intersectPlane(pos, vel, plane, delta_t);
+        // collide with plane, bounce off
+        if (new_pos != undefined) {
+            var normal = new THREE.Vector3(plane.x, plane.y, plane.z).normalize();
+            vel = vel.clone().reflect(normal).multiplyScalar(damping);
+            pos = new_pos;
         }
 
         setElement( i, positions, pos );
         setElement( i, velocities, vel );
-        // ----------- STUDENT CODE END ------------
     }
 };
 

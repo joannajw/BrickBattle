@@ -315,7 +315,7 @@ SystemSettings.cloth = {
 var roomHeight = 300;
 var roomWidth = 500;
 var roomDepth = 300;
-var y_offset = -100;
+var y_offset = -roomHeight / 2;
 
 var numBricks = 10;
 var brickHeight = 10;
@@ -364,15 +364,16 @@ SystemSettings.mySystem = {
     updaterFunction : EulerUpdater,
     updaterSettings : {
         externalForces : {
-            gravity :     new THREE.Vector3( 0, -20, 0),
+            gravity :     new THREE.Vector3( 0, 0, 0),
             // gravity :     new THREE.Vector3( 0, 0, 0),
             attractors : [],
         },
         collidables: {
-            // bouncePlanes: [ {plane : new THREE.Vector4( 0, 1, 0, 0 ), damping : 1.0 },
-            //                 // {plane : new THREE.Vector4( 0, 1, 0, 0 ), damping : 1.0 },
-            //                 // {plane : new THREE.Vector4( 0, 1, 0, 0 ), damping : 1.0 }
-                            // ],
+            bouncePlanes: [ {plane : new THREE.Vector4( 0, 1, 0, y_offset ), damping : 1.0 },
+                            // {plane : new THREE.Vector4( 0, -1, 0, roomHeight + y_offset ), damping : 1.0 },
+                            {plane : new THREE.Vector4( 1, 0, 0, -roomWidth / 2 ), damping : 1.0 },
+                            // {plane : new THREE.Vector4( -1, 0, 0, roomWidth / 2 ), damping : 1.0 },
+                            ],
             bounceBoxes: bricks
             // bricks: [ box: ]
 
