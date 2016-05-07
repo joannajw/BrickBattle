@@ -31,6 +31,10 @@ Collisions.SinkBox = function(particleAttributes, alive, delta_t, box) {
 }
 
 Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping) {
+    if (!box.alive) {
+        return;
+    }
+
     var positions    = particleAttributes.position;
     var velocities   = particleAttributes.velocity;
 
@@ -88,7 +92,10 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
             }
 
             vel.reflect(closestPlaneNormal.clone()).multiplyScalar(damping);
+            pos = pos.clone().sub(vel.clone().multiplyScalar(delta_t));
             // pos.add(closestPlaneNormal.clone().multiplyScalar(closestPlaneNormal.clone().dot(pos)));
+            box.alive = false;
+            Scene.removeObject(box.mesh);
         }
 
         setElement( i, positions, pos );

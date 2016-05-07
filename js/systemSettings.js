@@ -322,24 +322,24 @@ var numRows = 5;
 var brickHeight = 15;
 var brickDepth = 20;
 var brickWidth = roomWidth / numCols;
-var spacing = 3;
+var spacing = 2;
 var yOffset = roomHeight / 2 - (brickHeight * numRows) - spacing - 10;
 var bricks = [];
 
 for (var j = 0; j < numRows; j++) {
     for (var i = 0; i < numCols; i++) {
         var idx = (j * numCols) + i;
-        console.log(idx);
         bricks[idx] = {};
         bricks[idx].box = { xMin: brickWidth * i - (roomWidth / 2) + spacing + (brickWidth / 2),
                             xMax: brickWidth * (i + 1) - (roomWidth / 2) - spacing + (brickWidth / 2),
                             yMin: j * brickHeight + spacing + yOffset,
                             yMax: (j + 1) * brickHeight - spacing + yOffset,
-                            // yMin: roomHeight / 2 - brickHeight - (j * 10,
-                            // yMax: roomHeight / 2 - 10,
                             zMin: -brickDepth / 2,
-                            zMax: brickDepth / 2
+                            zMax: brickDepth / 2,
+                            alive: true
                         };
+        bricks[idx].damping = 1;
+        // bricks[idx].alive = true;
     }
 }
 
@@ -363,10 +363,10 @@ SystemSettings.mySystem = {
     initializerFunction : SphereInitializer,
     initializerSettings : {
         sphere: new THREE.Vector4 ( 0, 0, 0, 3.0),
-        color:    new THREE.Vector4 ( 0.0, 1.0, 1.0, 0.5 ),
+        color:    new THREE.Vector4 ( 1.0, 1.0, 1.0, 1.0 ),
         velocity: new THREE.Vector3 ( 0.0, 0.0, 0.0),
         lifetime: 20,
-        size:     12.0,
+        size:     50.0,
     },
 
     // Update
@@ -385,30 +385,23 @@ SystemSettings.mySystem = {
                             {plane : new THREE.Vector4( -1, 0, 0, roomWidth / 2 ), damping : 1.0 },
                             ],
             bounceBoxes: bricks
-            // bricks: [ box: ]
-
-            // bounceBoxes: [
-            //     {box: {xMin: -50, xMax: 50, yMin: -10, yMax: 0, zMin: -50, zMax: 50}, damping: 0.9},
-            //     {box: {xMin: -100, xMax: 100, yMin: -20, yMax: -10, zMin: -100, zMax: 100}, damping: 0.9},
-            //     {box: {xMin: -150, xMax: 150, yMin: -30, yMax: -20, zMin: -150, zMax: 150}, damping: 0.9}
-            // ]
         },
     },
 
     // Scene
-    maxParticles :  1000,
+    maxParticles :  3,
     particlesFreq : 100,
     createScene : function () {
         var material_red     = new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: 0x222222, side: THREE.DoubleSide } );
         var material_blue     = new THREE.MeshPhongMaterial( {color: 0xabcdef, emissive: 0x222222, side: THREE.DoubleSide } );
         var material_green     = new THREE.MeshPhongMaterial( {color: 0x00FF00, emissive: 0x222222, side: THREE.DoubleSide } );
 
-        // Ceiling
-        var plane_geo_top = new THREE.PlaneBufferGeometry( roomWidth, roomDepth, 1, 1 );
-        var plane_top     = new THREE.Mesh( plane_geo_top, material_blue );
-        plane_top.rotation.x = Math.PI / 2;
-        plane_top.position.y = roomHeight + y_offset;
-        Scene.addObject( plane_top );
+        // // Ceiling
+        // var plane_geo_top = new THREE.PlaneBufferGeometry( roomWidth, roomDepth, 1, 1 );
+        // var plane_top     = new THREE.Mesh( plane_geo_top, material_blue );
+        // plane_top.rotation.x = Math.PI / 2;
+        // plane_top.position.y = roomHeight + y_offset;
+        // Scene.addObject( plane_top );
 
         // Floor (make this a sink plane?)
         var plane_geo_bottom = new THREE.PlaneBufferGeometry( roomWidth, roomDepth, 1, 1 );
@@ -441,6 +434,7 @@ SystemSettings.mySystem = {
             var box       = new THREE.Mesh( box_geo, material_green );
             box.position.set( (bound.xMin + bound.xMin) / 2, (bound.yMin + bound.yMax) / 2, (bound.zMin + bound.zMax) / 2 );
             Scene.addObject( box );
+            bound.mesh = box;
         }
 
     },

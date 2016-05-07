@@ -38,7 +38,9 @@ SphereInitializer.prototype.initializePositions = function ( positions, toSpawn)
         var py = base.y + d * Math.sin(phi);
         var pz = base.z + z;
 
-        var pos = new THREE.Vector3(px, py, pz);
+        // var pos = new THREE.Vector3(px, py, pz);
+
+        var pos = new THREE.Vector3(px, py, 0);
 
         // ----------- STUDENT CODE END ------------
         setElement( idx, positions, pos );
@@ -54,8 +56,8 @@ SphereInitializer.prototype.initializeVelocities = function ( velocities, positi
         // ----------- STUDENT CODE BEGIN ------------
         // just to get started, make the velocity the same as the initial position
         var pos = getElement( idx, positions );
-        var vel = pos.clone().multiplyScalar(20.0);
-
+        var vel = pos.clone().multiplyScalar(100.0);
+        vel.z = 0;
 
 
         // ----------- STUDENT CODE END ------------

@@ -64,6 +64,7 @@ Gui.toCommandString = function () {
 }
 
 Gui.init = function ( meshChangeCallback, controlsChangeCallback, displayChangeCallback ) {
+
     // // create top level controls
     // var gui     = new dat.GUI( { width: 300 } );
     // var size    = gui.add( Gui.values, 'windowSize', Gui.windowSizes ).name("Window Size");

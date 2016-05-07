@@ -61,8 +61,8 @@ Main.particleSystemChangeCallback = function ( InputSettings ) {
 window.onload = function() {
 
     // Setup renderer, scene and gui
-    // Gui.init( Main.controlsChangeCallback,
-              // Main.displayChangeCallback );
+    Gui.init( Main.controlsChangeCallback,
+              Main.displayChangeCallback );
 
     Scene.create();
 
@@ -72,4 +72,10 @@ window.onload = function() {
     Renderer.create( Scene, document.getElementById("canvas") );
 
     Renderer.update();
+
+    var emitters = ParticleEngine.getEmitters();
+    for ( var i = 0 ; i < emitters.length ; i++ ) {
+        emitters[i]._material.uniforms.texture.value = new THREE.ImageUtils.loadTexture( 'images/base.png' );
+        emitters[i]._material.needsUpdate  = true;
+    }
 };
