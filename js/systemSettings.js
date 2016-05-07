@@ -347,6 +347,13 @@ var platformWidth = brickWidth * 1.5;
 var platformHeight = 5;
 var platformDepth = brickDepth;
 var platformPosition = new THREE.Vector3(0, -roomHeight / 2 + 20, 0);
+var platformBox = { xMin: platformPosition.x - platformWidth / 2,
+                    xMax: platformPosition.x + platformWidth / 2,
+                    yMin: platformPosition.y - platformHeight / 2,
+                    yMax: platformPosition.y + platformHeight / 2,
+                    zMin: platformPosition.z - platformDepth / 2,
+                    zMax: platformPosition.z + platformDepth / 2
+                    };
 
 // console.log(bricks.length);
 
@@ -382,25 +389,19 @@ SystemSettings.mySystem = {
             attractors : [],
         },
         collidables: {
+            sinkPlanes: [ {plane : new THREE.Vector4( 0, 1, 0, y_offset ), damping : 1.0 } ],
             bouncePlanes: [
-                            {plane : new THREE.Vector4( 0, 1, 0, y_offset ), damping : 1.0 },
                             {plane : new THREE.Vector4( 0, -1, 0, roomHeight + y_offset ), damping : 1.0 },
                             {plane : new THREE.Vector4( 1, 0, 0, -roomWidth / 2 ), damping : 1.0 },
                             {plane : new THREE.Vector4( -1, 0, 0, roomWidth / 2 ), damping : 1.0 },
                             ],
             bounceBoxes: bricks,
-            bouncePlatform: {   xMin: platformPosition.x - platformWidth / 2,
-                                xMax: platformPosition.x + platformWidth / 2,
-                                yMin: platformPosition.y - platformHeight / 2,
-                                yMax: platformPosition.y + platformHeight / 2,
-                                zMin: platformPosition.z - platformDepth / 2,
-                                zMax: platformPosition.z + platformDepth / 2
-                            }
+            bouncePlatform: platformBox
         },
     },
 
     // Scene
-    maxParticles :  10,
+    maxParticles :  1,
     particlesFreq : 100,
     createScene : function () {
         var material_red     = new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: 0x222222, side: THREE.DoubleSide } );
@@ -453,7 +454,7 @@ SystemSettings.mySystem = {
         var platform       = new THREE.Mesh( platform_geo, material_red );
         platform.position.set( platformPosition.x, platformPosition.y, platformPosition.z );
         Scene.addObject( platform );
-
+        platformBox.mesh = platform;
     },
 
 };
