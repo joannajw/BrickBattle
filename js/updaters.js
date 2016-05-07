@@ -103,7 +103,8 @@ function intersectPlane(rayOrigin, velocity, plane, delta_t) {
 
     // check if the particle is on the same side of the plane normal
     var normal = new THREE.Vector3(plane.x, plane.y, plane.z).normalize();
-    var relPos = rayOrigin.clone().sub(normal.clone().multiplyScalar(plane.w));
+    var direction = new THREE.Vector3(Math.abs(normal.x), Math.abs(normal.y), Math.abs(normal.z));
+    var relPos = rayOrigin.clone().sub(direction.multiplyScalar(plane.w));
     // collision, so put particle back on other side of plane
     if (relPos.dot(normal) < 0) {
         return rayOrigin.clone().sub(velocity.clone().multiplyScalar(delta_t));

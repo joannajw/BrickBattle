@@ -369,10 +369,11 @@ SystemSettings.mySystem = {
             attractors : [],
         },
         collidables: {
-            bouncePlanes: [ {plane : new THREE.Vector4( 0, 1, 0, y_offset ), damping : 1.0 },
-                            // {plane : new THREE.Vector4( 0, -1, 0, roomHeight + y_offset ), damping : 1.0 },
+            bouncePlanes: [ 
+                            {plane : new THREE.Vector4( 0, 1, 0, y_offset ), damping : 1.0 },
+                            {plane : new THREE.Vector4( 0, -1, 0, roomHeight + y_offset ), damping : 1.0 },
                             {plane : new THREE.Vector4( 1, 0, 0, -roomWidth / 2 ), damping : 1.0 },
-                            // {plane : new THREE.Vector4( -1, 0, 0, roomWidth / 2 ), damping : 1.0 },
+                            {plane : new THREE.Vector4( -1, 0, 0, roomWidth / 2 ), damping : 1.0 },
                             ],
             bounceBoxes: bricks
             // bricks: [ box: ]
