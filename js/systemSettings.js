@@ -312,6 +312,30 @@ SystemSettings.cloth = {
 // My System
 ////////////////////////////////////////////////////////////////////////////////
 
+var roomHeight = 300;
+var roomWidth = 500;
+var roomDepth = 300;
+var y_offset = -100;
+
+var numBricks = 10;
+var brickHeight = 10;
+var brickDepth = 20;
+var brickWidth = roomWidth / numBricks;
+var bricks = [];
+
+for (var i = 0; i < numBricks; i++) {
+    bricks[i] = {};
+    bricks[i].box = {   xMin: brickWidth * i - (roomWidth / 2),
+                        xMax: brickWidth * (i + 1) - (roomWidth / 2),
+                        yMin: roomHeight - brickHeight - 10,
+                        yMax: roomHeight - 10,
+                        zMin: -brickDepth / 2,
+                        zMax: brickDepth / 2
+                    };
+}
+
+// console.log(bricks);
+
 SystemSettings.mySystem = {
     // Particle material
     particleMaterial :  SystemSettings.standardMaterial,
@@ -345,10 +369,12 @@ SystemSettings.mySystem = {
             attractors : [],
         },
         collidables: {
-            bouncePlanes: [ {plane : new THREE.Vector4( 0, 1, 0, 0 ), damping : 1.0 },
+            // bouncePlanes: [ {plane : new THREE.Vector4( 0, 1, 0, 0 ), damping : 1.0 },
             //                 // {plane : new THREE.Vector4( 0, 1, 0, 0 ), damping : 1.0 },
             //                 // {plane : new THREE.Vector4( 0, 1, 0, 0 ), damping : 1.0 }
-                            ]
+                            // ],
+            bounceBoxes: bricks
+            // bricks: [ box: ]
 
             // bounceBoxes: [
             //     {box: {xMin: -50, xMax: 50, yMin: -10, yMax: 0, zMin: -50, zMax: 50}, damping: 0.9},
@@ -364,25 +390,23 @@ SystemSettings.mySystem = {
     createScene : function () {
         var material_red     = new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: 0x222222, side: THREE.DoubleSide } );
         var material_blue     = new THREE.MeshPhongMaterial( {color: 0xabcdef, emissive: 0x222222, side: THREE.DoubleSide } );
+        var material_green     = new THREE.MeshPhongMaterial( {color: 0x00FF00, emissive: 0x222222, side: THREE.DoubleSide } );
 
-        var roomHeight = 300;
-        var roomWidth = 500;
-        var roomDepth = 300;
-
-        var y_offset = -100;
-
+        // Ceiling
         var plane_geo_top = new THREE.PlaneBufferGeometry( roomWidth, roomDepth, 1, 1 );
         var plane_top     = new THREE.Mesh( plane_geo_top, material_blue );
         plane_top.rotation.x = Math.PI / 2;
         plane_top.position.y = roomHeight + y_offset;
         Scene.addObject( plane_top );
 
+        // Floor (make this a sink plane?)
         var plane_geo_bottom = new THREE.PlaneBufferGeometry( roomWidth, roomDepth, 1, 1 );
         var plane_bottom     = new THREE.Mesh( plane_geo_bottom, material_blue );
         plane_bottom.rotation.x = -Math.PI / 2;
         plane_bottom.position.y = 0 + y_offset;
         Scene.addObject( plane_bottom );
 
+        // Left wall
         var plane_geo_left = new THREE.PlaneBufferGeometry( roomDepth, roomHeight, 1, 1 );
         var plane_left     = new THREE.Mesh( plane_geo_left, material_red );
         plane_left.rotation.y = Math.PI / 2;
@@ -390,12 +414,24 @@ SystemSettings.mySystem = {
         plane_left.position.y = roomHeight / 2 + y_offset;
         Scene.addObject( plane_left );
 
+        // Right wall
         var plane_geo_right = new THREE.PlaneBufferGeometry( roomDepth, roomHeight, 1, 1 );
         var plane_right     = new THREE.Mesh( plane_geo_right, material_red );
         plane_right.rotation.y = -Math.PI / 2;
         plane_right.position.x = roomWidth / 2;
         plane_right.position.y = roomHeight / 2 + y_offset;
         Scene.addObject( plane_right );
+
+        // Add bricks
+        for (var i = 0; i < bricks.length; i++) {
+            var bound = bricks[i].box;
+
+            var box_geo   = new THREE.BoxGeometry(bound.xMax - bound.xMin, bound.yMax - bound.yMin, bound.zMax - bound.zMin);
+            var box       = new THREE.Mesh( box_geo, material_green );
+            box.position.set( (bound.xMin + bound.xMin) / 2, (bound.yMin + bound.yMax) / 2, (bound.zMin + bound.zMax) / 2 );
+            Scene.addObject( box );
+        }
+
     },
 
 };

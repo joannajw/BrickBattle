@@ -7,8 +7,8 @@
 // Collisions
 ////////////////////////////////////////////////////////////////////////////////
 
-// var applyRenderingEffects = false;
-var applyRenderingEffects = true;
+var applyRenderingEffects = false;
+// var applyRenderingEffects = true;
 var Collisions = Collisions || {};
 
 Collisions.SinkBox = function(particleAttributes, alive, delta_t, box) {

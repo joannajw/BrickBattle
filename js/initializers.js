@@ -54,7 +54,7 @@ SphereInitializer.prototype.initializeVelocities = function ( velocities, positi
         // ----------- STUDENT CODE BEGIN ------------
         // just to get started, make the velocity the same as the initial position
         var pos = getElement( idx, positions );
-        var vel = pos.clone().multiplyScalar(5.0);
+        var vel = pos.clone().multiplyScalar(20.0);
 
 
 
