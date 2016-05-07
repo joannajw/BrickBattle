@@ -31,18 +31,17 @@ SphereInitializer.prototype.initializePositions = function ( positions, toSpawn)
         // ----------- STUDENT CODE BEGIN ------------
 
         // Generate random position on surface of sphere
-        var z = Math.random() * (2 * r) - r;
-        var phi = Math.random() * 2 * Math.PI;
-        var d = Math.sqrt(r * r - z * z);
-        var px = base.x + d * Math.cos(phi);
-        var py = base.y + d * Math.sin(phi);
-        var pz = base.z + z;
+        // var z = Math.random() * (2 * r) - r;
+        // var phi = Math.random() * 2 * Math.PI;
+        // var d = Math.sqrt(r * r - z * z);
+        // var px = base.x + d * Math.cos(phi);
+        // var py = base.y + d * Math.sin(phi);
+        // var pz = base.z + z;
 
         // var pos = new THREE.Vector3(px, py, pz);
 
-        var pos = new THREE.Vector3(px, py, 0);
-
-        // ----------- STUDENT CODE END ------------
+        // var pos = new THREE.Vector3(px, py, 0);
+        var pos = new THREE.Vector3(0, -265, 0);
         setElement( idx, positions, pos );
 
     }
@@ -56,8 +55,12 @@ SphereInitializer.prototype.initializeVelocities = function ( velocities, positi
         // ----------- STUDENT CODE BEGIN ------------
         // just to get started, make the velocity the same as the initial position
         var pos = getElement( idx, positions );
-        var vel = pos.clone().multiplyScalar(200.0);
-        vel.z = 0;
+        // var vel = pos.clone().multiplyScalar(200.0);
+        // vel.z = 0;
+
+        var rand = (Math.random() - 0.5) * 250;
+        var vel = new THREE.Vector3(rand, 500, 0);
+        // var vel = new THREE.Vector3(0, 0, 0);
 
         // ----------- STUDENT CODE END ------------
         setElement( idx, velocities, vel );

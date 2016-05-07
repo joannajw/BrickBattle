@@ -84,18 +84,40 @@ window.onload = function() {
         var pos = platform.mesh.position;
         var moveFactor = 50;
 
+        // Left arrow
         if (e.keyCode == 37) {
-            console.log("move left");
+            console.log("left");
             // console.log(platform.box.mesh.position);
             platform.xMin -= moveFactor;
             platform.xMax -= moveFactor;
             pos.set(pos.x - moveFactor, pos.y, pos.z);
         }
+
+        // Right arrow
         if (e.keyCode == 39) {
-            console.log("move right");
+            console.log("right");
             platform.xMin += moveFactor;
             platform.xMax += moveFactor;
             pos.set(pos.x + moveFactor, pos.y, pos.z);
         }
+
+        // Up arrow
+        if (e.keyCode == 38) {
+            console.log("up");
+
+        }
+
+        // Down arrow
+        if (e.keyCode == 40) {
+            console.log("down");
+
+        }
+
+        // Space bar
+        if (e.keyCode == 32) {
+            console.log("space");
+
+        }
+
     }, false);
 };
