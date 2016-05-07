@@ -312,17 +312,17 @@ SystemSettings.cloth = {
 // My System
 ////////////////////////////////////////////////////////////////////////////////
 
-var roomHeight = 300;
-var roomWidth = 500;
-var roomDepth = 300;
+var roomHeight = 600;
+var roomWidth = 1000;
+var roomDepth = 600;
 var y_offset = -roomHeight / 2;
 
 var numCols = 10;
 var numRows = 5;
-var brickHeight = 15;
+var brickHeight = 25;
 var brickDepth = 20;
 var brickWidth = roomWidth / numCols;
-var spacing = 2;
+var spacing = 5;
 var yOffset = roomHeight / 2 - (brickHeight * numRows) - spacing - 10;
 var bricks = [];
 
@@ -344,7 +344,7 @@ for (var j = 0; j < numRows; j++) {
 }
 
 var platformWidth = brickWidth * 1.5;
-var platformHeight = 5;
+var platformHeight = 10;
 var platformDepth = brickDepth;
 var platformPosition = new THREE.Vector3(0, -roomHeight / 2 + 20, 0);
 var platformBox = { xMin: platformPosition.x - platformWidth / 2,
@@ -378,7 +378,7 @@ SystemSettings.mySystem = {
         color:    new THREE.Vector4 ( 1.0, 1.0, 1.0, 1.0 ),
         velocity: new THREE.Vector3 ( 0.0, 0.0, 0.0),
         lifetime: 100,
-        size:     50.0,
+        size:     100.0,
     },
 
     // Update
@@ -395,6 +395,7 @@ SystemSettings.mySystem = {
                             {plane : new THREE.Vector4( 1, 0, 0, -roomWidth / 2 ), damping : 1.0 },
                             {plane : new THREE.Vector4( -1, 0, 0, roomWidth / 2 ), damping : 1.0 },
                             ],
+            sinkPlanes: [{plane : new THREE.Vector4( 0, 1, 0, y_offset ), damping : 1.0 }],
             bounceBoxes: bricks,
             bouncePlatform: platformBox
         },
@@ -405,8 +406,9 @@ SystemSettings.mySystem = {
     particlesFreq : 100,
     createScene : function () {
         var material_red     = new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: 0x222222, side: THREE.DoubleSide } );
-        var material_blue     = new THREE.MeshPhongMaterial( {color: 0xabcdef, emissive: 0x222222, side: THREE.DoubleSide } );
+        var material_blue     = new THREE.MeshPhongMaterial( {color: 0x77CCFF, emissive: 0x222222, side: THREE.DoubleSide } );
         var material_green     = new THREE.MeshPhongMaterial( {color: 0x00FF00, emissive: 0x222222, side: THREE.DoubleSide } );
+        var material_black     = new THREE.MeshPhongMaterial( {color: 0x000000, emissive: 0x222222, side: THREE.DoubleSide } );
 
         // Ceiling
         var plane_geo_top = new THREE.PlaneBufferGeometry( roomWidth, roomDepth, 1, 1 );
@@ -417,7 +419,7 @@ SystemSettings.mySystem = {
 
         // Floor (make this a sink plane?)
         var plane_geo_bottom = new THREE.PlaneBufferGeometry( roomWidth, roomDepth, 1, 1 );
-        var plane_bottom     = new THREE.Mesh( plane_geo_bottom, material_blue );
+        var plane_bottom     = new THREE.Mesh( plane_geo_bottom, material_black );
         plane_bottom.rotation.x = -Math.PI / 2;
         plane_bottom.position.y = 0 + y_offset;
         Scene.addObject( plane_bottom );
@@ -451,7 +453,7 @@ SystemSettings.mySystem = {
 
         // Add platform
         var platform_geo   = new THREE.BoxGeometry(platformWidth, platformHeight, platformDepth);
-        var platform       = new THREE.Mesh( platform_geo, material_red );
+        var platform       = new THREE.Mesh( platform_geo, material_blue );
         platform.position.set( platformPosition.x, platformPosition.y, platformPosition.z );
         Scene.addObject( platform );
         platformBox.mesh = platform;

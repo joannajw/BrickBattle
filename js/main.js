@@ -82,19 +82,19 @@ window.onload = function() {
     window.addEventListener("keydown", function(e) {
         var platform = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatform;
         var pos = platform.mesh.position;
-        var moveFactor = 20;
+        var moveFactor = 50;
 
         if (e.keyCode == 37) {
             console.log("move left");
             // console.log(platform.box.mesh.position);
             platform.xMin -= moveFactor;
-            platform.xMax -= moveFactor; 
+            platform.xMax -= moveFactor;
             pos.set(pos.x - moveFactor, pos.y, pos.z);
         }
         if (e.keyCode == 39) {
             console.log("move right");
             platform.xMin += moveFactor;
-            platform.xMax += moveFactor; 
+            platform.xMax += moveFactor;
             pos.set(pos.x + moveFactor, pos.y, pos.z);
         }
     }, false);

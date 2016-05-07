@@ -27,57 +27,27 @@ Collisions.BouncePlatform = function(particleAttributes, alive, delta_t, platfor
     var EPS = 0.1;
 
     for ( var i = 0 ; i < alive.length ; ++i ) {
-
         if ( !alive[i] ) continue;
-        // ----------- STUDENT CODE BEGIN ------------
         var pos = getElement( i, positions );
         var vel = getElement( i, velocities );
 
-        if (pos.x >= platform.xMin && pos.x <= platform.xMax && pos.y >= platform.yMin && pos.y <= platform.yMax && pos.z >= platform.zMin && pos.z <= platform.zMax) {
+        var newPos = pos.clone().add(vel.clone().multiplyScalar(delta_t));
 
-            var closestPlaneNormal;
-            var closestDistance = Number.POSITIVE_INFINITY;
+        if (vel.dot(normal_xz_max) < 0) {
+            if (newPos.x >= platform.xMin && newPos.x <= platform.xMax && newPos.z >= platform.zMin && newPos.z <= platform.zMax) {
+                var dist = Math.abs(platform.yMax - pos.y);
+                var len = Math.abs(newPos.y - pos.y);
+                if (len > dist) {
 
-            if (Math.abs(pos.x - platform.xMin) < closestDistance) {
-                closestPlaneNormal = normal_yz_min.clone();
-                closestDistance = Math.abs(pos.x - platform.xMin);
+                    var distFromCenter = (pos.x - (platform.xMin + platform.xMax) / 2) / (platform.xMax - platform.xMin);
+                    var newNormal = (new THREE.Vector3(1, 0, 0)).multiplyScalar(distFromCenter).add(normal_xz_max).normalize();
+                    vel.reflect(newNormal);
+                }
             }
-
-            if (Math.abs(pos.x - platform.xMax) < closestDistance) {
-                closestPlaneNormal = normal_yz_max.clone();
-                closestDistance = Math.abs(pos.x - platform.xMax);
-            }
-
-            if (Math.abs(pos.y - platform.yMin) < closestDistance) {
-                closestPlaneNormal = normal_xz_min.clone();
-                closestDistance = Math.abs(pos.y - platform.yMin);
-            }
-
-            if (Math.abs(pos.y - platform.yMin) < closestDistance) {
-                closestPlaneNormal = normal_xz_max.clone();
-                closestDistance = Math.abs(pos.y - platform.yMin);
-            }
-
-            if (Math.abs(pos.z - platform.zMin) < closestDistance) {
-                closestPlaneNormal = normal_xy_min.clone();
-                closestDistance = Math.abs(pos.z - platform.zMin);
-            }
-
-            if (Math.abs(pos.z - platform.zMin) < closestDistance) {
-                closestPlaneNormal = normal_xy_max.clone();
-                closestDistance = Math.abs(pos.z - platform.zMin);
-            }
-
-            vel.reflect(closestPlaneNormal.clone()).multiplyScalar(1);
-            pos = pos.clone().sub(vel.clone().multiplyScalar(delta_t));
-            // pos.add(closestPlaneNormal.clone().multiplyScalar(closestPlaneNormal.clone().dot(pos)));
-            // box.alive = false;
-            // Scene.removeObject(box.mesh);
         }
 
         setElement( i, positions, pos );
         setElement( i, velocities, vel );
-        // ----------- STUDENT CODE END ------------
     }
 }
 
@@ -214,22 +184,40 @@ Collisions.BouncePlane = function ( particleAttributes, alive, delta_t, plane, d
 };
 
 Collisions.SinkPlane = function ( particleAttributes, alive, delta_t, plane  ) {
-    var positions   = particleAttributes.position;
-
-    var normal = new THREE.Vector3(plane.x, plane.y, plane.z);
+    var positions    = particleAttributes.position;
+    var velocities   = particleAttributes.velocity;
 
     for ( var i = 0 ; i < alive.length ; ++i ) {
 
         if ( !alive[i] ) continue;
-        // ----------- STUDENT CODE BEGIN ------------
         var pos = getElement( i, positions );
+        var vel = getElement( i, velocities );
 
-        // Kill the particle if it's on the wrong side of the plane
-        if (normal.dot(pos) < 0) {
+        var new_pos = intersectPlane(pos, vel, plane, delta_t);
+        // collide with plane, bounce off
+        if (new_pos != undefined) {
             killPartilce(i, particleAttributes, alive);
         }
-        // ----------- STUDENT CODE END ------------
+
+        setElement( i, positions, pos );
+        setElement( i, velocities, vel );
     }
+    // var positions   = particleAttributes.position;
+
+    // var normal = new THREE.Vector3(plane.x, plane.y, plane.z);
+
+    // for ( var i = 0 ; i < alive.length ; ++i ) {
+
+    //     if ( !alive[i] ) continue;
+    //     // ----------- STUDENT CODE BEGIN ------------
+    //     var pos = getElement( i, positions );
+
+    //     // Kill the particle if it's on the wrong side of the plane
+    //     if (normal.dot(pos) < 0) {
+    //         killPartilce(i, particleAttributes, alive);
+    //     }
+    //     // ----------- STUDENT CODE END ------------
+    // }
 };
 
 Collisions.BounceSphere = function ( particleAttributes, alive, delta_t, sphere, damping ) {
