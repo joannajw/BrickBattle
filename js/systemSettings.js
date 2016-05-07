@@ -343,6 +343,11 @@ for (var j = 0; j < numRows; j++) {
     }
 }
 
+var platformWidth = brickWidth * 1.5;
+var platformHeight = 5;
+var platformDepth = brickDepth;
+var platformPosition = new THREE.Vector3(0, -roomHeight / 2 + 20, 0);
+
 // console.log(bricks.length);
 
 SystemSettings.mySystem = {
@@ -374,7 +379,6 @@ SystemSettings.mySystem = {
     updaterSettings : {
         externalForces : {
             gravity :     new THREE.Vector3( 0, 0, 0),
-            // gravity :     new THREE.Vector3( 0, 0, 0),
             attractors : [],
         },
         collidables: {
@@ -384,13 +388,19 @@ SystemSettings.mySystem = {
                             {plane : new THREE.Vector4( 1, 0, 0, -roomWidth / 2 ), damping : 1.0 },
                             {plane : new THREE.Vector4( -1, 0, 0, roomWidth / 2 ), damping : 1.0 },
                             ],
-            bounceBoxes: bricks
-
+            bounceBoxes: bricks,
+            bouncePlatform: {   xMin: platformPosition.x - platformWidth / 2,
+                                xMax: platformPosition.x + platformWidth / 2,
+                                yMin: platformPosition.y - platformHeight / 2,
+                                yMax: platformPosition.y + platformHeight / 2,
+                                zMin: platformPosition.z - platformDepth / 2,
+                                zMax: platformPosition.z + platformDepth / 2
+                            }
         },
     },
 
     // Scene
-    maxParticles :  1,
+    maxParticles :  10,
     particlesFreq : 100,
     createScene : function () {
         var material_red     = new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: 0x222222, side: THREE.DoubleSide } );
@@ -439,11 +449,10 @@ SystemSettings.mySystem = {
         }
 
         // Add platform
-        var platform_geo   = new THREE.BoxGeometry(brickWidth * 1.5, 5, brickDepth);
+        var platform_geo   = new THREE.BoxGeometry(platformWidth, platformHeight, platformDepth);
         var platform       = new THREE.Mesh( platform_geo, material_red );
-        platform.position.set( 0, -roomHeight / 2 + 20, 0 );
+        platform.position.set( platformPosition.x, platformPosition.y, platformPosition.z );
         Scene.addObject( platform );
-        bound.mesh = platform;
 
     },
 

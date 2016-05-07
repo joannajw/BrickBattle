@@ -11,6 +11,76 @@ var applyRenderingEffects = false;
 // var applyRenderingEffects = true;
 var Collisions = Collisions || {};
 
+Collisions.BouncePlatform = function(particleAttributes, alive, delta_t, platform) {
+    var positions    = particleAttributes.position;
+    var velocities   = particleAttributes.velocity;
+
+    var normal_xy_min = new THREE.Vector3(0, 0, -1);
+    var normal_xy_max = new THREE.Vector3(0, 0, 1);
+
+    var normal_yz_min = new THREE.Vector3(-1, 0, 0);
+    var normal_yz_max = new THREE.Vector3(1, 0, 0);
+
+    var normal_xz_min = new THREE.Vector3(0, -1, 0);
+    var normal_xz_max = new THREE.Vector3(0, 1, 0);
+
+    var EPS = 0.1;
+
+    for ( var i = 0 ; i < alive.length ; ++i ) {
+
+        if ( !alive[i] ) continue;
+        // ----------- STUDENT CODE BEGIN ------------
+        var pos = getElement( i, positions );
+        var vel = getElement( i, velocities );
+
+        if (pos.x >= platform.xMin && pos.x <= platform.xMax && pos.y >= platform.yMin && pos.y <= platform.yMax && pos.z >= platform.zMin && pos.z <= platform.zMax) {
+
+            var closestPlaneNormal;
+            var closestDistance = Number.POSITIVE_INFINITY;
+
+            if (Math.abs(pos.x - platform.xMin) < closestDistance) {
+                closestPlaneNormal = normal_yz_min.clone();
+                closestDistance = Math.abs(pos.x - platform.xMin);
+            }
+
+            if (Math.abs(pos.x - platform.xMax) < closestDistance) {
+                closestPlaneNormal = normal_yz_max.clone();
+                closestDistance = Math.abs(pos.x - platform.xMax);
+            }
+
+            if (Math.abs(pos.y - platform.yMin) < closestDistance) {
+                closestPlaneNormal = normal_xz_min.clone();
+                closestDistance = Math.abs(pos.y - platform.yMin);
+            }
+
+            if (Math.abs(pos.y - platform.yMin) < closestDistance) {
+                closestPlaneNormal = normal_xz_max.clone();
+                closestDistance = Math.abs(pos.y - platform.yMin);
+            }
+
+            if (Math.abs(pos.z - platform.zMin) < closestDistance) {
+                closestPlaneNormal = normal_xy_min.clone();
+                closestDistance = Math.abs(pos.z - platform.zMin);
+            }
+
+            if (Math.abs(pos.z - platform.zMin) < closestDistance) {
+                closestPlaneNormal = normal_xy_max.clone();
+                closestDistance = Math.abs(pos.z - platform.zMin);
+            }
+
+            vel.reflect(closestPlaneNormal.clone()).multiplyScalar(1);
+            pos = pos.clone().sub(vel.clone().multiplyScalar(delta_t));
+            // pos.add(closestPlaneNormal.clone().multiplyScalar(closestPlaneNormal.clone().dot(pos)));
+            // box.alive = false;
+            // Scene.removeObject(box.mesh);
+        }
+
+        setElement( i, positions, pos );
+        setElement( i, velocities, vel );
+        // ----------- STUDENT CODE END ------------
+    }
+}
+
 Collisions.SinkBox = function(particleAttributes, alive, delta_t, box) {
     var positions   = particleAttributes.position;
 
@@ -379,6 +449,15 @@ EulerUpdater.prototype.collisions = function ( particleAttributes, alive, delta_
             var damping = this._opts.collidables.bounceBoxes[i].damping;
             Collisions.BounceBox( particleAttributes, alive, delta_t, box, damping );
         }
+    }
+
+    if ( this._opts.collidables.bouncePlatform ) {
+        Collisions.BouncePlatform( particleAttributes, alive, delta_t, this._opts.collidables.bouncePlatform );
+        // for (var i = 0 ; i < this._opts.collidables.bounceBoxes.length ; ++i ) {
+        //     var box = this._opts.collidables.bounceBoxes[i].box;
+        //     var damping = this._opts.collidables.bounceBoxes[i].damping;
+        //     Collisions.BounceBox( particleAttributes, alive, delta_t, box, damping );
+        // }
     }
 };
 
