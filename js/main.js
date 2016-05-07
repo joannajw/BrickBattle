@@ -78,4 +78,14 @@ window.onload = function() {
         emitters[i]._material.uniforms.texture.value = new THREE.ImageUtils.loadTexture( 'images/base.png' );
         emitters[i]._material.needsUpdate  = true;
     }
+
+    window.addEventListener("keydown", function(e) {
+        if (e.keyCode == 37) {
+            console.log("move left");
+        }
+
+        if (e.keyCode == 39) {
+            console.log("move right");
+        }
+    }, false);
 };

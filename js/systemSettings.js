@@ -330,8 +330,8 @@ for (var j = 0; j < numRows; j++) {
     for (var i = 0; i < numCols; i++) {
         var idx = (j * numCols) + i;
         bricks[idx] = {};
-        bricks[idx].box = { xMin: brickWidth * i - (roomWidth / 2) + spacing + (brickWidth / 2),
-                            xMax: brickWidth * (i + 1) - (roomWidth / 2) - spacing + (brickWidth / 2),
+        bricks[idx].box = { xMin: brickWidth * i - (roomWidth / 2) + spacing,
+                            xMax: brickWidth * (i + 1) - (roomWidth / 2) - spacing,
                             yMin: j * brickHeight + spacing + yOffset,
                             yMax: (j + 1) * brickHeight - spacing + yOffset,
                             zMin: -brickDepth / 2,
@@ -365,7 +365,7 @@ SystemSettings.mySystem = {
         sphere: new THREE.Vector4 ( 0, 0, 0, 3.0),
         color:    new THREE.Vector4 ( 1.0, 1.0, 1.0, 1.0 ),
         velocity: new THREE.Vector3 ( 0.0, 0.0, 0.0),
-        lifetime: 20,
+        lifetime: 100,
         size:     50.0,
     },
 
@@ -385,23 +385,24 @@ SystemSettings.mySystem = {
                             {plane : new THREE.Vector4( -1, 0, 0, roomWidth / 2 ), damping : 1.0 },
                             ],
             bounceBoxes: bricks
+
         },
     },
 
     // Scene
-    maxParticles :  3,
+    maxParticles :  1,
     particlesFreq : 100,
     createScene : function () {
         var material_red     = new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: 0x222222, side: THREE.DoubleSide } );
         var material_blue     = new THREE.MeshPhongMaterial( {color: 0xabcdef, emissive: 0x222222, side: THREE.DoubleSide } );
         var material_green     = new THREE.MeshPhongMaterial( {color: 0x00FF00, emissive: 0x222222, side: THREE.DoubleSide } );
 
-        // // Ceiling
-        // var plane_geo_top = new THREE.PlaneBufferGeometry( roomWidth, roomDepth, 1, 1 );
-        // var plane_top     = new THREE.Mesh( plane_geo_top, material_blue );
-        // plane_top.rotation.x = Math.PI / 2;
-        // plane_top.position.y = roomHeight + y_offset;
-        // Scene.addObject( plane_top );
+        // Ceiling
+        var plane_geo_top = new THREE.PlaneBufferGeometry( roomWidth, roomDepth, 1, 1 );
+        var plane_top     = new THREE.Mesh( plane_geo_top, material_blue );
+        plane_top.rotation.x = Math.PI / 2;
+        plane_top.position.y = roomHeight + y_offset;
+        Scene.addObject( plane_top );
 
         // Floor (make this a sink plane?)
         var plane_geo_bottom = new THREE.PlaneBufferGeometry( roomWidth, roomDepth, 1, 1 );
@@ -432,10 +433,17 @@ SystemSettings.mySystem = {
 
             var box_geo   = new THREE.BoxGeometry(bound.xMax - bound.xMin, bound.yMax - bound.yMin, bound.zMax - bound.zMin);
             var box       = new THREE.Mesh( box_geo, material_green );
-            box.position.set( (bound.xMin + bound.xMin) / 2, (bound.yMin + bound.yMax) / 2, (bound.zMin + bound.zMax) / 2 );
+            box.position.set( (bound.xMin + bound.xMax) / 2, (bound.yMin + bound.yMax) / 2, (bound.zMin + bound.zMax) / 2 );
             Scene.addObject( box );
             bound.mesh = box;
         }
+
+        // Add platform
+        var platform_geo   = new THREE.BoxGeometry(brickWidth * 1.5, 5, brickDepth);
+        var platform       = new THREE.Mesh( platform_geo, material_red );
+        platform.position.set( 0, -roomHeight / 2 + 20, 0 );
+        Scene.addObject( platform );
+        bound.mesh = platform;
 
     },
 
