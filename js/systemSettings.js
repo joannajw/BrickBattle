@@ -317,24 +317,33 @@ var roomWidth = 500;
 var roomDepth = 300;
 var y_offset = -roomHeight / 2;
 
-var numBricks = 10;
-var brickHeight = 10;
+var numCols = 10;
+var numRows = 5;
+var brickHeight = 15;
 var brickDepth = 20;
-var brickWidth = roomWidth / numBricks;
+var brickWidth = roomWidth / numCols;
+var spacing = 3;
+var yOffset = roomHeight / 2 - (brickHeight * numRows) - spacing - 10;
 var bricks = [];
 
-for (var i = 0; i < numBricks; i++) {
-    bricks[i] = {};
-    bricks[i].box = {   xMin: brickWidth * i - (roomWidth / 2),
-                        xMax: brickWidth * (i + 1) - (roomWidth / 2),
-                        yMin: roomHeight - brickHeight - 10,
-                        yMax: roomHeight - 10,
-                        zMin: -brickDepth / 2,
-                        zMax: brickDepth / 2
-                    };
+for (var j = 0; j < numRows; j++) {
+    for (var i = 0; i < numCols; i++) {
+        var idx = (j * numCols) + i;
+        console.log(idx);
+        bricks[idx] = {};
+        bricks[idx].box = { xMin: brickWidth * i - (roomWidth / 2) + spacing + (brickWidth / 2),
+                            xMax: brickWidth * (i + 1) - (roomWidth / 2) - spacing + (brickWidth / 2),
+                            yMin: j * brickHeight + spacing + yOffset,
+                            yMax: (j + 1) * brickHeight - spacing + yOffset,
+                            // yMin: roomHeight / 2 - brickHeight - (j * 10,
+                            // yMax: roomHeight / 2 - 10,
+                            zMin: -brickDepth / 2,
+                            zMax: brickDepth / 2
+                        };
+    }
 }
 
-// console.log(bricks);
+// console.log(bricks.length);
 
 SystemSettings.mySystem = {
     // Particle material
@@ -369,7 +378,7 @@ SystemSettings.mySystem = {
             attractors : [],
         },
         collidables: {
-            bouncePlanes: [ 
+            bouncePlanes: [
                             {plane : new THREE.Vector4( 0, 1, 0, y_offset ), damping : 1.0 },
                             {plane : new THREE.Vector4( 0, -1, 0, roomHeight + y_offset ), damping : 1.0 },
                             {plane : new THREE.Vector4( 1, 0, 0, -roomWidth / 2 ), damping : 1.0 },
