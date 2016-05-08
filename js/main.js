@@ -94,9 +94,9 @@ window.onload = function() {
         var spacing = SystemSettings.mySystem.spacing;
         var moveFactor = 50;
 
-        // Left arrow
-        if (e.keyCode == 37) {
-            console.log("left");
+        // 'A' key
+        if (e.keyCode == 65) {
+            console.log("A");
             e.preventDefault();
             var leftDist = platform.xMin + (roomWidth / 2);
             var tempMoveFactor = moveFactor;
@@ -121,9 +121,9 @@ window.onload = function() {
             }
         }
 
-        // Right arrow
-        if (e.keyCode == 39) {
-            console.log("right");
+        // 'D' key
+        if (e.keyCode == 68) {
+            console.log("D");
             e.preventDefault();
             var rightDist = (roomWidth / 2) - platform.xMax;
             var tempMoveFactor = moveFactor;
@@ -148,9 +148,9 @@ window.onload = function() {
             }
         }
 
-        // Up arrow
-        if (e.keyCode == 38) {
-            console.log("up");
+        // 'W' key
+        if (e.keyCode == 87) {
+            console.log("W");
             e.preventDefault();
             var box = boxes[boxes.length - 1].box;
 
@@ -171,9 +171,9 @@ window.onload = function() {
             // }
         }
 
-        // Down arrow
-        if (e.keyCode == 40) {
-            console.log("down");
+        // 'S' key
+        if (e.keyCode == 83) {
+            console.log("S");
             e.preventDefault();
             var box = boxes[0].box;
 
@@ -194,9 +194,9 @@ window.onload = function() {
             // }
         }
 
-        // Shift key
-        if (e.keyCode == 16) {
-            console.log("shift");
+        // Tab key
+        if (e.keyCode == 9) {
+            console.log("tab");
             e.preventDefault();
             var particleAttributes = emitters[0]._particleAttributes;
             var velocities = particleAttributes.velocity;
@@ -213,42 +213,15 @@ window.onload = function() {
             }
         }
 
-        // 'A' key
-        if (e.keyCode == 65) {
-            console.log("A");
+        // Left arrow
+        if (e.keyCode == 37) {
+            console.log("left");
             e.preventDefault();
-            var leftDist = platform_2.xMin + (roomWidth / 2);
+            var leftDist = (roomWidth / 2) - platform_2.xMax;
             var tempMoveFactor = moveFactor;
             // stop at wall
             if (moveFactor > leftDist) {
                 tempMoveFactor = leftDist;
-            }
-            platform_2.xMin -= tempMoveFactor;
-            platform_2.xMax -= tempMoveFactor;
-            pos_2.set(pos_2.x - tempMoveFactor, pos_2.y, pos_2.z);
-
-            var particleAttributes = emitters[0]._particleAttributes;
-            var positions = particleAttributes.position;
-            var velocities = particleAttributes.velocity;
-            for (var i = 0; i < 1; i++) {
-                var v = getElement( i, velocities );
-                if (v.length() < EPS) {
-                    var ballPos = getElement( i, positions );
-                    ballPos.x -= tempMoveFactor;
-                    setElement(i, positions, ballPos)
-                }
-            }
-        }
-
-        // 'D' key
-        if (e.keyCode == 68) {
-            console.log("D");
-            e.preventDefault();
-            var rightDist = (roomWidth / 2) - platform_2.xMax;
-            var tempMoveFactor = moveFactor;
-            // stop at wall
-            if (moveFactor > rightDist) {
-                tempMoveFactor = rightDist;
             }
             platform_2.xMin += tempMoveFactor;
             platform_2.xMax += tempMoveFactor;
@@ -267,32 +240,36 @@ window.onload = function() {
             }
         }
 
-        // 'W' key
-        if (e.keyCode == 87) {
-            console.log("W");
+        // Right arrow
+        if (e.keyCode == 39) {
+            console.log("right");
             e.preventDefault();
-            var box = boxes[boxes.length - 1].box;
+            var rightDist = platform_2.xMin + (roomWidth / 2);
+            var tempMoveFactor = moveFactor;
+            // stop at wall
+            if (moveFactor > rightDist) {
+                tempMoveFactor = rightDist;
+            }
+            platform_2.xMin -= tempMoveFactor;
+            platform_2.xMax -= tempMoveFactor;
+            pos_2.set(pos_2.x - tempMoveFactor, pos_2.y, pos_2.z);
 
-            platform_2.zMin -= moveFactor / 2;
-            platform_2.zMax -= moveFactor / 2;
-            pos_2.set(pos_2.x, pos_2.y, (box.zMin + box.zMax) / 2);
-
-            // var particleAttributes = emitters[0]._particleAttributes;
-            // var positions = particleAttributes.position;
-            // var velocities = particleAttributes.velocity;
-            // for (var i = 0; i < 1; i++) {
-            //     var v = getElement( i, velocities );
-            //     if (v.length() < EPS) {
-            //         var ballPos = getElement( i, positions );
-            //         ballPos.z = (box.zMin + box.zMax) / 2;
-            //         setElement(i, positions, ballPos)
-            //     }
-            // }
+            var particleAttributes = emitters[0]._particleAttributes;
+            var positions = particleAttributes.position;
+            var velocities = particleAttributes.velocity;
+            for (var i = 0; i < 1; i++) {
+                var v = getElement( i, velocities );
+                if (v.length() < EPS) {
+                    var ballPos = getElement( i, positions );
+                    ballPos.x -= tempMoveFactor;
+                    setElement(i, positions, ballPos)
+                }
+            }
         }
 
-        // 'S' key
-        if (e.keyCode == 83) {
-            console.log("S");
+        // Up arrow
+        if (e.keyCode == 38) {
+            console.log("up");
             e.preventDefault();
             var box = boxes[0].box;
 
@@ -313,8 +290,31 @@ window.onload = function() {
             // }
         }
 
-        // Tab key
-        if (e.keyCode == 9) {
+        // Down arrow
+        if (e.keyCode == 40) {
+            console.log("down");
+            e.preventDefault();
+            var box = boxes[boxes.length - 1].box;
+
+            platform_2.zMin -= moveFactor / 2;
+            platform_2.zMax -= moveFactor / 2;
+            pos_2.set(pos_2.x, pos_2.y, (box.zMin + box.zMax) / 2);
+
+            // var particleAttributes = emitters[0]._particleAttributes;
+            // var positions = particleAttributes.position;
+            // var velocities = particleAttributes.velocity;
+            // for (var i = 0; i < 1; i++) {
+            //     var v = getElement( i, velocities );
+            //     if (v.length() < EPS) {
+            //         var ballPos = getElement( i, positions );
+            //         ballPos.z = (box.zMin + box.zMax) / 2;
+            //         setElement(i, positions, ballPos)
+            //     }
+            // }
+        }
+
+        // Shift key
+        if (e.keyCode == 16) {
             console.log("shift");
             e.preventDefault();
             var particleAttributes = emitters[0]._particleAttributes;
