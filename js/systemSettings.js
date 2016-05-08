@@ -361,14 +361,16 @@ var platformBox = { xMin: platformPosition.x - platformWidth / 2,
                     yMin: platformPosition.y - platformHeight / 2,
                     yMax: platformPosition.y + platformHeight / 2,
                     zMin: platformPosition.z - platformDepth / 2 + brickDepth / 2 + spacing,
-                    zMax: platformPosition.z + platformDepth / 2 + brickDepth / 2 + spacing
+                    zMax: platformPosition.z + platformDepth / 2 + brickDepth / 2 + spacing,
+                    player: 1
                     };
 var platformBox_2 = {   xMin: platformPosition.x - platformWidth / 2,
                         xMax: platformPosition.x + platformWidth / 2,
                         yMin: platformPosition.y - platformHeight / 2,
                         yMax: platformPosition.y + platformHeight / 2,
                         zMin: platformPosition.z - platformDepth / 2 - brickDepth / 2 - spacing,
-                        zMax: platformPosition.z + platformDepth / 2 - brickDepth / 2 - spacing
+                        zMax: platformPosition.z + platformDepth / 2 - brickDepth / 2 - spacing,
+                        player: 2
                         };
 
 // console.log(bricks.length);

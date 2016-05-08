@@ -121,6 +121,7 @@ function Emitter ( opts ) {
         color:         4,
         size:          1,
         lifetime:      1,
+        player:        1,
     };
 
     // parse options

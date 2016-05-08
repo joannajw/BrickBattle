@@ -21,7 +21,7 @@ function SphereInitializer ( opts ) {
     return this;
 };
 
-SphereInitializer.prototype.initializePositions = function ( positions, toSpawn) {
+SphereInitializer.prototype.initializePositions = function ( positions, players, toSpawn) {
     var base = this._opts.sphere;
     var base_pos = new THREE.Vector3( base.x, base.y, base.z );
     var r   = base.w;
@@ -29,12 +29,14 @@ SphereInitializer.prototype.initializePositions = function ( positions, toSpawn)
     for ( var i = 0 ; i < toSpawn.length ; ++i ) {
         var idx = toSpawn[i];
 
-        var platformPos = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[i].mesh.position;
+        var platform = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[i];
+        var platformPos = platform.mesh.position;
         var pos = new THREE.Vector3(platformPos.x, platformPos.y + 15, platformPos.z);
         setElement( idx, positions, pos );
-
+        setElement( idx, players, platform.player);
     }
     positions.needUpdate = true;
+    players.needUpdate = true;
 }
 
 SphereInitializer.prototype.initializeVelocities = function ( velocities, positions, toSpawn ) {
@@ -58,12 +60,19 @@ SphereInitializer.prototype.initializeVelocities = function ( velocities, positi
     velocities.needUpdate = true;
 }
 
-SphereInitializer.prototype.initializeColors = function ( colors, toSpawn ) {
+SphereInitializer.prototype.initializeColors = function ( colors, players, toSpawn ) {
     var base_col = this._opts.color;
     for ( var i = 0 ; i < toSpawn.length ; ++i ) {
         var idx = toSpawn[i];
         // ----------- STUDENT CODE BEGIN ------------
         var col = base_col;
+        var player = getElement( idx, players );
+        if (player == 1) {
+            col = new THREE.Vector4 ( 0.7, 1.0, 0.7, 1.0 );
+        }
+        else if (player == 2) {
+            col = new THREE.Vector4 ( 1.0, 0.8, 1.0, 1.0 );
+        }
 
         // ----------- STUDENT CODE END ------------
         setElement( idx, colors, col );
@@ -102,11 +111,11 @@ SphereInitializer.prototype.initializeLifetimes = function ( lifetimes, toSpawn 
 SphereInitializer.prototype.initialize = function ( particleAttributes, toSpawn ) {
 
     // update required values
-    this.initializePositions( particleAttributes.position, toSpawn );
+    this.initializePositions( particleAttributes.position, particleAttributes.player, toSpawn );
 
     this.initializeVelocities( particleAttributes.velocity, particleAttributes.position, toSpawn );
 
-    this.initializeColors( particleAttributes.color, toSpawn );
+    this.initializeColors( particleAttributes.color, particleAttributes.player, toSpawn );
 
     this.initializeLifetimes( particleAttributes.lifetime, toSpawn );
 

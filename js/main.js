@@ -111,7 +111,12 @@ window.onload = function() {
             var particleAttributes = emitters[0]._particleAttributes;
             var positions = particleAttributes.position;
             var velocities = particleAttributes.velocity;
-            for (var i = 1; i < positions.length; i++) {
+            var players = particleAttributes.player;
+            for (var i = 0; i < positions.length; i++) {
+                var player = getElement( i , players );
+                if (player != platform.player) {
+                    continue;
+                }
                 var v = getElement( i, velocities );
                 if (v.length() < EPS) {
                     var ballPos = getElement( i, positions );
@@ -138,7 +143,12 @@ window.onload = function() {
             var particleAttributes = emitters[0]._particleAttributes;
             var positions = particleAttributes.position;
             var velocities = particleAttributes.velocity;
-            for (var i = 1; i < positions.length; i++) {
+            var players = particleAttributes.player;
+            for (var i = 0; i < positions.length; i++) {
+                var player = getElement( i , players );
+                if (player != platform.player) {
+                    continue;
+                }
                 var v = getElement( i, velocities );
                 if (v.length() < EPS) {
                     var ballPos = getElement( i, positions );
@@ -157,18 +167,6 @@ window.onload = function() {
             platform.zMin -= moveFactor / 2;
             platform.zMax -= moveFactor / 2;
             pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
-
-            // var particleAttributes = emitters[0]._particleAttributes;
-            // var positions = particleAttributes.position;
-            // var velocities = particleAttributes.velocity;
-            // for (var i = 1; i < positions.length; i++) {
-            //     var v = getElement( i, velocities );
-            //     if (v.length() < EPS) {
-            //         var ballPos = getElement( i, positions );
-            //         ballPos.z = (box.zMin + box.zMax) / 2;
-            //         setElement(i, positions, ballPos)
-            //     }
-            // }
         }
 
         // 'S' key
@@ -180,18 +178,6 @@ window.onload = function() {
             platform.zMin += moveFactor / 2;
             platform.zMax += moveFactor / 2;
             pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
-
-            // var particleAttributes = emitters[0]._particleAttributes;
-            // var positions = particleAttributes.position;
-            // var velocities = particleAttributes.velocity;
-            // for (var i = 1; i < positions.length; i++) {
-            //     var v = getElement( i, velocities );
-            //     if (v.length() < EPS) {
-            //         var ballPos = getElement( i, positions );
-            //         ballPos.z = (box.zMin + box.zMax) / 2;
-            //         setElement(i, positions, ballPos)
-            //     }
-            // }
         }
 
         // Tab key
@@ -204,7 +190,12 @@ window.onload = function() {
             var rand = (Math.random() - 0.5) * 250;
             var vel = new THREE.Vector3(rand, 500, 0);
 
-            for (var i = 1; i < velocities.length; i++) {
+            var players = particleAttributes.player;
+            for (var i = 0; i < velocities.length; i++) {
+                var player = getElement( i , players );
+                if (player != platform.player) {
+                    continue;
+                }
                 var v = getElement( i, velocities );
                 console.log(v.length());
                 if (v.length() < EPS) {
@@ -230,7 +221,12 @@ window.onload = function() {
             var particleAttributes = emitters[0]._particleAttributes;
             var positions = particleAttributes.position;
             var velocities = particleAttributes.velocity;
-            for (var i = 0; i < 1; i++) {
+            var players = particleAttributes.player;
+            for (var i = 0; i < positions.length; i++) {
+                var player = getElement( i , players );
+                if (player != platform_2.player) {
+                    continue;
+                }
                 var v = getElement( i, velocities );
                 if (v.length() < EPS) {
                     var ballPos = getElement( i, positions );
@@ -257,8 +253,12 @@ window.onload = function() {
             var particleAttributes = emitters[0]._particleAttributes;
             var positions = particleAttributes.position;
             var velocities = particleAttributes.velocity;
-            for (var i = 0; i < 1; i++) {
-                var v = getElement( i, velocities );
+            var players = particleAttributes.player;
+            for (var i = 0; i < positions.length; i++) {
+                var player = getElement( i , players );
+                if (player != platform_2.player) {
+                    continue;
+                }                var v = getElement( i, velocities );
                 if (v.length() < EPS) {
                     var ballPos = getElement( i, positions );
                     ballPos.x -= tempMoveFactor;
@@ -276,18 +276,6 @@ window.onload = function() {
             platform_2.zMin += moveFactor / 2;
             platform_2.zMax += moveFactor / 2;
             pos_2.set(pos_2.x, pos_2.y, (box.zMin + box.zMax) / 2);
-
-            // var particleAttributes = emitters[0]._particleAttributes;
-            // var positions = particleAttributes.position;
-            // var velocities = particleAttributes.velocity;
-            // for (var i = 0; i < 1; i++) {
-            //     var v = getElement( i, velocities );
-            //     if (v.length() < EPS) {
-            //         var ballPos = getElement( i, positions );
-            //         ballPos.z = (box.zMin + box.zMax) / 2;
-            //         setElement(i, positions, ballPos)
-            //     }
-            // }
         }
 
         // Down arrow
@@ -299,18 +287,6 @@ window.onload = function() {
             platform_2.zMin -= moveFactor / 2;
             platform_2.zMax -= moveFactor / 2;
             pos_2.set(pos_2.x, pos_2.y, (box.zMin + box.zMax) / 2);
-
-            // var particleAttributes = emitters[0]._particleAttributes;
-            // var positions = particleAttributes.position;
-            // var velocities = particleAttributes.velocity;
-            // for (var i = 0; i < 1; i++) {
-            //     var v = getElement( i, velocities );
-            //     if (v.length() < EPS) {
-            //         var ballPos = getElement( i, positions );
-            //         ballPos.z = (box.zMin + box.zMax) / 2;
-            //         setElement(i, positions, ballPos)
-            //     }
-            // }
         }
 
         // Shift key
@@ -323,7 +299,12 @@ window.onload = function() {
             var rand = (Math.random() - 0.5) * 250;
             var vel = new THREE.Vector3(rand, 500, 0);
 
-            for (var i = 0; i < 1; i++) {
+            var players = particleAttributes.player;
+            for (var i = 0; i < velocities.length; i++) {
+                var player = getElement( i , players );
+                if (player != platform_2.player) {
+                    continue;
+                }
                 var v = getElement( i, velocities );
                 console.log(v.length());
                 if (v.length() < EPS) {
