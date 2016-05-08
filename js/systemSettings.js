@@ -325,6 +325,7 @@ var brickWidth = roomWidth / numCols;
 var spacing = 5;
 var yOffset = roomHeight / 2 - (brickHeight * numRows) - spacing - 10;
 var bricks = [];
+var bricks_2 = [];
 
 for (var j = 0; j < numRows; j++) {
     for (var i = 0; i < numCols; i++) {
@@ -334,13 +335,21 @@ for (var j = 0; j < numRows; j++) {
                             xMax: brickWidth * (i + 1) - (roomWidth / 2) - spacing,
                             yMin: j * brickHeight + spacing + yOffset,
                             yMax: (j + 1) * brickHeight - spacing + yOffset,
-                            zMin: -brickDepth / 2,
-                            zMax: brickDepth / 2,
+                            zMin: -brickDepth / 2 + brickDepth / 2 + spacing,
+                            zMax: brickDepth / 2 + brickDepth / 2 + spacing,
                             alive: true
                         };
         bricks[idx].damping = 1;
-        // bricks[idx].alive = true;
-    }
+        bricks_2[idx] = {};
+        bricks_2[idx].box = { xMin: brickWidth * i - (roomWidth / 2) + spacing,
+                            xMax: brickWidth * (i + 1) - (roomWidth / 2) - spacing,
+                            yMin: j * brickHeight + spacing + yOffset,
+                            yMax: (j + 1) * brickHeight - spacing + yOffset,
+                            zMin: -brickDepth / 2 - brickDepth / 2 - spacing,
+                            zMax: brickDepth / 2 - brickDepth / 2 - spacing,
+                            alive: true
+                        };
+        bricks_2[idx].damping = 1;    }
 }
 
 var platformWidth = brickWidth * 1.2;
@@ -351,9 +360,16 @@ var platformBox = { xMin: platformPosition.x - platformWidth / 2,
                     xMax: platformPosition.x + platformWidth / 2,
                     yMin: platformPosition.y - platformHeight / 2,
                     yMax: platformPosition.y + platformHeight / 2,
-                    zMin: platformPosition.z - platformDepth / 2,
-                    zMax: platformPosition.z + platformDepth / 2
+                    zMin: platformPosition.z - platformDepth / 2 + brickDepth / 2 + spacing,
+                    zMax: platformPosition.z + platformDepth / 2 + brickDepth / 2 + spacing
                     };
+var platformBox_2 = {   xMin: platformPosition.x - platformWidth / 2,
+                        xMax: platformPosition.x + platformWidth / 2,
+                        yMin: platformPosition.y - platformHeight / 2,
+                        yMax: platformPosition.y + platformHeight / 2,
+                        zMin: platformPosition.z - platformDepth / 2 - brickDepth / 2 - spacing,
+                        zMax: platformPosition.z + platformDepth / 2 - brickDepth / 2 - spacing
+                        };
 
 // console.log(bricks.length);
 
@@ -361,6 +377,7 @@ SystemSettings.mySystem = {
     // Particle material
     particleMaterial :  SystemSettings.standardMaterial,
     roomWidth : roomWidth,
+    spacing : spacing,
     // // Initialization
     // initializerFunction : FountainInitializer,
     // initializerSettings : {
@@ -396,20 +413,20 @@ SystemSettings.mySystem = {
                             {plane : new THREE.Vector4( -1, 0, 0, roomWidth / 2 ), damping : 1.0 },
                             ],
             sinkPlanes: [{plane : new THREE.Vector4( 0, 1, 0, y_offset ), damping : 1.0 }],
-            bounceBoxes: bricks,
-            bouncePlatform: platformBox
+            bounceBoxes: bricks.concat(bricks_2),
+            bouncePlatforms: [platformBox, platformBox_2]
         },
     },
 
     // Scene
-    maxParticles :  1,
+    maxParticles :  2,
     particlesFreq : 100,
     createScene : function () {
         var material_red     = new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: 0x222222, side: THREE.DoubleSide } );
         var material_blue     = new THREE.MeshPhongMaterial( {color: 0x77CCFF, emissive: 0x222222, side: THREE.DoubleSide } );
         var material_green     = new THREE.MeshPhongMaterial( {color: 0x00FF00, emissive: 0x222222, side: THREE.DoubleSide } );
         var material_black     = new THREE.MeshPhongMaterial( {color: 0x000000, emissive: 0x222222, side: THREE.DoubleSide } );
-        var material_purple     = new THREE.MeshPhongMaterial( {color: 0xC390D4, emissive: 0x222222, side: THREE.DoubleSide } );
+        var material_purple     = new THREE.MeshPhongMaterial( {color: 0xCC3399, emissive: 0x222222, side: THREE.DoubleSide } );
 
         // Ceiling
         var plane_geo_top = new THREE.PlaneBufferGeometry( roomWidth, roomDepth, 1, 1 );
@@ -444,7 +461,6 @@ SystemSettings.mySystem = {
         // Add bricks
         for (var i = 0; i < bricks.length; i++) {
             var bound = bricks[i].box;
-
             var box_geo   = new THREE.BoxGeometry(bound.xMax - bound.xMin, bound.yMax - bound.yMin, bound.zMax - bound.zMin);
             var box       = new THREE.Mesh( box_geo, material_green );
             box.position.set( (bound.xMin + bound.xMax) / 2, (bound.yMin + bound.yMax) / 2, (bound.zMin + bound.zMax) / 2 );
@@ -453,22 +469,28 @@ SystemSettings.mySystem = {
         }
 
         // Add bricks
-        for (var i = 0; i < bricks.length; i++) {
-            var bound = bricks[i].box;
-
+        for (var i = 0; i < bricks_2.length; i++) {
+            var bound = bricks_2[i].box;
             var box_geo   = new THREE.BoxGeometry(bound.xMax - bound.xMin, bound.yMax - bound.yMin, bound.zMax - bound.zMin);
             var box       = new THREE.Mesh( box_geo, material_purple );
-            box.position.set( (bound.xMin + bound.xMax) / 2, (bound.yMin + bound.yMax) / 2, (bound.zMin + bound.zMax) / 2 - brickDepth - 5);
+            box.position.set( (bound.xMin + bound.xMax) / 2, (bound.yMin + bound.yMax) / 2, (bound.zMin + bound.zMax) / 2 );
             Scene.addObject( box );
-            // bound.mesh = box;
+            bound.mesh = box;
         }
 
-        // Add platform
+        // Add player 1 platform 
         var platform_geo   = new THREE.BoxGeometry(platformWidth, platformHeight, platformDepth);
         var platform       = new THREE.Mesh( platform_geo, material_blue );
-        platform.position.set( platformPosition.x, platformPosition.y, platformPosition.z );
+        platform.position.set( platformPosition.x, platformPosition.y, platformPosition.z + brickDepth / 2 + spacing);
         Scene.addObject( platform );
         platformBox.mesh = platform;
+
+        // Add player 2 platform 
+        var platform_geo_2   = new THREE.BoxGeometry(platformWidth, platformHeight, platformDepth);
+        var platform_2       = new THREE.Mesh( platform_geo_2, material_blue );
+        platform_2.position.set( platformPosition.x, platformPosition.y, platformPosition.z - brickDepth / 2 - spacing);
+        Scene.addObject( platform_2 );
+        platformBox_2.mesh = platform_2;
     },
 
 };

@@ -29,8 +29,7 @@ SphereInitializer.prototype.initializePositions = function ( positions, toSpawn)
     for ( var i = 0 ; i < toSpawn.length ; ++i ) {
         var idx = toSpawn[i];
 
-        var platformPos = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatform.mesh.position;
-
+        var platformPos = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[i].mesh.position;
         var pos = new THREE.Vector3(platformPos.x, platformPos.y + 15, platformPos.z);
         setElement( idx, positions, pos );
 

@@ -83,18 +83,19 @@ window.onload = function() {
     var EPS = 0.5;
 
     window.addEventListener("keydown", function(e) {
-        e.preventDefault();
 
-        var platform = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatform;
-        var pos = platform.mesh.position;
+        var platforms = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms;
+        var boxes = SystemSettings.mySystem.updaterSettings.collidables.bounceBoxes;
         var roomWidth = SystemSettings.mySystem.roomWidth;
+        var spacing = SystemSettings.mySystem.spacing;
         var moveFactor = 50;
 
         // Left arrow
         if (e.keyCode == 37) {
             console.log("left");
+            var platform = platforms[0];
+            var pos = platform.mesh.position;
             var leftDist = platform.xMin + (roomWidth / 2);
-
             var tempMoveFactor = moveFactor;
             // stop at wall
             if (moveFactor > leftDist) {
@@ -107,7 +108,8 @@ window.onload = function() {
             var particleAttributes = emitters[0]._particleAttributes;
             var positions = particleAttributes.position;
             var velocities = particleAttributes.velocity;
-            for (var i = 0; i < positions.length; i++) {
+            console.log(positions.array);
+            for (var i = 1; i < positions.length; i++) {
                 var v = getElement( i, velocities );
                 if (v.length() < EPS) {
                     var ballPos = getElement( i, positions );
@@ -120,6 +122,8 @@ window.onload = function() {
         // Right arrow
         if (e.keyCode == 39) {
             console.log("right");
+            var platform = platforms[0];
+            var pos = platform.mesh.position;
             var rightDist = (roomWidth / 2) - platform.xMax;
             var tempMoveFactor = moveFactor;
             // stop at wall
@@ -133,7 +137,7 @@ window.onload = function() {
             var particleAttributes = emitters[0]._particleAttributes;
             var positions = particleAttributes.position;
             var velocities = particleAttributes.velocity;
-            for (var i = 0; i < positions.length; i++) {
+            for (var i = 1; i < positions.length; i++) {
                 var v = getElement( i, velocities );
                 if (v.length() < EPS) {
                     var ballPos = getElement( i, positions );
@@ -146,60 +150,192 @@ window.onload = function() {
         // Up arrow
         if (e.keyCode == 38) {
             console.log("up");
-            platform.zMin -= moveFactor;
-            platform.zMax -= moveFactor;
-            pos.set(pos.x, pos.y, pos.z - moveFactor);
+            e.preventDefault();
+            var platform = platforms[0];
+            var pos = platform.mesh.position;
+            var box = boxes[boxes.length - 1].box;
 
-            var particleAttributes = emitters[0]._particleAttributes;
-            var positions = particleAttributes.position;
-            var velocities = particleAttributes.velocity;
-            for (var i = 0; i < positions.length; i++) {
-                var v = getElement( i, velocities );
-                if (v.length() < EPS) {
-                    var ballPos = getElement( i, positions );
-                    ballPos.z -= moveFactor;
-                    setElement(i, positions, ballPos)
-                }
-            }
+            platform.zMin -= moveFactor / 2;
+            platform.zMax -= moveFactor / 2;
+            pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
+
+            // var particleAttributes = emitters[0]._particleAttributes;
+            // var positions = particleAttributes.position;
+            // var velocities = particleAttributes.velocity;
+            // for (var i = 1; i < positions.length; i++) {
+            //     var v = getElement( i, velocities );
+            //     if (v.length() < EPS) {
+            //         var ballPos = getElement( i, positions );
+            //         ballPos.z = (box.zMin + box.zMax) / 2;
+            //         setElement(i, positions, ballPos)
+            //     }
+            // }
         }
 
         // Down arrow
         if (e.keyCode == 40) {
             console.log("down");
-            platform.zMin += moveFactor;
-            platform.zMax += moveFactor;
-            pos.set(pos.x, pos.y, pos.z + moveFactor);
+            e.preventDefault();
+            var platform = platforms[0];
+            var pos = platform.mesh.position;
+            var box = boxes[0].box;
 
-            var particleAttributes = emitters[0]._particleAttributes;
-            var positions = particleAttributes.position;
-            var velocities = particleAttributes.velocity;
-            for (var i = 0; i < positions.length; i++) {
-                var v = getElement( i, velocities );
-                if (v.length() < EPS) {
-                    var ballPos = getElement( i, positions );
-                    ballPos.z += moveFactor;
-                    setElement(i, positions, ballPos)
-                }
-            }
+            platform.zMin += moveFactor / 2;
+            platform.zMax += moveFactor / 2;
+            pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
+
+            // var particleAttributes = emitters[0]._particleAttributes;
+            // var positions = particleAttributes.position;
+            // var velocities = particleAttributes.velocity;
+            // for (var i = 1; i < positions.length; i++) {
+            //     var v = getElement( i, velocities );
+            //     if (v.length() < EPS) {
+            //         var ballPos = getElement( i, positions );
+            //         ballPos.z = (box.zMin + box.zMax) / 2;
+            //         setElement(i, positions, ballPos)
+            //     }
+            // }
         }
 
-        // Space bar
-        if (e.keyCode == 32) {
-            console.log("space");
+        // Shift key
+        if (e.keyCode == 16) {
+            console.log("shift");
             var particleAttributes = emitters[0]._particleAttributes;
             var velocities = particleAttributes.velocity;
 
             var rand = (Math.random() - 0.5) * 250;
             var vel = new THREE.Vector3(rand, 500, 0);
 
-            for (var i = 0; i < velocities.length; i++) {
+            for (var i = 1; i < velocities.length; i++) {
                 var v = getElement( i, velocities );
                 console.log(v.length());
                 if (v.length() < EPS) {
                     setElement( i, velocities, vel );
                 }
             }
+        }
 
+        // 'A' key
+        if (e.keyCode == 65) {
+            console.log("A");
+            var platform = platforms[1];
+            var pos = platform.mesh.position;
+            var leftDist = platform.xMin + (roomWidth / 2);
+            var tempMoveFactor = moveFactor;
+            // stop at wall
+            if (moveFactor > leftDist) {
+                tempMoveFactor = leftDist;
+            }
+            platform.xMin -= tempMoveFactor;
+            platform.xMax -= tempMoveFactor;
+            pos.set(pos.x - tempMoveFactor, pos.y, pos.z);
+
+            var particleAttributes = emitters[0]._particleAttributes;
+            var positions = particleAttributes.position;
+            var velocities = particleAttributes.velocity;
+            for (var i = 0; i < 1; i++) {
+                var v = getElement( i, velocities );
+                if (v.length() < EPS) {
+                    var ballPos = getElement( i, positions );
+                    ballPos.x -= tempMoveFactor;
+                    setElement(i, positions, ballPos)
+                }
+            }
+        }
+
+        // 'D' key
+        if (e.keyCode == 68) {
+            console.log("D");
+            var platform = platforms[1];
+            var pos = platform.mesh.position;
+            var rightDist = (roomWidth / 2) - platform.xMax;
+            var tempMoveFactor = moveFactor;
+            // stop at wall
+            if (moveFactor > rightDist) {
+                tempMoveFactor = rightDist;
+            }
+            platform.xMin += tempMoveFactor;
+            platform.xMax += tempMoveFactor;
+            pos.set(pos.x + tempMoveFactor, pos.y, pos.z);
+
+            var particleAttributes = emitters[0]._particleAttributes;
+            var positions = particleAttributes.position;
+            var velocities = particleAttributes.velocity;
+            for (var i = 0; i < 1; i++) {
+                var v = getElement( i, velocities );
+                if (v.length() < EPS) {
+                    var ballPos = getElement( i, positions );
+                    ballPos.x += tempMoveFactor;
+                    setElement(i, positions, ballPos)
+                }
+            }
+        }
+
+        // 'W' key
+        if (e.keyCode == 87) {
+            console.log("W");
+            var platform = platforms[1];
+            var pos = platform.mesh.position;
+            var box = boxes[boxes.length - 1].box;
+
+            platform.zMin -= moveFactor / 2;
+            platform.zMax -= moveFactor / 2;
+            pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
+
+            // var particleAttributes = emitters[0]._particleAttributes;
+            // var positions = particleAttributes.position;
+            // var velocities = particleAttributes.velocity;
+            // for (var i = 0; i < 1; i++) {
+            //     var v = getElement( i, velocities );
+            //     if (v.length() < EPS) {
+            //         var ballPos = getElement( i, positions );
+            //         ballPos.z = (box.zMin + box.zMax) / 2;
+            //         setElement(i, positions, ballPos)
+            //     }
+            // }
+        }
+
+        // 'S' key
+        if (e.keyCode == 83) {
+            console.log("S");
+            var platform = platforms[1];
+            var pos = platform.mesh.position;
+            var box = boxes[0].box;
+
+            platform.zMin += moveFactor / 2;
+            platform.zMax += moveFactor / 2;
+            pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
+
+            // var particleAttributes = emitters[0]._particleAttributes;
+            // var positions = particleAttributes.position;
+            // var velocities = particleAttributes.velocity;
+            // for (var i = 0; i < 1; i++) {
+            //     var v = getElement( i, velocities );
+            //     if (v.length() < EPS) {
+            //         var ballPos = getElement( i, positions );
+            //         ballPos.z = (box.zMin + box.zMax) / 2;
+            //         setElement(i, positions, ballPos)
+            //     }
+            // }
+        }
+
+        // Tab key
+        if (e.keyCode == 9) {
+            console.log("shift");
+            e.preventDefault();
+            var particleAttributes = emitters[0]._particleAttributes;
+            var velocities = particleAttributes.velocity;
+
+            var rand = (Math.random() - 0.5) * 250;
+            var vel = new THREE.Vector3(rand, 500, 0);
+
+            for (var i = 0; i < 1; i++) {
+                var v = getElement( i, velocities );
+                console.log(v.length());
+                if (v.length() < EPS) {
+                    setElement( i, velocities, vel );
+                }
+            }
         }
 
     }, false);

@@ -24,12 +24,13 @@ Scene.create = function () {
 // Lights
 Scene.setupLighting = function() {
     var light = new THREE.AmbientLight( 0x303030 ); // soft white light
-
-    this._light    = new THREE.PointLight( 0xffffff, 2.0, 1000 );
+    this._light    = new THREE.PointLight( 0xffffff, 1.0, 1000 );
     this._light .position.set( 0, 0, 200 );
-
-    // Scene._scene.add( light );
     Scene._scene.add( this._light  );
+
+    this._light2    = new THREE.PointLight( 0xffffff, 1.0, 1000 );
+    this._light2 .position.set( 0, 0, -400 );
+    Scene._scene.add( this._light2  );
 };
 
 // Materials

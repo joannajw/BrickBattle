@@ -443,8 +443,11 @@ EulerUpdater.prototype.collisions = function ( particleAttributes, alive, delta_
         }
     }
 
-    if ( this._opts.collidables.bouncePlatform ) {
-        Collisions.BouncePlatform( particleAttributes, alive, delta_t, this._opts.collidables.bouncePlatform );
+    if ( this._opts.collidables.bouncePlatforms ) {
+        for (var i = 0; i < this._opts.collidables.bouncePlatforms.length ; ++i ) {
+            var platform = this._opts.collidables.bouncePlatforms[i];
+            Collisions.BouncePlatform( particleAttributes, alive, delta_t, platform );
+        }
         // for (var i = 0 ; i < this._opts.collidables.bounceBoxes.length ; ++i ) {
         //     var box = this._opts.collidables.bounceBoxes[i].box;
         //     var damping = this._opts.collidables.bounceBoxes[i].damping;
