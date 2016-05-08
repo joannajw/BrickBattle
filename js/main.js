@@ -83,6 +83,8 @@ window.onload = function() {
     var EPS = 0.5;
 
     window.addEventListener("keydown", function(e) {
+        e.preventDefault();
+
         var platform = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatform;
         var pos = platform.mesh.position;
         var roomWidth = SystemSettings.mySystem.roomWidth;
@@ -175,7 +177,7 @@ window.onload = function() {
                 var v = getElement( i, velocities );
                 if (v.length() < EPS) {
                     var ballPos = getElement( i, positions );
-                    ballPos.x += moveFactor;
+                    ballPos.z += moveFactor;
                     setElement(i, positions, ballPos)
                 }
             }
