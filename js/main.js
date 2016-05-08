@@ -85,6 +85,10 @@ window.onload = function() {
     window.addEventListener("keydown", function(e) {
 
         var platforms = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms;
+        var platform = platforms[0];
+        var platform_2 = platforms[1];
+        var pos = platform.mesh.position;
+        var pos_2 = platform_2.mesh.position;
         var boxes = SystemSettings.mySystem.updaterSettings.collidables.bounceBoxes;
         var roomWidth = SystemSettings.mySystem.roomWidth;
         var spacing = SystemSettings.mySystem.spacing;
@@ -93,8 +97,7 @@ window.onload = function() {
         // Left arrow
         if (e.keyCode == 37) {
             console.log("left");
-            var platform = platforms[0];
-            var pos = platform.mesh.position;
+            e.preventDefault();
             var leftDist = platform.xMin + (roomWidth / 2);
             var tempMoveFactor = moveFactor;
             // stop at wall
@@ -108,7 +111,6 @@ window.onload = function() {
             var particleAttributes = emitters[0]._particleAttributes;
             var positions = particleAttributes.position;
             var velocities = particleAttributes.velocity;
-            console.log(positions.array);
             for (var i = 1; i < positions.length; i++) {
                 var v = getElement( i, velocities );
                 if (v.length() < EPS) {
@@ -122,8 +124,7 @@ window.onload = function() {
         // Right arrow
         if (e.keyCode == 39) {
             console.log("right");
-            var platform = platforms[0];
-            var pos = platform.mesh.position;
+            e.preventDefault();
             var rightDist = (roomWidth / 2) - platform.xMax;
             var tempMoveFactor = moveFactor;
             // stop at wall
@@ -151,8 +152,6 @@ window.onload = function() {
         if (e.keyCode == 38) {
             console.log("up");
             e.preventDefault();
-            var platform = platforms[0];
-            var pos = platform.mesh.position;
             var box = boxes[boxes.length - 1].box;
 
             platform.zMin -= moveFactor / 2;
@@ -176,8 +175,6 @@ window.onload = function() {
         if (e.keyCode == 40) {
             console.log("down");
             e.preventDefault();
-            var platform = platforms[0];
-            var pos = platform.mesh.position;
             var box = boxes[0].box;
 
             platform.zMin += moveFactor / 2;
@@ -200,6 +197,7 @@ window.onload = function() {
         // Shift key
         if (e.keyCode == 16) {
             console.log("shift");
+            e.preventDefault();
             var particleAttributes = emitters[0]._particleAttributes;
             var velocities = particleAttributes.velocity;
 
@@ -218,17 +216,16 @@ window.onload = function() {
         // 'A' key
         if (e.keyCode == 65) {
             console.log("A");
-            var platform = platforms[1];
-            var pos = platform.mesh.position;
-            var leftDist = platform.xMin + (roomWidth / 2);
+            e.preventDefault();
+            var leftDist = platform_2.xMin + (roomWidth / 2);
             var tempMoveFactor = moveFactor;
             // stop at wall
             if (moveFactor > leftDist) {
                 tempMoveFactor = leftDist;
             }
-            platform.xMin -= tempMoveFactor;
-            platform.xMax -= tempMoveFactor;
-            pos.set(pos.x - tempMoveFactor, pos.y, pos.z);
+            platform_2.xMin -= tempMoveFactor;
+            platform_2.xMax -= tempMoveFactor;
+            pos_2.set(pos_2.x - tempMoveFactor, pos_2.y, pos_2.z);
 
             var particleAttributes = emitters[0]._particleAttributes;
             var positions = particleAttributes.position;
@@ -246,17 +243,16 @@ window.onload = function() {
         // 'D' key
         if (e.keyCode == 68) {
             console.log("D");
-            var platform = platforms[1];
-            var pos = platform.mesh.position;
-            var rightDist = (roomWidth / 2) - platform.xMax;
+            e.preventDefault();
+            var rightDist = (roomWidth / 2) - platform_2.xMax;
             var tempMoveFactor = moveFactor;
             // stop at wall
             if (moveFactor > rightDist) {
                 tempMoveFactor = rightDist;
             }
-            platform.xMin += tempMoveFactor;
-            platform.xMax += tempMoveFactor;
-            pos.set(pos.x + tempMoveFactor, pos.y, pos.z);
+            platform_2.xMin += tempMoveFactor;
+            platform_2.xMax += tempMoveFactor;
+            pos_2.set(pos_2.x + tempMoveFactor, pos_2.y, pos_2.z);
 
             var particleAttributes = emitters[0]._particleAttributes;
             var positions = particleAttributes.position;
@@ -274,13 +270,12 @@ window.onload = function() {
         // 'W' key
         if (e.keyCode == 87) {
             console.log("W");
-            var platform = platforms[1];
-            var pos = platform.mesh.position;
+            e.preventDefault();
             var box = boxes[boxes.length - 1].box;
 
-            platform.zMin -= moveFactor / 2;
-            platform.zMax -= moveFactor / 2;
-            pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
+            platform_2.zMin -= moveFactor / 2;
+            platform_2.zMax -= moveFactor / 2;
+            pos_2.set(pos_2.x, pos_2.y, (box.zMin + box.zMax) / 2);
 
             // var particleAttributes = emitters[0]._particleAttributes;
             // var positions = particleAttributes.position;
@@ -298,13 +293,12 @@ window.onload = function() {
         // 'S' key
         if (e.keyCode == 83) {
             console.log("S");
-            var platform = platforms[1];
-            var pos = platform.mesh.position;
+            e.preventDefault();
             var box = boxes[0].box;
 
-            platform.zMin += moveFactor / 2;
-            platform.zMax += moveFactor / 2;
-            pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
+            platform_2.zMin += moveFactor / 2;
+            platform_2.zMax += moveFactor / 2;
+            pos_2.set(pos_2.x, pos_2.y, (box.zMin + box.zMax) / 2);
 
             // var particleAttributes = emitters[0]._particleAttributes;
             // var positions = particleAttributes.position;
