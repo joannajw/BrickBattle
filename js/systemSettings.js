@@ -313,7 +313,7 @@ SystemSettings.cloth = {
 ////////////////////////////////////////////////////////////////////////////////
 
 var roomHeight = 600;
-var roomWidth = 400;
+var roomWidth = 600;
 var roomDepth = 600;
 var y_offset = -roomHeight / 2;
 
@@ -343,7 +343,7 @@ for (var j = 0; j < numRows; j++) {
     }
 }
 
-var platformWidth = brickWidth * 1.5;
+var platformWidth = brickWidth * 1.2;
 var platformHeight = 10;
 var platformDepth = brickDepth;
 var platformPosition = new THREE.Vector3(0, -roomHeight / 2 + 20, 0);
@@ -360,7 +360,7 @@ var platformBox = { xMin: platformPosition.x - platformWidth / 2,
 SystemSettings.mySystem = {
     // Particle material
     particleMaterial :  SystemSettings.standardMaterial,
-
+    roomWidth : roomWidth,
     // // Initialization
     // initializerFunction : FountainInitializer,
     // initializerSettings : {

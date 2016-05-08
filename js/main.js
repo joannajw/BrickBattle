@@ -92,6 +92,7 @@ window.onload = function() {
         if (e.keyCode == 37) {
             console.log("left");
             var leftDist = platform.xMin + (roomWidth / 2);
+
             var tempMoveFactor = moveFactor;
             // stop at wall
             if (moveFactor > leftDist) {
