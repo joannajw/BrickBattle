@@ -480,14 +480,14 @@ SystemSettings.mySystem = {
 
         // Add player 1 platform 
         var platform_geo   = new THREE.BoxGeometry(platformWidth, platformHeight, platformDepth);
-        var platform       = new THREE.Mesh( platform_geo, material_blue );
+        var platform       = new THREE.Mesh( platform_geo, material_green );
         platform.position.set( platformPosition.x, platformPosition.y, platformPosition.z + brickDepth / 2 + spacing);
         Scene.addObject( platform );
         platformBox.mesh = platform;
 
         // Add player 2 platform 
         var platform_geo_2   = new THREE.BoxGeometry(platformWidth, platformHeight, platformDepth);
-        var platform_2       = new THREE.Mesh( platform_geo_2, material_blue );
+        var platform_2       = new THREE.Mesh( platform_geo_2, material_purple );
         platform_2.position.set( platformPosition.x, platformPosition.y, platformPosition.z - brickDepth / 2 - spacing);
         Scene.addObject( platform_2 );
         platformBox_2.mesh = platform_2;
