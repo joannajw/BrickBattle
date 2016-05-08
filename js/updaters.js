@@ -187,18 +187,21 @@ Collisions.BouncePlane = function ( particleAttributes, alive, delta_t, plane, d
 Collisions.SinkPlane = function ( particleAttributes, alive, delta_t, plane  ) {
     var positions    = particleAttributes.position;
     var velocities   = particleAttributes.velocity;
+    var players      = particleAttributes.player;
 
     for ( var i = 0 ; i < alive.length ; ++i ) {
 
         if ( !alive[i] ) continue;
         var pos = getElement( i, positions );
         var vel = getElement( i, velocities );
+        var player = getElement( i, players );
 
         var new_pos = intersectPlane(pos, vel, plane, delta_t);
         // collide with plane, bounce off
         if (new_pos != undefined) {
-            var platformPos = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].mesh.position;
-            if (pos.z != platformPos.z) {
+            var platform = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0];
+            var platformPos = platform.mesh.position;
+            if (player != platform.player) {
                 platformPos = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].mesh.position;
             }
             pos = new THREE.Vector3(platformPos.x, platformPos.y + 15, pos.z);
