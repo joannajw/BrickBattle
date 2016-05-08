@@ -197,7 +197,6 @@ window.onload = function() {
                     continue;
                 }
                 var v = getElement( i, velocities );
-                console.log(v.length());
                 if (v.length() < EPS) {
                     setElement( i, velocities, vel );
                 }
@@ -306,7 +305,6 @@ window.onload = function() {
                     continue;
                 }
                 var v = getElement( i, velocities );
-                console.log(v.length());
                 if (v.length() < EPS) {
                     setElement( i, velocities, vel );
                 }

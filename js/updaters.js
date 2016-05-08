@@ -15,11 +15,11 @@ Collisions.BouncePlatform = function(particleAttributes, alive, delta_t, platfor
     var positions    = particleAttributes.position;
     var velocities   = particleAttributes.velocity;
 
-    var normal_xy_min = new THREE.Vector3(0, 0, -1);
-    var normal_xy_max = new THREE.Vector3(0, 0, 1);
+    // var normal_xy_min = new THREE.Vector3(0, 0, -1);
+    // var normal_xy_max = new THREE.Vector3(0, 0, 1);
 
-    var normal_yz_min = new THREE.Vector3(-1, 0, 0);
-    var normal_yz_max = new THREE.Vector3(1, 0, 0);
+    // var normal_yz_min = new THREE.Vector3(-1, 0, 0);
+    // var normal_yz_max = new THREE.Vector3(1, 0, 0);
 
     var normal_xz_min = new THREE.Vector3(0, -1, 0);
     var normal_xz_max = new THREE.Vector3(0, 1, 0);
@@ -79,8 +79,8 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
     var positions    = particleAttributes.position;
     var velocities   = particleAttributes.velocity;
 
-    var normal_xy_min = new THREE.Vector3(0, 0, -1);
-    var normal_xy_max = new THREE.Vector3(0, 0, 1);
+    // var normal_xy_min = new THREE.Vector3(0, 0, -1);
+    // var normal_xy_max = new THREE.Vector3(0, 0, 1);
 
     var normal_yz_min = new THREE.Vector3(-1, 0, 0);
     var normal_yz_max = new THREE.Vector3(1, 0, 0);
@@ -97,47 +97,107 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
         var pos = getElement( i, positions );
         var vel = getElement( i, velocities );
 
-        if (pos.x >= box.xMin && pos.x <= box.xMax && pos.y >= box.yMin && pos.y <= box.yMax && pos.z >= box.zMin && pos.z <= box.zMax) {
-
-            var closestPlaneNormal;
-            var closestDistance = Number.POSITIVE_INFINITY;
-
-            if (Math.abs(pos.x - box.xMin) < closestDistance) {
-                closestPlaneNormal = normal_yz_min.clone();
-                closestDistance = Math.abs(pos.x - box.xMin);
+        var newPos = pos.clone().add(vel.clone().multiplyScalar(delta_t));
+        var closestNormal = undefined;
+        var closestDist = Number.POSITIVE_INFINITY;
+        // top of box
+        if (vel.dot(normal_xz_max) < 0) {
+            if ((newPos.x >= box.xMin && newPos.x <= box.xMax && newPos.z >= box.zMin && newPos.z <= box.zMax) ||
+                (pos.x >= box.xMin && pos.x <= box.xMax && pos.z >= box.zMin && pos.z <= box.zMax)) {
+                var dist = Math.abs(box.yMax - pos.y);
+                var len = Math.abs(newPos.y - pos.y);
+                if (len > dist && dist < closestDist) {
+                    closestNormal = normal_xz_max
+                    closestDist = dist;
+                }
             }
-
-            if (Math.abs(pos.x - box.xMax) < closestDistance) {
-                closestPlaneNormal = normal_yz_max.clone();
-                closestDistance = Math.abs(pos.x - box.xMax);
+        }
+        // bottom of box
+        if (vel.dot(normal_xz_min) < 0) {
+            if ((newPos.x >= box.xMin && newPos.x <= box.xMax && newPos.z >= box.zMin && newPos.z <= box.zMax) ||
+                (pos.x >= box.xMin && pos.x <= box.xMax && pos.z >= box.zMin && pos.z <= box.zMax)) {
+                var dist = Math.abs(box.yMin - pos.y);
+                var len = Math.abs(newPos.y - pos.y);
+                if (len > dist && dist < closestDist) {
+                    closestNormal = normal_xz_min
+                    closestDist = dist;
+                }
             }
-
-            if (Math.abs(pos.y - box.yMin) < closestDistance) {
-                closestPlaneNormal = normal_xz_min.clone();
-                closestDistance = Math.abs(pos.y - box.yMin);
+        }
+        // right side of box
+        if (vel.dot(normal_yz_max) < 0) {
+            if ((newPos.y >= box.yMin && newPos.y <= box.yMax && newPos.z >= box.zMin && newPos.z <= box.zMax) ||
+                (pos.y >= box.yMin && pos.y <= box.yMax && pos.z >= box.zMin && pos.z <= box.zMax)) {
+                var dist = Math.abs(box.xMax - pos.x);
+                var len = Math.abs(newPos.x - pos.x);
+                if (len > dist && dist < closestDist) {
+                    closestNormal = normal_yz_max
+                    closestDist = dist;
+                }
             }
-
-            if (Math.abs(pos.y - box.yMin) < closestDistance) {
-                closestPlaneNormal = normal_xz_max.clone();
-                closestDistance = Math.abs(pos.y - box.yMin);
+        }
+        // left side of box
+        if (vel.dot(normal_yz_min) < 0) {
+            if ((newPos.y >= box.yMin && newPos.y <= box.yMax && newPos.z >= box.zMin && newPos.z <= box.zMax) ||
+                (pos.y >= box.yMin && pos.y <= box.yMax && pos.z >= box.zMin && pos.z <= box.zMax)) {
+                var dist = Math.abs(box.xMin - pos.x);
+                var len = Math.abs(newPos.x - pos.x);
+                if (len > dist && dist < closestDist) {
+                    closestNormal = normal_yz_min
+                    closestDist = dist;
+                }
             }
-
-            if (Math.abs(pos.z - box.zMin) < closestDistance) {
-                closestPlaneNormal = normal_xy_min.clone();
-                closestDistance = Math.abs(pos.z - box.zMin);
-            }
-
-            if (Math.abs(pos.z - box.zMin) < closestDistance) {
-                closestPlaneNormal = normal_xy_max.clone();
-                closestDistance = Math.abs(pos.z - box.zMin);
-            }
-
-            vel.reflect(closestPlaneNormal.clone()).multiplyScalar(damping);
+        }
+        // reflect if intersection, remove box
+        if (closestNormal != undefined) {
+            vel.reflect(closestNormal);
             pos = pos.clone().sub(vel.clone().multiplyScalar(delta_t));
-            // pos.add(closestPlaneNormal.clone().multiplyScalar(closestPlaneNormal.clone().dot(pos)));
             box.alive = false;
             Scene.removeObject(box.mesh);
         }
+
+
+        // if (pos.x >= box.xMin && pos.x <= box.xMax && pos.y >= box.yMin && pos.y <= box.yMax && pos.z >= box.zMin && pos.z <= box.zMax) {
+
+        //     var closestPlaneNormal;
+        //     var closestDistance = Number.POSITIVE_INFINITY;
+
+        //     if (Math.abs(pos.x - box.xMin) < closestDistance) {
+        //         closestPlaneNormal = normal_yz_min.clone();
+        //         closestDistance = Math.abs(pos.x - box.xMin);
+        //     }
+
+        //     if (Math.abs(pos.x - box.xMax) < closestDistance) {
+        //         closestPlaneNormal = normal_yz_max.clone();
+        //         closestDistance = Math.abs(pos.x - box.xMax);
+        //     }
+
+        //     if (Math.abs(pos.y - box.yMin) < closestDistance) {
+        //         closestPlaneNormal = normal_xz_min.clone();
+        //         closestDistance = Math.abs(pos.y - box.yMin);
+        //     }
+
+        //     if (Math.abs(pos.y - box.yMin) < closestDistance) {
+        //         closestPlaneNormal = normal_xz_max.clone();
+        //         closestDistance = Math.abs(pos.y - box.yMin);
+        //     }
+
+        //     // if (Math.abs(pos.z - box.zMin) < closestDistance) {
+        //     //     closestPlaneNormal = normal_xy_min.clone();
+        //     //     closestDistance = Math.abs(pos.z - box.zMin);
+        //     // }
+
+        //     // if (Math.abs(pos.z - box.zMin) < closestDistance) {
+        //     //     closestPlaneNormal = normal_xy_max.clone();
+        //     //     closestDistance = Math.abs(pos.z - box.zMin);
+        //     // }
+
+        //     vel.reflect(closestPlaneNormal.clone()).multiplyScalar(damping);
+        //     pos = pos.clone().sub(vel.clone().multiplyScalar(delta_t));
+        //     // pos.add(closestPlaneNormal.clone().multiplyScalar(closestPlaneNormal.clone().dot(pos)));
+        //     box.alive = false;
+        //     Scene.removeObject(box.mesh);
+        // }
 
         setElement( i, positions, pos );
         setElement( i, velocities, vel );
@@ -396,7 +456,7 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
         if ( lifetime < 0 ) {
             killPartilce( i, particleAttributes, alive );
         } else {
-            setElement( i, lifetimes, lifetime - delta_t );
+            // setElement( i, lifetimes, lifetime - delta_t );
         }
     }
 
