@@ -77,7 +77,10 @@ window.onload = function() {
     for ( var i = 0 ; i < emitters.length ; i++ ) {
         emitters[i]._material.uniforms.texture.value = new THREE.ImageUtils.loadTexture( 'images/base.png' );
         emitters[i]._material.needsUpdate  = true;
+        // console.log(emitters[i].getDrawableParticles());
     }
+
+    var EPS = 0.5;
 
     window.addEventListener("keydown", function(e) {
         var platform = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatform;
@@ -86,36 +89,100 @@ window.onload = function() {
 
         // Left arrow
         if (e.keyCode == 37) {
-            console.log("left");
-            // console.log(platform.box.mesh.position);
+            // console.log("left");
             platform.xMin -= moveFactor;
             platform.xMax -= moveFactor;
             pos.set(pos.x - moveFactor, pos.y, pos.z);
+
+            var particleAttributes = emitters[0]._particleAttributes;
+            var positions = particleAttributes.position;
+            var velocities = particleAttributes.velocity;
+            for (var i = 0; i < positions.length; i++) {
+                var v = getElement( i, velocities );
+                if (v.length() < EPS) {
+                    var ballPos = getElement( i, positions );
+                    ballPos.x -= moveFactor;
+                    setElement(i, positions, ballPos)
+                }
+            }
         }
 
         // Right arrow
         if (e.keyCode == 39) {
-            console.log("right");
+            // console.log("right");
             platform.xMin += moveFactor;
             platform.xMax += moveFactor;
             pos.set(pos.x + moveFactor, pos.y, pos.z);
+
+            var particleAttributes = emitters[0]._particleAttributes;
+            var positions = particleAttributes.position;
+            var velocities = particleAttributes.velocity;
+            for (var i = 0; i < positions.length; i++) {
+                var v = getElement( i, velocities );
+                if (v.length() < EPS) {
+                    var ballPos = getElement( i, positions );
+                    ballPos.x += moveFactor;
+                    setElement(i, positions, ballPos)
+                }
+            }
         }
 
         // Up arrow
         if (e.keyCode == 38) {
             console.log("up");
+            platform.zMin -= moveFactor;
+            platform.zMax -= moveFactor;
+            pos.set(pos.x, pos.y, pos.z - moveFactor);
 
+            var particleAttributes = emitters[0]._particleAttributes;
+            var positions = particleAttributes.position;
+            var velocities = particleAttributes.velocity;
+            for (var i = 0; i < positions.length; i++) {
+                var v = getElement( i, velocities );
+                if (v.length() < EPS) {
+                    var ballPos = getElement( i, positions );
+                    ballPos.z -= moveFactor;
+                    setElement(i, positions, ballPos)
+                }
+            }
         }
 
         // Down arrow
         if (e.keyCode == 40) {
             console.log("down");
+            platform.zMin += moveFactor;
+            platform.zMax += moveFactor;
+            pos.set(pos.x, pos.y, pos.z + moveFactor);
 
+            var particleAttributes = emitters[0]._particleAttributes;
+            var positions = particleAttributes.position;
+            var velocities = particleAttributes.velocity;
+            for (var i = 0; i < positions.length; i++) {
+                var v = getElement( i, velocities );
+                if (v.length() < EPS) {
+                    var ballPos = getElement( i, positions );
+                    ballPos.x += moveFactor;
+                    setElement(i, positions, ballPos)
+                }
+            }
         }
 
         // Space bar
         if (e.keyCode == 32) {
             console.log("space");
+            var particleAttributes = emitters[0]._particleAttributes;
+            var velocities = particleAttributes.velocity;
+
+            var rand = (Math.random() - 0.5) * 250;
+            var vel = new THREE.Vector3(rand, 500, 0);
+
+            for (var i = 0; i < velocities.length; i++) {
+                var v = getElement( i, velocities );
+                console.log(v.length());
+                if (v.length() < EPS) {
+                    setElement( i, velocities, vel );
+                }
+            }
 
         }
 

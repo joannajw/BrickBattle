@@ -28,20 +28,10 @@ SphereInitializer.prototype.initializePositions = function ( positions, toSpawn)
 
     for ( var i = 0 ; i < toSpawn.length ; ++i ) {
         var idx = toSpawn[i];
-        // ----------- STUDENT CODE BEGIN ------------
 
-        // Generate random position on surface of sphere
-        // var z = Math.random() * (2 * r) - r;
-        // var phi = Math.random() * 2 * Math.PI;
-        // var d = Math.sqrt(r * r - z * z);
-        // var px = base.x + d * Math.cos(phi);
-        // var py = base.y + d * Math.sin(phi);
-        // var pz = base.z + z;
+        var platformPos = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatform.mesh.position;
 
-        // var pos = new THREE.Vector3(px, py, pz);
-
-        // var pos = new THREE.Vector3(px, py, 0);
-        var pos = new THREE.Vector3(0, -265, 0);
+        var pos = new THREE.Vector3(platformPos.x, platformPos.y + 15, platformPos.z);
         setElement( idx, positions, pos );
 
     }
@@ -58,9 +48,10 @@ SphereInitializer.prototype.initializeVelocities = function ( velocities, positi
         // var vel = pos.clone().multiplyScalar(200.0);
         // vel.z = 0;
 
-        var rand = (Math.random() - 0.5) * 250;
-        var vel = new THREE.Vector3(rand, 500, 0);
-        // var vel = new THREE.Vector3(0, 0, 0);
+        // var rand = (Math.random() - 0.5) * 250;
+        // var vel = new THREE.Vector3(rand, 500, 0);
+
+        var vel = new THREE.Vector3(0, 0, 0);
 
         // ----------- STUDENT CODE END ------------
         setElement( idx, velocities, vel );

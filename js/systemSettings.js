@@ -313,11 +313,11 @@ SystemSettings.cloth = {
 ////////////////////////////////////////////////////////////////////////////////
 
 var roomHeight = 600;
-var roomWidth = 1000;
+var roomWidth = 400;
 var roomDepth = 600;
 var y_offset = -roomHeight / 2;
 
-var numCols = 10;
+var numCols = 5;
 var numRows = 5;
 var brickHeight = 25;
 var brickDepth = 20;
@@ -409,6 +409,7 @@ SystemSettings.mySystem = {
         var material_blue     = new THREE.MeshPhongMaterial( {color: 0x77CCFF, emissive: 0x222222, side: THREE.DoubleSide } );
         var material_green     = new THREE.MeshPhongMaterial( {color: 0x00FF00, emissive: 0x222222, side: THREE.DoubleSide } );
         var material_black     = new THREE.MeshPhongMaterial( {color: 0x000000, emissive: 0x222222, side: THREE.DoubleSide } );
+        var material_purple     = new THREE.MeshPhongMaterial( {color: 0xC390D4, emissive: 0x222222, side: THREE.DoubleSide } );
 
         // Ceiling
         var plane_geo_top = new THREE.PlaneBufferGeometry( roomWidth, roomDepth, 1, 1 );
@@ -449,6 +450,17 @@ SystemSettings.mySystem = {
             box.position.set( (bound.xMin + bound.xMax) / 2, (bound.yMin + bound.yMax) / 2, (bound.zMin + bound.zMax) / 2 );
             Scene.addObject( box );
             bound.mesh = box;
+        }
+
+        // Add bricks
+        for (var i = 0; i < bricks.length; i++) {
+            var bound = bricks[i].box;
+
+            var box_geo   = new THREE.BoxGeometry(bound.xMax - bound.xMin, bound.yMax - bound.yMin, bound.zMax - bound.zMin);
+            var box       = new THREE.Mesh( box_geo, material_purple );
+            box.position.set( (bound.xMin + bound.xMax) / 2, (bound.yMin + bound.yMax) / 2, (bound.zMin + bound.zMax) / 2 - brickDepth - 5);
+            Scene.addObject( box );
+            // bound.mesh = box;
         }
 
         // Add platform
