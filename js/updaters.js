@@ -78,6 +78,7 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
 
     var positions    = particleAttributes.position;
     var velocities   = particleAttributes.velocity;
+    var players      = particleAttributes.player;
 
     // var normal_xy_min = new THREE.Vector3(0, 0, -1);
     // var normal_xy_max = new THREE.Vector3(0, 0, 1);
@@ -96,6 +97,7 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
         // ----------- STUDENT CODE BEGIN ------------
         var pos = getElement( i, positions );
         var vel = getElement( i, velocities );
+        var player = getElement( i, players );
 
         var newPos = pos.clone().add(vel.clone().multiplyScalar(delta_t));
         var closestNormal = undefined;
@@ -154,6 +156,15 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
             pos = pos.clone().sub(vel.clone().multiplyScalar(delta_t));
             box.alive = false;
             Scene.removeObject(box.mesh);
+            // add score
+            if (player == 1) {
+                var score = parseInt(document.getElementById("score").innerHTML);
+                document.getElementById("score").innerHTML = score + SystemSettings.mySystem.baseScore;
+            }
+            else if (player == 2) {
+                var score = parseInt(document.getElementById("score_2").innerHTML);
+                document.getElementById("score_2").innerHTML = score + SystemSettings.mySystem.baseScore;
+            }
         }
 
 

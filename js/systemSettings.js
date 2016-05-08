@@ -379,6 +379,7 @@ SystemSettings.mySystem = {
     // Particle material
     particleMaterial :  SystemSettings.standardMaterial,
     roomWidth : roomWidth,
+    baseScore : 100,
     // // Initialization
     // initializerFunction : FountainInitializer,
     // initializerSettings : {
