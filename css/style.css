@@ -59,7 +59,7 @@ img {
     font-weight:bold;
     font-color:#ddd;
 }
-#alert_div {
+#overlay_div {
     position:absolute;
     top:  50px;
     left: 50px;
@@ -70,7 +70,7 @@ img {
     text-align: center;
     align: center;
     font-color:#ddd;
-    background-color:#422;
+    background-color:#abcdef;
     border:1px solid #333;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;

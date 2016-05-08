@@ -35,16 +35,16 @@ Gui.defaults = { };
 Gui.alertOnce = function( msg ) {
     var mainDiv = document.getElementById('main_div');
     mainDiv.style.opacity = "0.3";
-    var alertDiv = document.getElementById('alert_div');
-    alertDiv.innerHTML = '<p>'+msg + '</p><button id="ok" onclick="Gui.closeAlert()">ok</button>';
-    alertDiv.style.display = 'inline';
+    var overlayDiv = document.getElementById('overlay_div');
+    overlayDiv.innerHTML = '<p>'+msg + '</p><button id="ok" onclick="Gui.closeAlert()">ok</button>';
+    overlayDiv.style.display = 'inline';
 };
 
 Gui.closeAlert = function () {
     var mainDiv = document.getElementById('main_div');
     mainDiv.style.opacity = "1";
-    var alertDiv = document.getElementById('alert_div');
-    alertDiv.style.display = 'none';
+    var overlayDiv = document.getElementById('overlay_div');
+    overlayDiv.style.display = 'none';
 };
 
 Gui.toCommandString = function () {
@@ -152,20 +152,19 @@ Gui.init = function ( meshChangeCallback, controlsChangeCallback, displayChangeC
     // } );
 };
 
-
 // non-implemented alert functionality
-Gui.alertOnce = function( msg ) {
+Gui.alertGameOver = function( msg ) {
     var mainDiv = document.getElementById('main_div');
     mainDiv.style.opacity = "0.3";
-    var alertDiv = document.getElementById('alert_div');
-    alertDiv.innerHTML = '<p>'+ msg + '</p><button id="ok" onclick="Gui.closeAlert()">ok</button>';
-    alertDiv.style.display = 'inline';
+    var overlayDiv = document.getElementById('overlay_div');
+    overlayDiv.innerHTML = '<p>'+ msg + '</p><button id="ok" onclick="Gui.closeAlert()">play again</button>';
+    overlayDiv.style.display = 'inline';
 };
 
 Gui.closeAlert = function () {
     var mainDiv = document.getElementById('main_div');
     mainDiv.style.opacity = "1";
-    var alertDiv = document.getElementById('alert_div');
-    alertDiv.style.display = 'none';
+    var overlayDiv = document.getElementById('overlay_div');
+    overlayDiv.style.display = 'none';
 };
 

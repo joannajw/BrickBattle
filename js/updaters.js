@@ -198,6 +198,9 @@ Collisions.SinkPlane = function ( particleAttributes, alive, delta_t, plane  ) {
         // collide with plane, bounce off
         if (new_pos != undefined) {
             killPartilce(i, particleAttributes, alive);
+
+            Gui.alertGameOver("GAME OVER");
+
         }
 
         setElement( i, positions, pos );
