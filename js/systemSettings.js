@@ -379,7 +379,6 @@ SystemSettings.mySystem = {
     // Particle material
     particleMaterial :  SystemSettings.standardMaterial,
     roomWidth : roomWidth,
-    spacing : spacing,
     // // Initialization
     // initializerFunction : FountainInitializer,
     // initializerSettings : {
@@ -493,6 +492,12 @@ SystemSettings.mySystem = {
         platform_2.position.set( platformPosition.x, platformPosition.y, platformPosition.z - brickDepth / 2 - spacing);
         Scene.addObject( platform_2 );
         platformBox_2.mesh = platform_2;
+
+        // Add center line
+        var center_line_geo = new THREE.BoxGeometry(roomWidth, spacing, spacing);
+        var center_line     = new THREE.Mesh(center_line_geo, material_blue);
+        center_line.position.set(0, platformPosition.y, 0);
+        Scene.addObject(center_line);
     },
 
 };
