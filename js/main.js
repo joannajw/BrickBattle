@@ -82,23 +82,35 @@ window.onload = function() {
     window.addEventListener("keydown", function(e) {
         var platform = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatform;
         var pos = platform.mesh.position;
+        var roomWidth = SystemSettings.mySystem.roomWidth;
         var moveFactor = 50;
 
         // Left arrow
         if (e.keyCode == 37) {
             console.log("left");
-            // console.log(platform.box.mesh.position);
-            platform.xMin -= moveFactor;
-            platform.xMax -= moveFactor;
-            pos.set(pos.x - moveFactor, pos.y, pos.z);
+            var leftDist = platform.xMin + (roomWidth / 2);
+            var tempMoveFactor = moveFactor;
+            // stop at wall
+            if (moveFactor > leftDist) {
+                tempMoveFactor = leftDist;
+            }
+            platform.xMin -= tempMoveFactor;
+            platform.xMax -= tempMoveFactor;
+            pos.set(pos.x - tempMoveFactor, pos.y, pos.z);
         }
 
         // Right arrow
         if (e.keyCode == 39) {
             console.log("right");
-            platform.xMin += moveFactor;
-            platform.xMax += moveFactor;
-            pos.set(pos.x + moveFactor, pos.y, pos.z);
+            var rightDist = (roomWidth / 2) - platform.xMax;
+            var tempMoveFactor = moveFactor;
+            // stop at wall
+            if (moveFactor > rightDist) {
+                tempMoveFactor = rightDist;
+            }
+            platform.xMin += tempMoveFactor;
+            platform.xMax += tempMoveFactor;
+            pos.set(pos.x + tempMoveFactor, pos.y, pos.z);
         }
 
         // Up arrow
