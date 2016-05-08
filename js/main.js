@@ -85,14 +85,21 @@ window.onload = function() {
     window.addEventListener("keydown", function(e) {
         var platform = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatform;
         var pos = platform.mesh.position;
+        var roomWidth = SystemSettings.mySystem.roomWidth;
         var moveFactor = 50;
 
         // Left arrow
         if (e.keyCode == 37) {
-            // console.log("left");
-            platform.xMin -= moveFactor;
-            platform.xMax -= moveFactor;
-            pos.set(pos.x - moveFactor, pos.y, pos.z);
+            console.log("left");
+            var leftDist = platform.xMin + (roomWidth / 2);
+            var tempMoveFactor = moveFactor;
+            // stop at wall
+            if (moveFactor > leftDist) {
+                tempMoveFactor = leftDist;
+            }
+            platform.xMin -= tempMoveFactor;
+            platform.xMax -= tempMoveFactor;
+            pos.set(pos.x - tempMoveFactor, pos.y, pos.z);
 
             var particleAttributes = emitters[0]._particleAttributes;
             var positions = particleAttributes.position;
@@ -101,7 +108,7 @@ window.onload = function() {
                 var v = getElement( i, velocities );
                 if (v.length() < EPS) {
                     var ballPos = getElement( i, positions );
-                    ballPos.x -= moveFactor;
+                    ballPos.x -= tempMoveFactor;
                     setElement(i, positions, ballPos)
                 }
             }
@@ -109,10 +116,16 @@ window.onload = function() {
 
         // Right arrow
         if (e.keyCode == 39) {
-            // console.log("right");
-            platform.xMin += moveFactor;
-            platform.xMax += moveFactor;
-            pos.set(pos.x + moveFactor, pos.y, pos.z);
+            console.log("right");
+            var rightDist = (roomWidth / 2) - platform.xMax;
+            var tempMoveFactor = moveFactor;
+            // stop at wall
+            if (moveFactor > rightDist) {
+                tempMoveFactor = rightDist;
+            }
+            platform.xMin += tempMoveFactor;
+            platform.xMax += tempMoveFactor;
+            pos.set(pos.x + tempMoveFactor, pos.y, pos.z);
 
             var particleAttributes = emitters[0]._particleAttributes;
             var positions = particleAttributes.position;
@@ -121,7 +134,7 @@ window.onload = function() {
                 var v = getElement( i, velocities );
                 if (v.length() < EPS) {
                     var ballPos = getElement( i, positions );
-                    ballPos.x += moveFactor;
+                    ballPos.x += tempMoveFactor;
                     setElement(i, positions, ballPos)
                 }
             }

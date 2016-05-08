@@ -34,7 +34,8 @@ Collisions.BouncePlatform = function(particleAttributes, alive, delta_t, platfor
         var newPos = pos.clone().add(vel.clone().multiplyScalar(delta_t));
 
         if (vel.dot(normal_xz_max) < 0) {
-            if (newPos.x >= platform.xMin && newPos.x <= platform.xMax && newPos.z >= platform.zMin && newPos.z <= platform.zMax) {
+            if ((newPos.x >= platform.xMin && newPos.x <= platform.xMax && newPos.z >= platform.zMin && newPos.z <= platform.zMax) ||
+                (pos.x >= platform.xMin && pos.x <= platform.xMax && pos.z >= platform.zMin && pos.z <= platform.zMax)) {
                 var dist = Math.abs(platform.yMax - pos.y);
                 var len = Math.abs(newPos.y - pos.y);
                 if (len > dist) {
