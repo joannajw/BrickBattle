@@ -186,9 +186,9 @@ window.onload = function() {
             var box = boxes[boxes.length - 1].box;
 
             // only move across plane if don't collide with other platform
-            if (platform.xMin > platform_2.xMax || platform.xMax < platform_2.xMin) {
-                platform.zMin -= moveFactor / 2;
-                platform.zMax -= moveFactor / 2;
+            if (platform.xMin >= platform_2.xMax || platform.xMax <= platform_2.xMin) {
+                platform.zMin = box.zMin;
+                platform.zMax = box.zMax;
                 pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
             }
         }
@@ -200,9 +200,9 @@ window.onload = function() {
             var box = boxes[0].box;
 
             // only move across plane if don't collide with other platform
-            if (platform.xMin > platform_2.xMax || platform.xMax < platform_2.xMin) {
-                platform.zMin += moveFactor / 2;
-                platform.zMax += moveFactor / 2;
+            if (platform.xMin >= platform_2.xMax || platform.xMax <= platform_2.xMin) {
+                platform.zMin = box.zMin;
+                platform.zMax = box.zMax;
                 pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
             }
         }
@@ -315,9 +315,9 @@ window.onload = function() {
             var box = boxes[0].box;
 
             // only move across plane if don't collide with other platform
-            if (platform_2.xMin > platform.xMax || platform_2.xMax < platform.xMin) {
-                platform_2.zMin += moveFactor / 2;
-                platform_2.zMax += moveFactor / 2;
+            if (platform_2.xMin >= platform.xMax || platform_2.xMax <= platform.xMin) {
+                platform_2.zMin = box.zMin;
+                platform_2.zMax = box.zMax;
                 pos_2.set(pos_2.x, pos_2.y, (box.zMin + box.zMax) / 2);
             }
         }
@@ -329,9 +329,9 @@ window.onload = function() {
             var box = boxes[boxes.length - 1].box;
 
             // only move across plane if don't collide with other platform
-            if (platform_2.xMin > platform.xMax || platform_2.xMax < platform.xMin) {
-                platform_2.zMin -= moveFactor / 2;
-                platform_2.zMax -= moveFactor / 2;
+            if (platform_2.xMin >= platform.xMax || platform_2.xMax <= platform.xMin) {
+                platform_2.zMin = box.zMin;
+                platform_2.zMax = box.zMax;
                 pos_2.set(pos_2.x, pos_2.y, (box.zMin + box.zMax) / 2);
             }
         }
