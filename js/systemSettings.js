@@ -313,7 +313,7 @@ SystemSettings.cloth = {
 ////////////////////////////////////////////////////////////////////////////////
 
 var roomHeight = 600;
-var roomWidth = 400;
+var roomWidth = 1000;
 var roomDepth = 600;
 var y_offset = -roomHeight / 2;
 
@@ -382,8 +382,8 @@ SystemSettings.mySystem = {
     roomWidth : roomWidth,
     baseScore : 100,
     basePenalty : 500,
-    gameLifetime : 5,
-    currLifetime : 5,
+    gameLifetime : 120,
+    currLifetime : 120,
     isPlayGame : true,
     platformsStartPos : [platformPosition, platformPosition_2],
     // // Initialization

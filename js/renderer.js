@@ -7,7 +7,6 @@ var Renderer = Renderer || {
     _renderer   : undefined,
     _controls   : undefined,
     _camera     : undefined,
-    _stats      : undefined,
     _scene      : undefined,
     _raycaster  : undefined,
     _width      : undefined,
@@ -38,6 +37,7 @@ Renderer.create = function( scene, canvas ) {
     Renderer._renderer.setPixelRatio( window.devicePixelRatio );
     Renderer._renderer.setSize( Renderer._width, Renderer._height );
     Renderer._renderer.setClearColor( 0x444444 );//c5e1d7
+    // Renderer._renderer.autoClear = false;
 
     // Renderer._renderer.autoClear = false;
     window.addEventListener( "resize",    Renderer.onWindowResize, false );
@@ -48,17 +48,14 @@ Renderer.create = function( scene, canvas ) {
 
     // Create camera and setup controls
     Renderer._camera   = new THREE.PerspectiveCamera ( 55, Renderer._aspect, 0.01, 5000 );
-    Renderer._controls = new THREE.TrackballControls ( Renderer._camera, Renderer._renderer.domElement );
     Renderer._camera.position.set( 0, 0, 1000 );
 
+    Renderer._camera2   = new THREE.PerspectiveCamera ( 55, Renderer._aspect, 0.01, 5000 );
+    Renderer._camera2.position.set( 0, 0, -1000 );
 
-    // Add rendering stats, so we know the performance
-    var container = document.getElementById( "stats" );
-    Renderer._stats = new Stats();
-    Renderer._stats.domElement.style.position = "absolute";
-    Renderer._stats.domElement.style.bottom   = "0px";
-    Renderer._stats.domElement.style.right    = "0px";
-    container.appendChild( Renderer._stats.domElement );
+
+    Renderer._controls = new THREE.TrackballControls ( Renderer._camera, Renderer._renderer.domElement );
+    Renderer._controls2 = new THREE.TrackballControls ( Renderer._camera2, Renderer._renderer.domElement );
 
     // make sure renderer is aware of the scene it is rendering
     Renderer._scene = scene._scene;
@@ -83,10 +80,25 @@ Renderer.update = function () {
     ParticleEngine.step();
 
     Renderer._controls.update();
-    Renderer._stats.update();
 
-    Renderer._renderer.render( Renderer._scene, Renderer._camera );
+    var r = Renderer._renderer;
 
+    r.setViewport(0, 0, Renderer._width / 2, Renderer._height);
+    r.setScissor(0, 0, Renderer._width / 2, Renderer._height);
+    r.render(Renderer._scene, Renderer._camera);
+
+    Renderer._renderer.autoClear = false;
+
+    r.setViewport(Renderer._width / 2, 0, Renderer._width / 2, Renderer._height);
+    r.setScissor(Renderer._width / 2, 0, Renderer._width / 2, Renderer._height);
+    r.render(Renderer._scene, Renderer._camera2);
+
+    Renderer._renderer.autoClear = true;
+
+    // r.setViewport(Renderer._width / 2, 0, Renderer._width / 2, Renderer._height);
+    // r.render(Renderer._scene, Renderer._camera2);
+
+    // Renderer._renderer.render( Renderer._scene, Renderer._camera );
 
     requestAnimationFrame( Renderer.update );
 
