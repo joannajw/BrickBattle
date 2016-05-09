@@ -268,7 +268,7 @@ Collisions.SinkPlane = function ( particleAttributes, alive, delta_t, plane  ) {
         var player = getElement( i, players );
 
         var new_pos = intersectPlane(pos, vel, plane, delta_t);
-        // collide with plane, bounce off
+        // collide with plane,  sink
         if (new_pos != undefined) {
             var platform = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0];
             var platformPos = platform.mesh.position;
@@ -277,8 +277,15 @@ Collisions.SinkPlane = function ( particleAttributes, alive, delta_t, plane  ) {
             }
             pos = new THREE.Vector3(platformPos.x, platformPos.y + 15, pos.z);
             vel = new THREE.Vector3(0, 0, 0);
-            Gui.alertGameOver("GAME OVER");
-
+            // subtract penalty from score
+            if (player == 1) {
+                var score = parseInt(document.getElementById("score").innerHTML);
+                document.getElementById("score").innerHTML = score - SystemSettings.mySystem.basePenalty;
+            }
+            else if (player == 2) {
+                var score = parseInt(document.getElementById("score_2").innerHTML);
+                document.getElementById("score_2").innerHTML = score - SystemSettings.mySystem.basePenalty;
+            }
         }
 
         setElement( i, positions, pos );
@@ -458,19 +465,25 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
     var positions     = particleAttributes.position;
     var lifetimes     = particleAttributes.lifetime;
 
-    for ( var i = 0 ; i < alive.length ; ++i ) {
+    // for ( var i = 0 ; i < alive.length ; ++i ) {
 
-        if ( !alive[i] ) continue;
+    //     if ( !alive[i] ) continue;
 
-        var lifetime = getElement( i, lifetimes );
-
-        if ( lifetime < 0 ) {
-            killPartilce( i, particleAttributes, alive );
-        } else {
-            // setElement( i, lifetimes, lifetime - delta_t );
-        }
+    //     var lifetime = getElement( i, lifetimes );
+    //     if ( lifetime < 0 ) {
+    //         killPartilce( i, particleAttributes, alive );
+    //     } else {
+    //         setElement( i, lifetimes, lifetime - delta_t );
+    //     }
+    // }
+    // count down timer
+    SystemSettings.mySystem.gameLifetime -= delta_t;
+    if (SystemSettings.mySystem.gameLifetime < 0) {
+        SystemSettings.mySystem.gameLifetime = 0;
+        SystemSettings.mySystem.isPlayGame = false;
+        Gui.alertGameOver("GAME OVER");
     }
-
+    document.getElementById("time").innerHTML = SystemSettings.mySystem.gameLifetime.toFixed(3);
 };
 
 EulerUpdater.prototype.collisions = function ( particleAttributes, alive, delta_t ) {
@@ -536,6 +549,9 @@ EulerUpdater.prototype.collisions = function ( particleAttributes, alive, delta_
 
 EulerUpdater.prototype.update = function ( particleAttributes, alive, delta_t ) {
 
+    if (!SystemSettings.mySystem.isPlayGame) {
+        return;
+    }
     this.updateLifetimes( particleAttributes, alive, delta_t );
     this.updateVelocities( particleAttributes, alive, delta_t );
     this.updatePositions( particleAttributes, alive, delta_t );

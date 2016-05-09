@@ -380,6 +380,9 @@ SystemSettings.mySystem = {
     particleMaterial :  SystemSettings.standardMaterial,
     roomWidth : roomWidth,
     baseScore : 100,
+    basePenalty : 500,
+    gameLifetime : 10,
+    isPlayGame : true,
     // // Initialization
     // initializerFunction : FountainInitializer,
     // initializerSettings : {
@@ -396,7 +399,7 @@ SystemSettings.mySystem = {
         sphere: new THREE.Vector4 ( 0, 0, 0, 3.0),
         color:    new THREE.Vector4 ( 1.0, 1.0, 1.0, 1.0 ),
         velocity: new THREE.Vector3 ( 0.0, 0.0, 0.0),
-        lifetime: 100,
+        lifetime: 7,
         size:     100.0,
     },
 

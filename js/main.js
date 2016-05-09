@@ -84,6 +84,10 @@ window.onload = function() {
 
     window.addEventListener("keydown", function(e) {
 
+        if (!SystemSettings.mySystem.isPlayGame) {
+            return;
+        }
+
         var platforms = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms;
         var platform = platforms[0];
         var platform_2 = platforms[1];
