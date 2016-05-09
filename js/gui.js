@@ -167,6 +167,10 @@ Gui.closeAlert = function () {
     var overlayDiv = document.getElementById('overlay_div');
     overlayDiv.style.display = 'none';
 
+    // Reset powerups
+    SystemSettings.mySystem.player1_cur2xPointsLifetime = 0;
+    SystemSettings.mySystem.player2_curWideLifetime = 0;
+
     // Reset player scores
     var emitters = ParticleEngine.getEmitters();
     var particleAttributes = emitters[0]._particleAttributes;
@@ -182,23 +186,79 @@ Gui.closeAlert = function () {
         }
     }
 
-    // Move platforms to initial position
+    // Move platforms to initial position and reset sizes
     var platforms = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms;
+    // var start_poses = SystemSettings.mySystem.platformsStartPos;
+    // for (var i = 0; i < platforms.length; i++) {
+    //     var platform = platforms[i];
+    //     var start_pos = start_poses[i];
+    //     var platformWidth = platform.xMax - platform.xMin;
+    //     var platformHeight = platform.yMax - platform.yMin;
+    //     var platformDepth = platform.zMax - platform.zMin;
+    //     platform.xMin = start_pos.x - platformWidth / 2;
+    //     platform.xMax = start_pos.x + platformWidth / 2;
+    //     platform.yMin = start_pos.y - platformHeight / 2;
+    //     platform.yMax = start_pos.y + platformHeight / 2;
+    //     platform.zMin = start_pos.z - platformDepth / 2;
+    //     platform.zMax = start_pos.z + platformDepth / 2;
+    //     platform.mesh.position.set(start_pos.x, start_pos.y, start_pos.z);
+    // }
+
     var start_poses = SystemSettings.mySystem.platformsStartPos;
-    for (var i = 0; i < platforms.length; i++) {
-        var platform = platforms[i];
-        var start_pos = start_poses[i];
-        var platformWidth = platform.xMax - platform.xMin;
-        var platformHeight = platform.yMax - platform.yMin;
-        var platformDepth = platform.zMax - platform.zMin;
-        platform.xMin = start_pos.x - platformWidth / 2;
-        platform.xMax = start_pos.x + platformWidth / 2;
-        platform.yMin = start_pos.y - platformHeight / 2;
-        platform.yMax = start_pos.y + platformHeight / 2;
-        platform.zMin = start_pos.z - platformDepth / 2;
-        platform.zMax = start_pos.z + platformDepth / 2;
-        platform.mesh.position.set(start_pos.x, start_pos.y, start_pos.z);
+    // player 1 platform
+    var start_pos = start_poses[0];
+    var factor = SystemSettings.mySystem.widePlatformFactor;
+    var platformWidth = SystemSettings.mySystem.platformWidth;
+    var geo = SystemSettings.mySystem.player1_platform.geo;
+    var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
+    var mesh = SystemSettings.mySystem.player1_platform.mesh;
+    var position = mesh.position.clone();
+    var material = SystemSettings.mySystem.player1_platform.material;
+
+    Scene.removeObject(mesh);
+
+    geo = new THREE.BoxGeometry(platformWidth, dims.y, dims.z);
+    mesh = new THREE.Mesh( geo, material);
+    mesh.position.set(start_pos.x, start_pos.y, start_pos.z);
+
+    Scene.addObject(mesh);
+
+    SystemSettings.mySystem.player1_platform = {
+        geo: geo,
+        mesh: mesh,
+        material : material
     }
+    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].xMin = start_pos.x - platformWidth / 2,
+    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].xMax = start_pos.x + platformWidth / 2,
+    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].mesh = mesh;
+
+    // player 2 platform
+    start_pos = start_poses[1];
+    var factor = SystemSettings.mySystem.widePlatformFactor;
+    var platformWidth = SystemSettings.mySystem.platformWidth;
+    var geo = SystemSettings.mySystem.player2_platform.geo;
+    var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
+    var mesh = SystemSettings.mySystem.player2_platform.mesh;
+    var position = mesh.position.clone();
+    var material = SystemSettings.mySystem.player2_platform.material;
+
+    Scene.removeObject(mesh);
+
+    geo = new THREE.BoxGeometry(platformWidth, dims.y, dims.z);
+    mesh = new THREE.Mesh( geo, material);
+    mesh.position.set(start_pos.x, start_pos.y, start_pos.z);
+
+    Scene.addObject(mesh);
+
+    SystemSettings.mySystem.player2_platform = {
+        geo: geo,
+        mesh: mesh,
+        material : material
+    }
+    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].xMin = start_pos.x - platformWidth / 2,
+    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].xMax = start_pos.x + platformWidth / 2,
+    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].mesh = mesh;
+
 
     // Move all particles to initial position
     var positions = particleAttributes.position;
@@ -209,7 +269,7 @@ Gui.closeAlert = function () {
         var player = getElement( i, players );
 
         var platformPos = platforms[0].mesh.position;
-        if (player != platform.player) {
+        if (player != platforms[0].player) {
             platformPos = platforms[1].mesh.position;
         }
 

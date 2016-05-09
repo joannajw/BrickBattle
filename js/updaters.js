@@ -50,7 +50,7 @@ Collisions.BouncePlatform = function(particleAttributes, alive, delta_t, platfor
                         if (vel.x < 0) {
                             factor *= -1;
                         }
-                        vel.x = vel.y * factor;
+                        vel.x = Math.abs(vel.y) * factor;
                     }
                     var factor = velMagnitude / vel.length();
                     vel.multiplyScalar(factor);
