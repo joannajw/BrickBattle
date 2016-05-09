@@ -157,7 +157,7 @@ Gui.alertGameOver = function( msg ) {
     var mainDiv = document.getElementById('main_div');
     mainDiv.style.opacity = "0.3";
     var overlayDiv = document.getElementById('overlay_div');
-    overlayDiv.innerHTML = '<p>'+ msg + '</p><button id="ok" onclick="Gui.closeAlert()">play again</button>';
+    overlayDiv.innerHTML = '<p>'+ msg + '</p><button id="ok" onclick="Gui.closeAlert()">Play Again</button>';
     overlayDiv.style.display = 'inline';
 };
 
@@ -206,6 +206,6 @@ Gui.closeAlert = function () {
     }
 
     // Restart game
-    SystemSettings.mySystem.gameLifetime = 10;
+    SystemSettings.mySystem.currLifetime = SystemSettings.mySystem.gameLifetime;
     SystemSettings.mySystem.isPlayGame = true;
 };

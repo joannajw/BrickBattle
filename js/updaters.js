@@ -477,13 +477,20 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
     //     }
     // }
     // count down timer
-    SystemSettings.mySystem.gameLifetime -= delta_t;
-    if (SystemSettings.mySystem.gameLifetime < 0) {
-        SystemSettings.mySystem.gameLifetime = 0;
+    SystemSettings.mySystem.currLifetime -= delta_t;
+    if (SystemSettings.mySystem.currLifetime < 0) {
+        SystemSettings.mySystem.currLifetime = 0;
         SystemSettings.mySystem.isPlayGame = false;
-        Gui.alertGameOver("GAME OVER");
+        var winString = "PLAYER 1 WINS!";
+        if (document.getElementById("score").innerHTML < document.getElementById("score_2").innerHTML) {
+            winString = "PLAYER 2 WINS!";
+        }
+        else if (document.getElementById("score").innerHTML == document.getElementById("score_2").innerHTML) {
+            winString = "TIE GAME!";
+        }
+        Gui.alertGameOver(winString);
     }
-    document.getElementById("time").innerHTML = SystemSettings.mySystem.gameLifetime.toFixed(3);
+    document.getElementById("time").innerHTML = SystemSettings.mySystem.currLifetime.toFixed(3);
 };
 
 EulerUpdater.prototype.collisions = function ( particleAttributes, alive, delta_t ) {
