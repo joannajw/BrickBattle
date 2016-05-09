@@ -313,7 +313,7 @@ SystemSettings.cloth = {
 ////////////////////////////////////////////////////////////////////////////////
 
 var roomHeight = 600;
-var roomWidth = 600;
+var roomWidth = 400;
 var roomDepth = 600;
 var y_offset = -roomHeight / 2;
 
@@ -483,14 +483,14 @@ SystemSettings.mySystem = {
             bound.mesh = box;
         }
 
-        // Add player 1 platform 
+        // Add player 1 platform
         var platform_geo   = new THREE.BoxGeometry(platformWidth, platformHeight, platformDepth);
         var platform       = new THREE.Mesh( platform_geo, material_green );
         platform.position.set( platformPosition.x, platformPosition.y, platformPosition.z + brickDepth / 2 + spacing);
         Scene.addObject( platform );
         platformBox.mesh = platform;
 
-        // Add player 2 platform 
+        // Add player 2 platform
         var platform_geo_2   = new THREE.BoxGeometry(platformWidth, platformHeight, platformDepth);
         var platform_2       = new THREE.Mesh( platform_geo_2, material_purple );
         platform_2.position.set( platformPosition.x, platformPosition.y, platformPosition.z - brickDepth / 2 - spacing);

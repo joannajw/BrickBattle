@@ -166,5 +166,25 @@ Gui.closeAlert = function () {
     mainDiv.style.opacity = "1";
     var overlayDiv = document.getElementById('overlay_div');
     overlayDiv.style.display = 'none';
-};
 
+    // Reset player scores
+    var emitters = ParticleEngine.getEmitters();
+    var particleAttributes = emitters[0]._particleAttributes;
+    var players      = particleAttributes.player;
+
+    for ( var i = 0 ; i < players.length ; ++i ) {
+        var player = getElement( i, players );
+            // subtract penalty from score
+            if (player == 1) {
+                document.getElementById("score").innerHTML = 0;
+            }
+            else if (player == 2) {
+                var score = parseInt(document.getElementById("score_2").innerHTML);
+                document.getElementById("score_2").innerHTML = 0;
+            }
+    }
+
+    // Restart game
+    SystemSettings.mySystem.gameLifetime = 10;
+    SystemSettings.mySystem.isPlayGame = true;
+};
