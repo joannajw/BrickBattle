@@ -394,13 +394,29 @@ var numPowerups = 2;
 // var powerupsPerGame = 5;
 var powerupLifetime = 10;
 
+var emissive = 0x343434;
+var emissivePowerup = 0xaaaaaa;
+
+var material_player1_normal = new THREE.MeshPhongMaterial( {color: 0x00FF50, emissive: emissive, side: THREE.DoubleSide } );
+var material_player1_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
+var material_player1_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
+
+var material_player2_normal = new THREE.MeshPhongMaterial( {color: 0xCC3399, emissive: emissive, side: THREE.DoubleSide } );
+var material_player2_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
+var material_player2_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
+
+var material_powerups   = [[material_player1_normal, material_player2_normal], new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
+
+// var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
+ 
+
 SystemSettings.mySystem = {
     particleMaterial :  SystemSettings.standardMaterial,
     roomWidth : roomWidth,
     baseScore : 100,
     basePenalty : 250,
-    gameLifetime : 120,
-    currLifetime : 120,
+    gameLifetime : 5,
+    currLifetime : 5,
     powerupLifetime: powerupLifetime,
     player1_cur2xPointsLifetime : 0,
     player2_cur2xPointsLifetime : 0,
@@ -410,6 +426,7 @@ SystemSettings.mySystem = {
     isPlayGame : true,
     platformsStartPos : [platformPosition, platformPosition_2],
     platformWidth : platformWidth,
+    numPowerups: numPowerups,
 
     // Initialization
     initializerFunction : SphereInitializer,
@@ -444,22 +461,8 @@ SystemSettings.mySystem = {
     // Scene
     maxParticles :  2,
     particlesFreq : 100,
+
     createScene : function () {
-
-        var emissive = 0x343434;
-        var emissivePowerup = 0xaaaaaa;
-
-        var material_player1_normal = new THREE.MeshPhongMaterial( {color: 0x00FF50, emissive: emissive, side: THREE.DoubleSide } );
-        var material_player1_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
-        var material_player1_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
-
-        var material_player2_normal = new THREE.MeshPhongMaterial( {color: 0xCC3399, emissive: emissive, side: THREE.DoubleSide } );
-        var material_player2_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
-        var material_player2_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
-
-        // var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } )];
-
-        var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
 
         // Ceiling
         var plane_geo_top = new THREE.PlaneBufferGeometry( roomWidth, roomDepth / 2, 1, 1 );
@@ -544,9 +547,8 @@ SystemSettings.mySystem = {
         for (var i = 0; i < bricks.length; i++) {
             var powerup = Math.round(Math.random() * numPowerups);
             var material = material_player1_normal;
-            if (powerup > 0 ) {
-                if (material_powerups[powerup])
-                    material = material_powerups[powerup];
+            if (powerup > 0 && material_powerups[powerup]) {
+                material = material_powerups[powerup];
             }
 
             var bound = bricks[i].box;
@@ -562,9 +564,8 @@ SystemSettings.mySystem = {
         for (var i = 0; i < bricks_2.length; i++) {
             var powerup = Math.round(Math.random() * numPowerups);
             var material = material_player2_normal;
-            if (powerup > 0 ) {
-                if (material_powerups[powerup])
-                    material = material_powerups[powerup];
+            if (powerup > 0 && material_powerups[powerup]) {
+                material = material_powerups[powerup];
             }
 
             var bound = bricks_2[i].box;
@@ -612,5 +613,5 @@ SystemSettings.mySystem = {
         center_line_2.position.set(platformPosition_2.x, platformPosition_2.y, platformPosition_2.z);
         Scene.addObject(center_line_2);
     },
-
+    materialPowerups : material_powerups,
 };

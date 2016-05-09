@@ -220,13 +220,32 @@ Gui.closeAlert = function () {
         setElement( i, velocities, vel );
     }
 
-    // Reset the boxes
+    // Reset the boxes with powerups
     var boxes = SystemSettings.mySystem.updaterSettings.collidables.bounceBoxes;
+    var powerups = SystemSettings.mySystem.materialPowerups;
+    var numPowerups = SystemSettings.mySystem.numPowerups;
+
     for (var i = 0; i < boxes.length; i++) {
-        if (!boxes[i].box.alive) {
-            boxes[i].box.alive = true;
-            Scene.addObject(boxes[i].box.mesh);
+        var bound = boxes[i].box;
+        // kill all boxes
+        if (bound.alive) {
+            Scene.removeObject(bound.mesh);
         }
+        var material = powerups[0][bound.player - 1];
+        // select powerup
+        var powerup = Math.round(Math.random() * numPowerups);
+        if (powerup > 0 && material_powerups[powerup]) {
+            material = material_powerups[powerup];
+        }
+        // create new boxes
+        bound.alive = true;
+        var box_geo   = new THREE.BoxGeometry(bound.xMax - bound.xMin, bound.yMax - bound.yMin, bound.zMax - bound.zMin);
+        var box       = new THREE.Mesh( box_geo, material );
+        box.position.set( (bound.xMin + bound.xMax) / 2, (bound.yMin + bound.yMax) / 2, (bound.zMin + bound.zMax) / 2 );
+        Scene.addObject( box );
+        bound.mesh = box;
+        bound.powerup = powerup;
+
     }
 
     // Restart game timer and enable game
