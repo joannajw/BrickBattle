@@ -313,12 +313,12 @@ SystemSettings.cloth = {
 ////////////////////////////////////////////////////////////////////////////////
 
 var roomHeight = 600;
-var roomWidth = 1000;
+var roomWidth = 1200;
 var roomDepth = 600;
 var y_offset = -roomHeight / 2;
 
-var numCols = 5;
-var numRows = 5;
+var numCols = 7;
+var numRows = 7;
 var brickHeight = 25;
 var brickDepth = 20;
 var brickWidth = roomWidth / numCols;
@@ -381,7 +381,7 @@ SystemSettings.mySystem = {
     particleMaterial :  SystemSettings.standardMaterial,
     roomWidth : roomWidth,
     baseScore : 100,
-    basePenalty : 500,
+    basePenalty : 250,
     gameLifetime : 120,
     currLifetime : 120,
     isPlayGame : true,

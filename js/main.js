@@ -99,7 +99,7 @@ window.onload = function() {
         var pos_2 = platform_2.mesh.position;
         var boxes = SystemSettings.mySystem.updaterSettings.collidables.bounceBoxes;
         var roomWidth = SystemSettings.mySystem.roomWidth;
-        var moveFactor = 50;
+        var moveFactor = 100;
 
         // 'A' key
         if (e.keyCode == 65) {
