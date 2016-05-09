@@ -169,6 +169,8 @@ Gui.closeAlert = function () {
 
     // Reset powerups
     SystemSettings.mySystem.player1_cur2xPointsLifetime = 0;
+    SystemSettings.mySystem.player2_cur2xPointsLifetime = 0;
+    SystemSettings.mySystem.player1_curWideLifetime = 0;
     SystemSettings.mySystem.player2_curWideLifetime = 0;
 
     // Reset player scores
@@ -188,22 +190,6 @@ Gui.closeAlert = function () {
 
     // Move platforms to initial position and reset sizes
     var platforms = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms;
-    // var start_poses = SystemSettings.mySystem.platformsStartPos;
-    // for (var i = 0; i < platforms.length; i++) {
-    //     var platform = platforms[i];
-    //     var start_pos = start_poses[i];
-    //     var platformWidth = platform.xMax - platform.xMin;
-    //     var platformHeight = platform.yMax - platform.yMin;
-    //     var platformDepth = platform.zMax - platform.zMin;
-    //     platform.xMin = start_pos.x - platformWidth / 2;
-    //     platform.xMax = start_pos.x + platformWidth / 2;
-    //     platform.yMin = start_pos.y - platformHeight / 2;
-    //     platform.yMax = start_pos.y + platformHeight / 2;
-    //     platform.zMin = start_pos.z - platformDepth / 2;
-    //     platform.zMax = start_pos.z + platformDepth / 2;
-    //     platform.mesh.position.set(start_pos.x, start_pos.y, start_pos.z);
-    // }
-
     var start_poses = SystemSettings.mySystem.platformsStartPos;
     // player 1 platform
     var start_pos = start_poses[0];
