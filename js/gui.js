@@ -220,6 +220,15 @@ Gui.closeAlert = function () {
         setElement( i, velocities, vel );
     }
 
+    // Reset the boxes
+    var boxes = SystemSettings.mySystem.updaterSettings.collidables.bounceBoxes;
+    for (var i = 0; i < boxes.length; i++) {
+        if (!boxes[i].box.alive) {
+            boxes[i].box.alive = true;
+            Scene.addObject(boxes[i].box.mesh);
+        }
+    }
+
     // Restart game timer and enable game
     SystemSettings.mySystem.currLifetime = SystemSettings.mySystem.gameLifetime;
     SystemSettings.mySystem.isPlayGame = true;
