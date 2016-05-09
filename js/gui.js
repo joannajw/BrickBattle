@@ -270,7 +270,6 @@ Gui.closeAlert = function () {
     var boxes = SystemSettings.mySystem.updaterSettings.collidables.bounceBoxes;
     var powerups = SystemSettings.mySystem.materialPowerups;
     var numPowerups = SystemSettings.mySystem.numPowerups;
-
     for (var i = 0; i < boxes.length; i++) {
         var bound = boxes[i].box;
         // kill all boxes
@@ -280,8 +279,8 @@ Gui.closeAlert = function () {
         var material = powerups[0][bound.player - 1];
         // select powerup
         var powerup = Math.round(Math.random() * numPowerups);
-        if (powerup > 0 && material_powerups[powerup]) {
-            material = material_powerups[powerup];
+        if (powerup > 0 && powerups[powerup]) {
+            material = powerups[powerup];
         }
         // create new boxes
         bound.alive = true;

@@ -390,12 +390,13 @@ var platformBox_2 = {   xMin: platformPosition_2.x - platformWidth / 2,
 
 // console.log(bricks.length);
 
-var numPowerups = 3;
+var numPowerups = 20;
 // var powerupsPerGame = 5;
 // var powerupLifetime = 10;
 
 var emissive = 0x343434;
 var emissivePowerup = 0xaaaaaa;
+var freezeMaterial = new THREE.MeshPhongMaterial( {color: 0x777777, emissive: emissivePowerup, side: THREE.DoubleSide } );
 
 var material_player1_normal = new THREE.MeshPhongMaterial( {color: 0x00FF50, emissive: emissive, side: THREE.DoubleSide } );
 var material_player1_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
@@ -405,7 +406,7 @@ var material_player2_normal = new THREE.MeshPhongMaterial( {color: 0xCC3399, emi
 var material_player2_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
 var material_player2_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
 
-var material_powerups   = [[material_player1_normal, material_player2_normal], new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
+var material_powerups   = [[material_player1_normal, material_player2_normal], new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } ), freezeMaterial];
 
 // var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
 
@@ -415,8 +416,8 @@ SystemSettings.mySystem = {
     roomWidth : roomWidth,
     baseScore : 100,
     basePenalty : 250,
-    gameLifetime : 5,
-    currLifetime : 5,
+    gameLifetime : 2,
+    currLifetime : 2,
     powerupLifetime: 5,
     player1_cur2xPointsLifetime : 0,
     player2_cur2xPointsLifetime : 0,
@@ -424,7 +425,7 @@ SystemSettings.mySystem = {
     player1_curWideLifetime : 0,
     player2_curWideLifetime : 0,
     freezeLifetime : 2,
-    freezeMaterial : new THREE.MeshPhongMaterial( {color: 0x777777, emissive: emissivePowerup, side: THREE.DoubleSide } ),
+    freezeMaterial : freezeMaterial,
     player1_curFreezeLifetime : 0,
     player2_curFreezeLifetime : 0,
     isPlayGame : true,
@@ -467,20 +468,20 @@ SystemSettings.mySystem = {
     particlesFreq : 100,
 
     createScene : function () {
-        var emissive = 0x343434;
-        var emissivePowerup = 0xaaaaaa;
+        // var emissive = 0x343434;
+        // var emissivePowerup = 0xaaaaaa;
 
-        var material_player1_normal = new THREE.MeshPhongMaterial( {color: 0x00FF50, emissive: emissive, side: THREE.DoubleSide } );
-        var material_player1_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
-        var material_player1_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
+        // var material_player1_normal = new THREE.MeshPhongMaterial( {color: 0x00FF50, emissive: emissive, side: THREE.DoubleSide } );
+        // var material_player1_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
+        // var material_player1_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
 
-        var material_player2_normal = new THREE.MeshPhongMaterial( {color: 0xCC3399, emissive: emissive, side: THREE.DoubleSide } );
-        var material_player2_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
-        var material_player2_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
+        // var material_player2_normal = new THREE.MeshPhongMaterial( {color: 0xCC3399, emissive: emissive, side: THREE.DoubleSide } );
+        // var material_player2_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
+        // var material_player2_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
 
         // var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } )];
 
-        var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } ), this.freezeMaterial];
+        // var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } ), this.freezeMaterial];
 
         // Ceiling
         var plane_geo_top = new THREE.PlaneBufferGeometry( roomWidth, roomDepth / 2, 1, 1 );
