@@ -83,14 +83,16 @@ Renderer.update = function () {
 
     var r = Renderer._renderer;
 
-    r.setViewport(0, 0, Renderer._width / 2, Renderer._height);
-    r.setScissor(0, 0, Renderer._width / 2, Renderer._height);
+    var spacing = 3;
+
+    r.setViewport(0, 0, Renderer._width / 2 - spacing, Renderer._height);
+    r.setScissor(0, 0, Renderer._width / 2 - spacing, Renderer._height);
     r.render(Renderer._scene, Renderer._camera);
 
     Renderer._renderer.autoClear = false;
 
-    r.setViewport(Renderer._width / 2, 0, Renderer._width / 2, Renderer._height);
-    r.setScissor(Renderer._width / 2, 0, Renderer._width / 2, Renderer._height);
+    r.setViewport(Renderer._width / 2 + spacing, 0, Renderer._width / 2, Renderer._height);
+    r.setScissor(Renderer._width / 2 + spacing, 0, Renderer._width / 2, Renderer._height);
     r.render(Renderer._scene, Renderer._camera2);
 
     Renderer._renderer.autoClear = true;

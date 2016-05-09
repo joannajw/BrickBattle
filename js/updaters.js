@@ -168,7 +168,6 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
         }
         // reflect if intersection, remove box
         if (closestNormal != undefined) {
-            console.log(box.powerup);
             vel.reflect(closestNormal);
             pos = pos.clone().sub(vel.clone().multiplyScalar(delta_t));
             box.alive = false;
@@ -182,10 +181,47 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                     SystemSettings.mySystem.player1_cur2xPointsLifetime = SystemSettings.mySystem.powerupLifetime;
                 }
 
+                if (box.powerup == POWERUP_WIDE) {
+                    console.log("player 1 - increase width");
+                    SystemSettings.mySystem.player1_curWideLifetime = SystemSettings.mySystem.powerupLifetime;
+                }
+
+                // 2x points
                 if (SystemSettings.mySystem.player1_cur2xPointsLifetime > 0) {
                     document.getElementById("score").innerHTML = score + (SystemSettings.mySystem.baseScore * 2) + " <span style='color:#ff0000'>(2x!)</span>";
                 } else {
                     document.getElementById("score").innerHTML = score + SystemSettings.mySystem.baseScore;
+                }
+
+                var factor = SystemSettings.mySystem.widePlatformFactor;
+                var platformWidth = SystemSettings.mySystem.platformWidth;
+
+                // Increase platform width
+                if (SystemSettings.mySystem.player1_curWideLifetime > 0 && SystemSettings.mySystem.player1_platform.geo.parameters.width <= platformWidth) {
+                    console.log("player 1 - increase width");
+                    var geo = SystemSettings.mySystem.player1_platform.geo;
+                    var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
+                    var mesh = SystemSettings.mySystem.player1_platform.mesh;
+                    var position = mesh.position.clone();
+                    var material = SystemSettings.mySystem.player1_platform.material;
+
+                    Scene.removeObject(mesh);
+
+                    geo = new THREE.BoxGeometry(dims.x * factor, dims.y, dims.z);
+                    mesh = new THREE.Mesh( geo, material);
+                    mesh.position.set(position.x, position.y, position.z);
+
+                    Scene.addObject(mesh);
+
+                    SystemSettings.mySystem.player1_platform = {
+                        geo: geo,
+                        mesh: mesh,
+                        material : material
+                    }
+
+                    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].xMin = position.x - platformWidth / 2 - (platformWidth * (factor - 1) / 2),
+                    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].xMax = position.x + platformWidth / 2 + (platformWidth * (factor - 1) / 2),
+                    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].mesh = mesh;
                 }
             }
             else if (player == 2) {
@@ -195,11 +231,47 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                     SystemSettings.mySystem.player2_cur2xPointsLifetime = SystemSettings.mySystem.powerupLifetime;
                 }
 
+                if (box.powerup == POWERUP_WIDE) {
+                    console.log("player 2 - wide platform powerup!");
+                    SystemSettings.mySystem.player2_curWideLifetime = SystemSettings.mySystem.powerupLifetime;
+                }
+
+                // 2x points
                 if (SystemSettings.mySystem.player2_cur2xPointsLifetime > 0) {
-                    console.log("player 2 - 2x points!");
                     document.getElementById("score_2").innerHTML = score + (SystemSettings.mySystem.baseScore * 2) + " <span style='color:#ff0000'>(2x!)</span>";
                 } else {
                     document.getElementById("score_2").innerHTML = score + SystemSettings.mySystem.baseScore;
+                }
+
+                var factor = SystemSettings.mySystem.widePlatformFactor;
+                var platformWidth = SystemSettings.mySystem.platformWidth;
+
+                // Increase platform width
+                if (SystemSettings.mySystem.player2_curWideLifetime > 0 && SystemSettings.mySystem.player2_platform.geo.parameters.width <= platformWidth) {
+
+                    var geo = SystemSettings.mySystem.player2_platform.geo;
+                    var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
+                    var mesh = SystemSettings.mySystem.player2_platform.mesh;
+                    var position = mesh.position.clone();
+                    var material = SystemSettings.mySystem.player2_platform.material;
+
+                    Scene.removeObject(mesh);
+
+                    geo = new THREE.BoxGeometry(dims.x * factor, dims.y, dims.z);
+                    mesh = new THREE.Mesh( geo, material);
+                    mesh.position.set(position.x, position.y, position.z);
+
+                    Scene.addObject(mesh);
+
+                    SystemSettings.mySystem.player2_platform = {
+                        geo: geo,
+                        mesh: mesh,
+                        material : material
+                    }
+
+                    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].xMin = position.x - platformWidth / 2 - (platformWidth * (factor - 1) / 2),
+                    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].xMax = position.x + platformWidth / 2 + (platformWidth * (factor - 1) / 2),
+                    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].mesh = mesh;
                 }
             }
         }
@@ -502,20 +574,10 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
     var positions     = particleAttributes.position;
     var lifetimes     = particleAttributes.lifetime;
 
-    // for ( var i = 0 ; i < alive.length ; ++i ) {
-
-    //     if ( !alive[i] ) continue;
-
-    //     var lifetime = getElement( i, lifetimes );
-    //     if ( lifetime < 0 ) {
-    //         killPartilce( i, particleAttributes, alive );
-    //     } else {
-    //         setElement( i, lifetimes, lifetime - delta_t );
-    //     }
-    // }
     // count down timer
     SystemSettings.mySystem.currLifetime -= delta_t;
 
+    // 2x points
     if (SystemSettings.mySystem.player1_cur2xPointsLifetime > 0) {
         SystemSettings.mySystem.player1_cur2xPointsLifetime -= delta_t;
 
@@ -531,6 +593,78 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
         if (SystemSettings.mySystem.player2_cur2xPointsLifetime <= 0) {
             var score = parseInt(document.getElementById("score_2").innerHTML);
             document.getElementById("score_2").innerHTML = score;
+        }
+    }
+
+    // Wide platform
+    if (SystemSettings.mySystem.player1_curWideLifetime > 0) {
+        SystemSettings.mySystem.player1_curWideLifetime -= delta_t;
+
+        if (SystemSettings.mySystem.player1_curWideLifetime <= 0) {
+            // Put platform back to original width
+
+            var factor = SystemSettings.mySystem.widePlatformFactor;
+            var platformWidth = SystemSettings.mySystem.platformWidth;
+
+            var geo = SystemSettings.mySystem.player1_platform.geo;
+            var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
+            var mesh = SystemSettings.mySystem.player1_platform.mesh;
+            var position = mesh.position.clone();
+            var material = SystemSettings.mySystem.player1_platform.material;
+
+            Scene.removeObject(mesh);
+
+            geo = new THREE.BoxGeometry(platformWidth, dims.y, dims.z);
+            mesh = new THREE.Mesh( geo, material);
+            mesh.position.set(position.x, position.y, position.z);
+
+            Scene.addObject(mesh);
+
+            SystemSettings.mySystem.player1_platform = {
+                geo: geo,
+                mesh: mesh,
+                material : material
+            }
+
+            SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].xMin = position.x - platformWidth / 2,
+            SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].xMax = position.x + platformWidth / 2,
+            SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].mesh = mesh;
+        }
+    }
+
+    if (SystemSettings.mySystem.player2_curWideLifetime > 0) {
+        SystemSettings.mySystem.player2_curWideLifetime -= delta_t;
+
+        if (SystemSettings.mySystem.player2_curWideLifetime <= 0) {
+            // Put platform back to original width
+            console.log("player 2 - decrease platform width");
+
+            var factor = SystemSettings.mySystem.widePlatformFactor;
+            var platformWidth = SystemSettings.mySystem.platformWidth;
+
+            var geo = SystemSettings.mySystem.player2_platform.geo;
+            var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
+            var mesh = SystemSettings.mySystem.player2_platform.mesh;
+            var position = mesh.position.clone();
+            var material = SystemSettings.mySystem.player2_platform.material;
+
+            Scene.removeObject(mesh);
+
+            geo = new THREE.BoxGeometry(platformWidth, dims.y, dims.z);
+            mesh = new THREE.Mesh( geo, material);
+            mesh.position.set(position.x, position.y, position.z);
+
+            Scene.addObject(mesh);
+
+            SystemSettings.mySystem.player2_platform = {
+                geo: geo,
+                mesh: mesh,
+                material : material
+            }
+
+            SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].xMin = position.x - platformWidth / 2,
+            SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].xMax = position.x + platformWidth / 2,
+            SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].mesh = mesh;
         }
     }
 

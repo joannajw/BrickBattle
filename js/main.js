@@ -103,7 +103,6 @@ window.onload = function() {
 
         // 'A' key
         if (e.keyCode == 65) {
-            console.log("A");
             e.preventDefault();
             var leftDist = platform.xMin + (roomWidth / 2);
             var tempMoveFactor = moveFactor;
@@ -142,7 +141,6 @@ window.onload = function() {
 
         // 'D' key
         if (e.keyCode == 68) {
-            console.log("D");
             e.preventDefault();
             var rightDist = (roomWidth / 2) - platform.xMax;
             var tempMoveFactor = moveFactor;
@@ -181,7 +179,6 @@ window.onload = function() {
 
         // 'W' key
         if (e.keyCode == 87) {
-            console.log("W");
             e.preventDefault();
             var box = boxes[boxes.length - 1].box;
 
@@ -195,7 +192,6 @@ window.onload = function() {
 
         // 'S' key
         if (e.keyCode == 83) {
-            console.log("S");
             e.preventDefault();
             var box = boxes[0].box;
 
@@ -209,7 +205,6 @@ window.onload = function() {
 
         // Tab key
         if (e.keyCode == 9) {
-            console.log("tab");
             e.preventDefault();
             var particleAttributes = emitters[0]._particleAttributes;
             var velocities = particleAttributes.velocity;
@@ -233,7 +228,6 @@ window.onload = function() {
 
         // Left arrow
         if (e.keyCode == 37) {
-            console.log("left");
             e.preventDefault();
             var leftDist = (roomWidth / 2) - platform_2.xMax;
             var tempMoveFactor = moveFactor;
@@ -272,7 +266,6 @@ window.onload = function() {
 
         // Right arrow
         if (e.keyCode == 39) {
-            console.log("right");
             e.preventDefault();
             var rightDist = platform_2.xMin + (roomWidth / 2);
             var tempMoveFactor = moveFactor;
@@ -310,7 +303,6 @@ window.onload = function() {
 
         // Up arrow
         if (e.keyCode == 38) {
-            console.log("up");
             e.preventDefault();
             var box = boxes[0].box;
 
@@ -324,7 +316,6 @@ window.onload = function() {
 
         // Down arrow
         if (e.keyCode == 40) {
-            console.log("down");
             e.preventDefault();
             var box = boxes[boxes.length - 1].box;
 
@@ -338,7 +329,6 @@ window.onload = function() {
 
         // Shift key
         if (e.keyCode == 16) {
-            console.log("shift");
             e.preventDefault();
             var particleAttributes = emitters[0]._particleAttributes;
             var velocities = particleAttributes.velocity;

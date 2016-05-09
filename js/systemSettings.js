@@ -390,12 +390,11 @@ var platformBox_2 = {   xMin: platformPosition_2.x - platformWidth / 2,
 
 // console.log(bricks.length);
 
-var numPowerups = 5;
-var powerupsPerGame = 5;
+var numPowerups = 2;
+// var powerupsPerGame = 5;
 var powerupLifetime = 10;
 
 SystemSettings.mySystem = {
-    // Particle material
     particleMaterial :  SystemSettings.standardMaterial,
     roomWidth : roomWidth,
     baseScore : 100,
@@ -403,19 +402,14 @@ SystemSettings.mySystem = {
     gameLifetime : 120,
     currLifetime : 120,
     powerupLifetime: powerupLifetime,
-    player1_cur2xPointsLifetime: 0,
-    player2_cur2xPointsLifetime: 0,
+    player1_cur2xPointsLifetime : 0,
+    player2_cur2xPointsLifetime : 0,
+    widePlatformFactor : 1.5,
+    player1_curWideLifetime : 0,
+    player2_curWideLifetime : 0,
     isPlayGame : true,
     platformsStartPos : [platformPosition, platformPosition_2],
-    // // Initialization
-    // initializerFunction : FountainInitializer,
-    // initializerSettings : {
-    //     sphere:   new THREE.Vector4 ( 0.0, 30.0, 0.0, 1.0 ),
-    //     color:    new THREE.Vector4 ( 0.0, 0.0, 1.0, 1.0 ),
-    //     velocity: new THREE.Vector3 ( 0.0, 30.0, 0.0),
-    //     lifetime: 7,
-    //     size:     5.0,
-    // },
+    platformWidth : platformWidth,
 
     // Initialization
     initializerFunction : SphereInitializer,
@@ -463,9 +457,9 @@ SystemSettings.mySystem = {
         var material_player2_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
         var material_player2_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
 
-        var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } )];
+        // var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } )];
 
-        // var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
+        var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
 
         // Ceiling
         var plane_geo_top = new THREE.PlaneBufferGeometry( roomWidth, roomDepth / 2, 1, 1 );
@@ -588,6 +582,11 @@ SystemSettings.mySystem = {
         platform.position.set( platformPosition.x, platformPosition.y, platformPosition.z);
         Scene.addObject( platform );
         platformBox.mesh = platform;
+        this.player1_platform = {
+            geo: platform_geo,
+            mesh: platform,
+            material : material_player1_normal
+        }
 
         // Add player 2 platform
         var platform_geo_2   = new THREE.BoxGeometry(platformWidth, platformHeight, platformDepth);
@@ -595,6 +594,11 @@ SystemSettings.mySystem = {
         platform_2.position.set( platformPosition_2.x, platformPosition_2.y, platformPosition_2.z);
         Scene.addObject( platform_2 );
         platformBox_2.mesh = platform_2;
+        this.player2_platform = {
+            geo: platform_geo_2,
+            mesh: platform_2,
+            material : material_player2_normal
+        }
 
         // Add player 1 center line
         var center_line_geo = new THREE.BoxGeometry(roomWidth, spacing / 2, spacing);
@@ -602,7 +606,7 @@ SystemSettings.mySystem = {
         center_line.position.set(platformPosition.x, platformPosition.y, platformPosition.z);
         Scene.addObject(center_line);
 
-        // Add player 2 center line 
+        // Add player 2 center line
         var center_line_geo_2 = new THREE.BoxGeometry(roomWidth, spacing / 2, spacing);
         var center_line_2     = new THREE.Mesh(center_line_geo_2, material_player2_normal);
         center_line_2.position.set(platformPosition_2.x, platformPosition_2.y, platformPosition_2.z);
