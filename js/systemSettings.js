@@ -341,7 +341,8 @@ for (var j = 0; j < numRows; j++) {
                             // zMax: distFromCenter + brickDepth,
                             zMin: -brickDepth / 2 + brickDepth / 2 + distBetween,
                             zMax: brickDepth / 2 + brickDepth / 2 + distBetween,
-                            alive: true
+                            alive: true,
+                            player : 1
                         };
                         console.log((bricks[idx].box.zMin + bricks[idx].box.zMax )/ 2);
         bricks[idx].damping = 1;
@@ -354,7 +355,8 @@ for (var j = 0; j < numRows; j++) {
                             // zMax: -distFromCenter - brickDepth / 2,
                             zMin: -brickDepth / 2 - brickDepth / 2 - distBetween,
                             zMax: brickDepth / 2 - brickDepth / 2 - distBetween,
-                            alive: true
+                            alive: true,
+                            player : 2
                         };
                         console.log((bricks_2[idx].box.zMin + bricks[idx].box.zMax )/ 2);
         bricks_2[idx].damping = 1;    }
@@ -454,12 +456,12 @@ SystemSettings.mySystem = {
         var emissivePowerup = 0xaaaaaa;
 
         var material_player1_normal = new THREE.MeshPhongMaterial( {color: 0x00FF50, emissive: emissive, side: THREE.DoubleSide } );
-        var material_player1_light  = new THREE.MeshPhongMaterial( {color: 0x00FF50, emissive: emissive, side: THREE.DoubleSide } );
-        var material_player1_dark   = new THREE.MeshPhongMaterial( {color: 0x00FF50, emissive: emissive, side: THREE.DoubleSide } );
+        var material_player1_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
+        var material_player1_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
 
         var material_player2_normal = new THREE.MeshPhongMaterial( {color: 0xCC3399, emissive: emissive, side: THREE.DoubleSide } );
-        var material_player2_light  = new THREE.MeshPhongMaterial( {color: 0xCC3399, emissive: emissive, side: THREE.DoubleSide } );
-        var material_player2_dark   = new THREE.MeshPhongMaterial( {color: 0xCC3399, emissive: emissive, side: THREE.DoubleSide } );
+        var material_player2_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
+        var material_player2_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
 
         var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } )];
 
@@ -594,11 +596,17 @@ SystemSettings.mySystem = {
         Scene.addObject( platform_2 );
         platformBox_2.mesh = platform_2;
 
-        // // Add center line
-        // var center_line_geo = new THREE.BoxGeometry(roomWidth, spacing, spacing);
-        // var center_line     = new THREE.Mesh(center_line_geo, material_blue);
-        // center_line.position.set(0, platformPosition.y, 0);
-        // Scene.addObject(center_line);
+        // Add player 1 center line
+        var center_line_geo = new THREE.BoxGeometry(roomWidth, spacing / 2, spacing);
+        var center_line     = new THREE.Mesh(center_line_geo, material_player1_normal);
+        center_line.position.set(platformPosition.x, platformPosition.y, platformPosition.z);
+        Scene.addObject(center_line);
+
+        // Add player 2 center line 
+        var center_line_geo_2 = new THREE.BoxGeometry(roomWidth, spacing / 2, spacing);
+        var center_line_2     = new THREE.Mesh(center_line_geo_2, material_player2_normal);
+        center_line_2.position.set(platformPosition_2.x, platformPosition_2.y, platformPosition_2.z);
+        Scene.addObject(center_line_2);
     },
 
 };
