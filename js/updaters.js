@@ -39,10 +39,21 @@ Collisions.BouncePlatform = function(particleAttributes, alive, delta_t, platfor
                 var dist = Math.abs(platform.yMax - pos.y);
                 var len = Math.abs(newPos.y - pos.y);
                 if (len > dist) {
-
+                    // reflect differently depending on intersection position
                     var distFromCenter = (pos.x - (platform.xMin + platform.xMax) / 2) / (platform.xMax - platform.xMin);
                     var newNormal = (new THREE.Vector3(1, 0, 0)).multiplyScalar(distFromCenter).add(normal_xz_max).normalize();
+                    var velMagnitude = vel.length();
                     vel.reflect(newNormal);
+                    // don't let ball bounce more than 30 degrees
+                    if (Math.abs(vel.x / vel.y) > Math.sqrt(3)) {
+                        var factor = Math.sqrt(3);
+                        if (vel.x < 0) {
+                            factor *= -1;
+                        }
+                        vel.x = vel.y * factor;
+                    }
+                    var factor = velMagnitude / vel.length();
+                    vel.multiplyScalar(factor);
                 }
             }
         }
