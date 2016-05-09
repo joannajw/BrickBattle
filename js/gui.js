@@ -174,17 +174,33 @@ Gui.closeAlert = function () {
 
     for ( var i = 0 ; i < players.length ; ++i ) {
         var player = getElement( i, players );
-        // subtract penalty from score
         if (player == 1) {
             document.getElementById("score").innerHTML = 0;
         }
         else if (player == 2) {
-            var score = parseInt(document.getElementById("score_2").innerHTML);
             document.getElementById("score_2").innerHTML = 0;
         }
     }
 
-    // Kill and respawn all particles
+    // Move platforms to initial position
+    var platforms = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms;
+    var start_poses = SystemSettings.mySystem.platformsStartPos;
+    for (var i = 0; i < platforms.length; i++) {
+        var platform = platforms[i];
+        var start_pos = start_poses[i];
+        var platformWidth = platform.xMax - platform.xMin;
+        var platformHeight = platform.yMax - platform.yMin;
+        var platformDepth = platform.zMax - platform.zMin;
+        platform.xMin = start_pos.x - platformWidth / 2;
+        platform.xMax = start_pos.x + platformWidth / 2;
+        platform.yMin = start_pos.y - platformHeight / 2;
+        platform.yMax = start_pos.y + platformHeight / 2;
+        platform.zMin = start_pos.z - platformDepth / 2;
+        platform.zMax = start_pos.z + platformDepth / 2;
+        platform.mesh.position.set(start_pos.x, start_pos.y, start_pos.z);
+    }
+
+    // Move all particles to initial position
     var positions = particleAttributes.position;
     var velocities   = particleAttributes.velocity;
 
@@ -192,10 +208,9 @@ Gui.closeAlert = function () {
         var pos = getElement( i, positions );
         var player = getElement( i, players );
 
-        var platform = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0];
-        var platformPos = platform.mesh.position;
+        var platformPos = platforms[0].mesh.position;
         if (player != platform.player) {
-            platformPos = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].mesh.position;
+            platformPos = platforms[1].mesh.position;
         }
 
         var pos = new THREE.Vector3(platformPos.x, platformPos.y + 15, pos.z);
@@ -205,7 +220,7 @@ Gui.closeAlert = function () {
         setElement( i, velocities, vel );
     }
 
-    // Restart game
+    // Restart game timer and enable game
     SystemSettings.mySystem.currLifetime = SystemSettings.mySystem.gameLifetime;
     SystemSettings.mySystem.isPlayGame = true;
 };

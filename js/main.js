@@ -84,6 +84,10 @@ window.onload = function() {
 
     window.addEventListener("keydown", function(e) {
 
+        if (e.keyCode == 38 || e.keyCode == 40) { 
+            e.preventDefault();
+        }
+
         if (!SystemSettings.mySystem.isPlayGame) {
             return;
         }
@@ -107,10 +111,17 @@ window.onload = function() {
             if (moveFactor > leftDist) {
                 tempMoveFactor = leftDist;
             }
+            // or stop at other platform
+            var leftPlatformDist = platform.xMin - platform_2.xMax;
+            if (pos.z == pos_2.z && leftPlatformDist >= 0 && tempMoveFactor > leftPlatformDist) {
+                tempMoveFactor = leftPlatformDist;
+            }
+            // move platform
             platform.xMin -= tempMoveFactor;
             platform.xMax -= tempMoveFactor;
             pos.set(pos.x - tempMoveFactor, pos.y, pos.z);
 
+            // move particle with platform if need to launch
             var particleAttributes = emitters[0]._particleAttributes;
             var positions = particleAttributes.position;
             var velocities = particleAttributes.velocity;
@@ -139,10 +150,17 @@ window.onload = function() {
             if (moveFactor > rightDist) {
                 tempMoveFactor = rightDist;
             }
+            // or stop at other platform
+            var rightPlatformDist = platform_2.xMin - platform.xMax;
+            if (pos.z == pos_2.z && rightPlatformDist >= 0 && tempMoveFactor > rightPlatformDist) {
+                tempMoveFactor = rightPlatformDist;
+            }
+            // move platform
             platform.xMin += tempMoveFactor;
             platform.xMax += tempMoveFactor;
             pos.set(pos.x + tempMoveFactor, pos.y, pos.z);
 
+            // move particle with platform if need to launch
             var particleAttributes = emitters[0]._particleAttributes;
             var positions = particleAttributes.position;
             var velocities = particleAttributes.velocity;
@@ -167,9 +185,12 @@ window.onload = function() {
             e.preventDefault();
             var box = boxes[boxes.length - 1].box;
 
-            platform.zMin -= moveFactor / 2;
-            platform.zMax -= moveFactor / 2;
-            pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
+            // only move across plane if don't collide with other platform
+            if (platform.xMin > platform_2.xMax || platform.xMax < platform_2.xMin) {
+                platform.zMin -= moveFactor / 2;
+                platform.zMax -= moveFactor / 2;
+                pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
+            }
         }
 
         // 'S' key
@@ -178,9 +199,12 @@ window.onload = function() {
             e.preventDefault();
             var box = boxes[0].box;
 
-            platform.zMin += moveFactor / 2;
-            platform.zMax += moveFactor / 2;
-            pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
+            // only move across plane if don't collide with other platform
+            if (platform.xMin > platform_2.xMax || platform.xMax < platform_2.xMin) {
+                platform.zMin += moveFactor / 2;
+                platform.zMax += moveFactor / 2;
+                pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
+            }
         }
 
         // Tab key
@@ -193,6 +217,7 @@ window.onload = function() {
             var rand = (Math.random() - 0.5) * 250;
             var vel = new THREE.Vector3(rand, 500, 0);
 
+            // launch respective particle
             var players = particleAttributes.player;
             for (var i = 0; i < velocities.length; i++) {
                 var player = getElement( i , players );
@@ -216,10 +241,17 @@ window.onload = function() {
             if (moveFactor > leftDist) {
                 tempMoveFactor = leftDist;
             }
+            // or stop at other platform
+            var leftPlatformDist = platform.xMin - platform_2.xMax;
+            if (pos.z == pos_2.z && leftPlatformDist >= 0 && tempMoveFactor > leftPlatformDist) {
+                tempMoveFactor = leftPlatformDist;
+            }
+            // move platform
             platform_2.xMin += tempMoveFactor;
             platform_2.xMax += tempMoveFactor;
             pos_2.set(pos_2.x + tempMoveFactor, pos_2.y, pos_2.z);
 
+            // move particle with platform if need to launch
             var particleAttributes = emitters[0]._particleAttributes;
             var positions = particleAttributes.position;
             var velocities = particleAttributes.velocity;
@@ -248,10 +280,17 @@ window.onload = function() {
             if (moveFactor > rightDist) {
                 tempMoveFactor = rightDist;
             }
+            // or stop at other platform
+            var rightPlatformDist = platform_2.xMin - platform.xMax;
+            if (pos.z == pos_2.z && rightPlatformDist >= 0 && tempMoveFactor > rightPlatformDist) {
+                tempMoveFactor = rightPlatformDist;
+            }
+            // move platform
             platform_2.xMin -= tempMoveFactor;
             platform_2.xMax -= tempMoveFactor;
             pos_2.set(pos_2.x - tempMoveFactor, pos_2.y, pos_2.z);
 
+            // move particle with platform if need to launch
             var particleAttributes = emitters[0]._particleAttributes;
             var positions = particleAttributes.position;
             var velocities = particleAttributes.velocity;
@@ -275,9 +314,12 @@ window.onload = function() {
             e.preventDefault();
             var box = boxes[0].box;
 
-            platform_2.zMin += moveFactor / 2;
-            platform_2.zMax += moveFactor / 2;
-            pos_2.set(pos_2.x, pos_2.y, (box.zMin + box.zMax) / 2);
+            // only move across plane if don't collide with other platform
+            if (platform_2.xMin > platform.xMax || platform_2.xMax < platform.xMin) {
+                platform_2.zMin += moveFactor / 2;
+                platform_2.zMax += moveFactor / 2;
+                pos_2.set(pos_2.x, pos_2.y, (box.zMin + box.zMax) / 2);
+            }
         }
 
         // Down arrow
@@ -286,9 +328,12 @@ window.onload = function() {
             e.preventDefault();
             var box = boxes[boxes.length - 1].box;
 
-            platform_2.zMin -= moveFactor / 2;
-            platform_2.zMax -= moveFactor / 2;
-            pos_2.set(pos_2.x, pos_2.y, (box.zMin + box.zMax) / 2);
+            // only move across plane if don't collide with other platform
+            if (platform_2.xMin > platform.xMax || platform_2.xMax < platform.xMin) {
+                platform_2.zMin -= moveFactor / 2;
+                platform_2.zMax -= moveFactor / 2;
+                pos_2.set(pos_2.x, pos_2.y, (box.zMin + box.zMax) / 2);
+            }
         }
 
         // Shift key
@@ -301,6 +346,7 @@ window.onload = function() {
             var rand = (Math.random() - 0.5) * 250;
             var vel = new THREE.Vector3(rand, 500, 0);
 
+            // launch respective particle
             var players = particleAttributes.player;
             for (var i = 0; i < velocities.length; i++) {
                 var player = getElement( i , players );

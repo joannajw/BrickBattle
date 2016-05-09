@@ -355,21 +355,22 @@ for (var j = 0; j < numRows; j++) {
 var platformWidth = brickWidth * 1.2;
 var platformHeight = 10;
 var platformDepth = brickDepth;
-var platformPosition = new THREE.Vector3(0, -roomHeight / 2 + 20, 0);
+var platformPosition = new THREE.Vector3(0, -roomHeight / 2 + 20, brickDepth / 2 + spacing);
+var platformPosition_2 = new THREE.Vector3(0, -roomHeight / 2 + 20, - brickDepth / 2 - spacing);
 var platformBox = { xMin: platformPosition.x - platformWidth / 2,
                     xMax: platformPosition.x + platformWidth / 2,
                     yMin: platformPosition.y - platformHeight / 2,
                     yMax: platformPosition.y + platformHeight / 2,
-                    zMin: platformPosition.z - platformDepth / 2 + brickDepth / 2 + spacing,
-                    zMax: platformPosition.z + platformDepth / 2 + brickDepth / 2 + spacing,
+                    zMin: platformPosition.z - platformDepth / 2,
+                    zMax: platformPosition.z + platformDepth / 2,
                     player: 1
                     };
-var platformBox_2 = {   xMin: platformPosition.x - platformWidth / 2,
-                        xMax: platformPosition.x + platformWidth / 2,
-                        yMin: platformPosition.y - platformHeight / 2,
-                        yMax: platformPosition.y + platformHeight / 2,
-                        zMin: platformPosition.z - platformDepth / 2 - brickDepth / 2 - spacing,
-                        zMax: platformPosition.z + platformDepth / 2 - brickDepth / 2 - spacing,
+var platformBox_2 = {   xMin: platformPosition_2.x - platformWidth / 2,
+                        xMax: platformPosition_2.x + platformWidth / 2,
+                        yMin: platformPosition_2.y - platformHeight / 2,
+                        yMax: platformPosition_2.y + platformHeight / 2,
+                        zMin: platformPosition_2.z - platformDepth / 2,
+                        zMax: platformPosition_2.z + platformDepth / 2,
                         player: 2
                         };
 
@@ -384,6 +385,7 @@ SystemSettings.mySystem = {
     gameLifetime : 5,
     currLifetime : 5,
     isPlayGame : true,
+    platformsStartPos : [platformPosition, platformPosition_2],
     // // Initialization
     // initializerFunction : FountainInitializer,
     // initializerSettings : {
@@ -487,14 +489,14 @@ SystemSettings.mySystem = {
         // Add player 1 platform
         var platform_geo   = new THREE.BoxGeometry(platformWidth, platformHeight, platformDepth);
         var platform       = new THREE.Mesh( platform_geo, material_green );
-        platform.position.set( platformPosition.x, platformPosition.y, platformPosition.z + brickDepth / 2 + spacing);
+        platform.position.set( platformPosition.x, platformPosition.y, platformPosition.z);
         Scene.addObject( platform );
         platformBox.mesh = platform;
 
         // Add player 2 platform
         var platform_geo_2   = new THREE.BoxGeometry(platformWidth, platformHeight, platformDepth);
         var platform_2       = new THREE.Mesh( platform_geo_2, material_purple );
-        platform_2.position.set( platformPosition.x, platformPosition.y, platformPosition.z - brickDepth / 2 - spacing);
+        platform_2.position.set( platformPosition_2.x, platformPosition_2.y, platformPosition_2.z);
         Scene.addObject( platform_2 );
         platformBox_2.mesh = platform_2;
 
