@@ -172,6 +172,8 @@ Gui.closeAlert = function () {
     SystemSettings.mySystem.player2_cur2xPointsLifetime = 0;
     SystemSettings.mySystem.player1_curWideLifetime = 0;
     SystemSettings.mySystem.player2_curWideLifetime = 0;
+    SystemSettings.mySystem.player1_curFreezeLifetime = 0;
+    SystemSettings.mySystem.player2_curFreezeLifetime = 0;
 
     // Reset player scores
     var emitters = ParticleEngine.getEmitters();
@@ -199,7 +201,7 @@ Gui.closeAlert = function () {
     var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
     var mesh = SystemSettings.mySystem.player1_platform.mesh;
     var position = mesh.position.clone();
-    var material = SystemSettings.mySystem.player1_platform.material;
+    var material = SystemSettings.mySystem.material_platformDefault1;
 
     Scene.removeObject(mesh);
 
@@ -226,7 +228,7 @@ Gui.closeAlert = function () {
     var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
     var mesh = SystemSettings.mySystem.player2_platform.mesh;
     var position = mesh.position.clone();
-    var material = SystemSettings.mySystem.player2_platform.material;
+    var material = SystemSettings.mySystem.material_platformDefault2;
 
     Scene.removeObject(mesh);
 
