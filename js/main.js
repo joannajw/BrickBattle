@@ -104,37 +104,39 @@ window.onload = function() {
         // 'A' key
         if (e.keyCode == 65) {
             e.preventDefault();
-            var leftDist = platform.xMin + (roomWidth / 2);
-            var tempMoveFactor = moveFactor;
-            // stop at wall
-            if (moveFactor > leftDist) {
-                tempMoveFactor = leftDist;
-            }
-            // or stop at other platform
-            var leftPlatformDist = platform.xMin - platform_2.xMax;
-            if (pos.z == pos_2.z && leftPlatformDist >= 0 && tempMoveFactor > leftPlatformDist) {
-                tempMoveFactor = leftPlatformDist;
-            }
-            // move platform
-            platform.xMin -= tempMoveFactor;
-            platform.xMax -= tempMoveFactor;
-            pos.set(pos.x - tempMoveFactor, pos.y, pos.z);
-
-            // move particle with platform if need to launch
-            var particleAttributes = emitters[0]._particleAttributes;
-            var positions = particleAttributes.position;
-            var velocities = particleAttributes.velocity;
-            var players = particleAttributes.player;
-            for (var i = 0; i < positions.length; i++) {
-                var player = getElement( i , players );
-                if (player != platform.player) {
-                    continue;
+            if (SystemSettings.mySystem.player1_curFreezeLifetime <= 0) {
+                var leftDist = platform.xMin + (roomWidth / 2);
+                var tempMoveFactor = moveFactor;
+                // stop at wall
+                if (moveFactor > leftDist) {
+                    tempMoveFactor = leftDist;
                 }
-                var v = getElement( i, velocities );
-                if (v.length() < EPS) {
-                    var ballPos = getElement( i, positions );
-                    ballPos.x -= tempMoveFactor;
-                    setElement(i, positions, ballPos)
+                // or stop at other platform
+                var leftPlatformDist = platform.xMin - platform_2.xMax;
+                if (pos.z == pos_2.z && leftPlatformDist >= 0 && tempMoveFactor > leftPlatformDist) {
+                    tempMoveFactor = leftPlatformDist;
+                }
+                // move platform
+                platform.xMin -= tempMoveFactor;
+                platform.xMax -= tempMoveFactor;
+                pos.set(pos.x - tempMoveFactor, pos.y, pos.z);
+
+                // move particle with platform if need to launch
+                var particleAttributes = emitters[0]._particleAttributes;
+                var positions = particleAttributes.position;
+                var velocities = particleAttributes.velocity;
+                var players = particleAttributes.player;
+                for (var i = 0; i < positions.length; i++) {
+                    var player = getElement( i , players );
+                    if (player != platform.player) {
+                        continue;
+                    }
+                    var v = getElement( i, velocities );
+                    if (v.length() < EPS) {
+                        var ballPos = getElement( i, positions );
+                        ballPos.x -= tempMoveFactor;
+                        setElement(i, positions, ballPos)
+                    }
                 }
             }
         }
@@ -142,37 +144,39 @@ window.onload = function() {
         // 'D' key
         if (e.keyCode == 68) {
             e.preventDefault();
-            var rightDist = (roomWidth / 2) - platform.xMax;
-            var tempMoveFactor = moveFactor;
-            // stop at wall
-            if (moveFactor > rightDist) {
-                tempMoveFactor = rightDist;
-            }
-            // or stop at other platform
-            var rightPlatformDist = platform_2.xMin - platform.xMax;
-            if (pos.z == pos_2.z && rightPlatformDist >= 0 && tempMoveFactor > rightPlatformDist) {
-                tempMoveFactor = rightPlatformDist;
-            }
-            // move platform
-            platform.xMin += tempMoveFactor;
-            platform.xMax += tempMoveFactor;
-            pos.set(pos.x + tempMoveFactor, pos.y, pos.z);
-
-            // move particle with platform if need to launch
-            var particleAttributes = emitters[0]._particleAttributes;
-            var positions = particleAttributes.position;
-            var velocities = particleAttributes.velocity;
-            var players = particleAttributes.player;
-            for (var i = 0; i < positions.length; i++) {
-                var player = getElement( i , players );
-                if (player != platform.player) {
-                    continue;
+            if (SystemSettings.mySystem.player1_curFreezeLifetime <= 0) {
+                var rightDist = (roomWidth / 2) - platform.xMax;
+                var tempMoveFactor = moveFactor;
+                // stop at wall
+                if (moveFactor > rightDist) {
+                    tempMoveFactor = rightDist;
                 }
-                var v = getElement( i, velocities );
-                if (v.length() < EPS) {
-                    var ballPos = getElement( i, positions );
-                    ballPos.x += tempMoveFactor;
-                    setElement(i, positions, ballPos)
+                // or stop at other platform
+                var rightPlatformDist = platform_2.xMin - platform.xMax;
+                if (pos.z == pos_2.z && rightPlatformDist >= 0 && tempMoveFactor > rightPlatformDist) {
+                    tempMoveFactor = rightPlatformDist;
+                }
+                // move platform
+                platform.xMin += tempMoveFactor;
+                platform.xMax += tempMoveFactor;
+                pos.set(pos.x + tempMoveFactor, pos.y, pos.z);
+
+                // move particle with platform if need to launch
+                var particleAttributes = emitters[0]._particleAttributes;
+                var positions = particleAttributes.position;
+                var velocities = particleAttributes.velocity;
+                var players = particleAttributes.player;
+                for (var i = 0; i < positions.length; i++) {
+                    var player = getElement( i , players );
+                    if (player != platform.player) {
+                        continue;
+                    }
+                    var v = getElement( i, velocities );
+                    if (v.length() < EPS) {
+                        var ballPos = getElement( i, positions );
+                        ballPos.x += tempMoveFactor;
+                        setElement(i, positions, ballPos)
+                    }
                 }
             }
         }
@@ -180,26 +184,30 @@ window.onload = function() {
         // 'W' key
         if (e.keyCode == 87) {
             e.preventDefault();
-            var box = boxes[boxes.length - 1].box;
+            if (SystemSettings.mySystem.player1_curFreezeLifetime <= 0) {
+                var box = boxes[boxes.length - 1].box;
 
-            // only move across plane if don't collide with other platform
-            if (platform.xMin >= platform_2.xMax || platform.xMax <= platform_2.xMin) {
-                platform.zMin = box.zMin;
-                platform.zMax = box.zMax;
-                pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
+                // only move across plane if don't collide with other platform
+                if (platform.xMin >= platform_2.xMax || platform.xMax <= platform_2.xMin) {
+                    platform.zMin = box.zMin;
+                    platform.zMax = box.zMax;
+                    pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
+                }
             }
         }
 
         // 'S' key
         if (e.keyCode == 83) {
             e.preventDefault();
-            var box = boxes[0].box;
+            if (SystemSettings.mySystem.player1_curFreezeLifetime <= 0) {
+                var box = boxes[0].box;
 
-            // only move across plane if don't collide with other platform
-            if (platform.xMin >= platform_2.xMax || platform.xMax <= platform_2.xMin) {
-                platform.zMin = box.zMin;
-                platform.zMax = box.zMax;
-                pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
+                // only move across plane if don't collide with other platform
+                if (platform.xMin >= platform_2.xMax || platform.xMax <= platform_2.xMin) {
+                    platform.zMin = box.zMin;
+                    platform.zMax = box.zMax;
+                    pos.set(pos.x, pos.y, (box.zMin + box.zMax) / 2);
+                }
             }
         }
 
@@ -229,37 +237,40 @@ window.onload = function() {
         // Left arrow
         if (e.keyCode == 37) {
             e.preventDefault();
-            var leftDist = (roomWidth / 2) - platform_2.xMax;
-            var tempMoveFactor = moveFactor;
-            // stop at wall
-            if (moveFactor > leftDist) {
-                tempMoveFactor = leftDist;
-            }
-            // or stop at other platform
-            var leftPlatformDist = platform.xMin - platform_2.xMax;
-            if (pos.z == pos_2.z && leftPlatformDist >= 0 && tempMoveFactor > leftPlatformDist) {
-                tempMoveFactor = leftPlatformDist;
-            }
-            // move platform
-            platform_2.xMin += tempMoveFactor;
-            platform_2.xMax += tempMoveFactor;
-            pos_2.set(pos_2.x + tempMoveFactor, pos_2.y, pos_2.z);
 
-            // move particle with platform if need to launch
-            var particleAttributes = emitters[0]._particleAttributes;
-            var positions = particleAttributes.position;
-            var velocities = particleAttributes.velocity;
-            var players = particleAttributes.player;
-            for (var i = 0; i < positions.length; i++) {
-                var player = getElement( i , players );
-                if (player != platform_2.player) {
-                    continue;
+            if (SystemSettings.mySystem.player2_curFreezeLifetime <= 0) {
+                var leftDist = (roomWidth / 2) - platform_2.xMax;
+                var tempMoveFactor = moveFactor;
+                // stop at wall
+                if (moveFactor > leftDist) {
+                    tempMoveFactor = leftDist;
                 }
-                var v = getElement( i, velocities );
-                if (v.length() < EPS) {
-                    var ballPos = getElement( i, positions );
-                    ballPos.x += tempMoveFactor;
-                    setElement(i, positions, ballPos)
+                // or stop at other platform
+                var leftPlatformDist = platform.xMin - platform_2.xMax;
+                if (pos.z == pos_2.z && leftPlatformDist >= 0 && tempMoveFactor > leftPlatformDist) {
+                    tempMoveFactor = leftPlatformDist;
+                }
+                // move platform
+                platform_2.xMin += tempMoveFactor;
+                platform_2.xMax += tempMoveFactor;
+                pos_2.set(pos_2.x + tempMoveFactor, pos_2.y, pos_2.z);
+
+                // move particle with platform if need to launch
+                var particleAttributes = emitters[0]._particleAttributes;
+                var positions = particleAttributes.position;
+                var velocities = particleAttributes.velocity;
+                var players = particleAttributes.player;
+                for (var i = 0; i < positions.length; i++) {
+                    var player = getElement( i , players );
+                    if (player != platform_2.player) {
+                        continue;
+                    }
+                    var v = getElement( i, velocities );
+                    if (v.length() < EPS) {
+                        var ballPos = getElement( i, positions );
+                        ballPos.x += tempMoveFactor;
+                        setElement(i, positions, ballPos)
+                    }
                 }
             }
         }
@@ -267,36 +278,39 @@ window.onload = function() {
         // Right arrow
         if (e.keyCode == 39) {
             e.preventDefault();
-            var rightDist = platform_2.xMin + (roomWidth / 2);
-            var tempMoveFactor = moveFactor;
-            // stop at wall
-            if (moveFactor > rightDist) {
-                tempMoveFactor = rightDist;
-            }
-            // or stop at other platform
-            var rightPlatformDist = platform_2.xMin - platform.xMax;
-            if (pos.z == pos_2.z && rightPlatformDist >= 0 && tempMoveFactor > rightPlatformDist) {
-                tempMoveFactor = rightPlatformDist;
-            }
-            // move platform
-            platform_2.xMin -= tempMoveFactor;
-            platform_2.xMax -= tempMoveFactor;
-            pos_2.set(pos_2.x - tempMoveFactor, pos_2.y, pos_2.z);
 
-            // move particle with platform if need to launch
-            var particleAttributes = emitters[0]._particleAttributes;
-            var positions = particleAttributes.position;
-            var velocities = particleAttributes.velocity;
-            var players = particleAttributes.player;
-            for (var i = 0; i < positions.length; i++) {
-                var player = getElement( i , players );
-                if (player != platform_2.player) {
-                    continue;
-                }                var v = getElement( i, velocities );
-                if (v.length() < EPS) {
-                    var ballPos = getElement( i, positions );
-                    ballPos.x -= tempMoveFactor;
-                    setElement(i, positions, ballPos)
+            if (SystemSettings.mySystem.player2_curFreezeLifetime <= 0) {
+                var rightDist = platform_2.xMin + (roomWidth / 2);
+                var tempMoveFactor = moveFactor;
+                // stop at wall
+                if (moveFactor > rightDist) {
+                    tempMoveFactor = rightDist;
+                }
+                // or stop at other platform
+                var rightPlatformDist = platform_2.xMin - platform.xMax;
+                if (pos.z == pos_2.z && rightPlatformDist >= 0 && tempMoveFactor > rightPlatformDist) {
+                    tempMoveFactor = rightPlatformDist;
+                }
+                // move platform
+                platform_2.xMin -= tempMoveFactor;
+                platform_2.xMax -= tempMoveFactor;
+                pos_2.set(pos_2.x - tempMoveFactor, pos_2.y, pos_2.z);
+
+                // move particle with platform if need to launch
+                var particleAttributes = emitters[0]._particleAttributes;
+                var positions = particleAttributes.position;
+                var velocities = particleAttributes.velocity;
+                var players = particleAttributes.player;
+                for (var i = 0; i < positions.length; i++) {
+                    var player = getElement( i , players );
+                    if (player != platform_2.player) {
+                        continue;
+                    }                var v = getElement( i, velocities );
+                    if (v.length() < EPS) {
+                        var ballPos = getElement( i, positions );
+                        ballPos.x -= tempMoveFactor;
+                        setElement(i, positions, ballPos)
+                    }
                 }
             }
         }
@@ -304,26 +318,32 @@ window.onload = function() {
         // Up arrow
         if (e.keyCode == 38) {
             e.preventDefault();
-            var box = boxes[0].box;
 
-            // only move across plane if don't collide with other platform
-            if (platform_2.xMin >= platform.xMax || platform_2.xMax <= platform.xMin) {
-                platform_2.zMin = box.zMin;
-                platform_2.zMax = box.zMax;
-                pos_2.set(pos_2.x, pos_2.y, (box.zMin + box.zMax) / 2);
+            if (SystemSettings.mySystem.player2_curFreezeLifetime <= 0) {
+                var box = boxes[0].box;
+
+                // only move across plane if don't collide with other platform
+                if (platform_2.xMin >= platform.xMax || platform_2.xMax <= platform.xMin) {
+                    platform_2.zMin = box.zMin;
+                    platform_2.zMax = box.zMax;
+                    pos_2.set(pos_2.x, pos_2.y, (box.zMin + box.zMax) / 2);
+                }
             }
         }
 
         // Down arrow
         if (e.keyCode == 40) {
             e.preventDefault();
-            var box = boxes[boxes.length - 1].box;
 
-            // only move across plane if don't collide with other platform
-            if (platform_2.xMin >= platform.xMax || platform_2.xMax <= platform.xMin) {
-                platform_2.zMin = box.zMin;
-                platform_2.zMax = box.zMax;
-                pos_2.set(pos_2.x, pos_2.y, (box.zMin + box.zMax) / 2);
+            if (SystemSettings.mySystem.player2_curFreezeLifetime <= 0) {
+                var box = boxes[boxes.length - 1].box;
+
+                // only move across plane if don't collide with other platform
+                if (platform_2.xMin >= platform.xMax || platform_2.xMax <= platform.xMin) {
+                    platform_2.zMin = box.zMin;
+                    platform_2.zMax = box.zMax;
+                    pos_2.set(pos_2.x, pos_2.y, (box.zMin + box.zMax) / 2);
+                }
             }
         }
 

@@ -182,10 +182,63 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                 }
 
                 if (box.powerup == POWERUP_WIDE) {
+                    if (SystemSettings.mySystem.player1_curWideLifetime <= 0) {
+                        var factor = SystemSettings.mySystem.widePlatformFactor;
+                        var platformWidth = SystemSettings.mySystem.platformWidth;
+
+                        var geo = SystemSettings.mySystem.player1_platform.geo;
+                        var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
+                        var mesh = SystemSettings.mySystem.player1_platform.mesh;
+                        var position = mesh.position.clone();
+                        var material = SystemSettings.mySystem.player1_platform.material;
+
+                        Scene.removeObject(mesh);
+
+                        geo = new THREE.BoxGeometry(dims.x * factor, dims.y, dims.z);
+                        mesh = new THREE.Mesh( geo, material);
+                        mesh.position.set(position.x, position.y, position.z);
+
+                        Scene.addObject(mesh);
+
+                        SystemSettings.mySystem.player1_platform = {
+                            geo: geo,
+                            mesh: mesh,
+                            material: material
+                        }
+
+                        SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].xMin = position.x - platformWidth / 2 - (platformWidth * (factor - 1) / 2),
+                        SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].xMax = position.x + platformWidth / 2 + (platformWidth * (factor - 1) / 2),
+                        SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].mesh = mesh;
+                    }
+
                     SystemSettings.mySystem.player1_curWideLifetime = SystemSettings.mySystem.powerupLifetime;
                 }
 
                 if (box.powerup == POWERUP_FREEZE) {
+                    if (SystemSettings.mySystem.player2_curFreezeLifetime <= 0) {
+                        var freezeMaterial = SystemSettings.mySystem.freezeMaterial;
+                        var geo = SystemSettings.mySystem.player2_platform.geo;
+                        var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
+                        var mesh = SystemSettings.mySystem.player2_platform.mesh;
+                        var position = mesh.position.clone();
+
+                        Scene.removeObject(mesh);
+
+                        geo = new THREE.BoxGeometry(dims.x, dims.y, dims.z);
+                        mesh = new THREE.Mesh( geo, freezeMaterial);
+                        mesh.position.set(position.x, position.y, position.z);
+
+                        Scene.addObject(mesh);
+
+                        SystemSettings.mySystem.player2_platform = {
+                            geo: geo,
+                            mesh: mesh,
+                            material: freezeMaterial
+                        }
+
+                        SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].mesh = mesh;
+                    }
+
                     SystemSettings.mySystem.player2_curFreezeLifetime = SystemSettings.mySystem.freezeLifetime;
                 }
 
@@ -195,38 +248,8 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                 } else {
                     document.getElementById("score").innerHTML = score + SystemSettings.mySystem.baseScore;
                 }
-
-                var factor = SystemSettings.mySystem.widePlatformFactor;
-                var platformWidth = SystemSettings.mySystem.platformWidth;
-
-                // Increase platform width
-                if (SystemSettings.mySystem.player1_curWideLifetime > 0 && SystemSettings.mySystem.player1_platform.geo.parameters.width <= platformWidth) {
-                    console.log("player 1 - increase width");
-                    var geo = SystemSettings.mySystem.player1_platform.geo;
-                    var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
-                    var mesh = SystemSettings.mySystem.player1_platform.mesh;
-                    var position = mesh.position.clone();
-                    var material = SystemSettings.mySystem.player1_platform.material;
-
-                    Scene.removeObject(mesh);
-
-                    geo = new THREE.BoxGeometry(dims.x * factor, dims.y, dims.z);
-                    mesh = new THREE.Mesh( geo, material);
-                    mesh.position.set(position.x, position.y, position.z);
-
-                    Scene.addObject(mesh);
-
-                    SystemSettings.mySystem.player1_platform = {
-                        geo: geo,
-                        mesh: mesh,
-                        material: material
-                    }
-
-                    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].xMin = position.x - platformWidth / 2 - (platformWidth * (factor - 1) / 2),
-                    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].xMax = position.x + platformWidth / 2 + (platformWidth * (factor - 1) / 2),
-                    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].mesh = mesh;
-                }
             }
+
             else if (player == 2) {
                 var score = parseInt(document.getElementById("score_2").innerHTML);
 
@@ -236,10 +259,64 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
 
                 if (box.powerup == POWERUP_WIDE) {
                     console.log("player 2 - wide platform powerup!");
+
+                    if (SystemSettings.mySystem.player2_curWideLifetime <= 0) {
+                        var factor = SystemSettings.mySystem.widePlatformFactor;
+                        var platformWidth = SystemSettings.mySystem.platformWidth;
+
+                        var geo = SystemSettings.mySystem.player2_platform.geo;
+                        var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
+                        var mesh = SystemSettings.mySystem.player2_platform.mesh;
+                        var position = mesh.position.clone();
+                        var material = SystemSettings.mySystem.player2_platform.material;
+
+                        Scene.removeObject(mesh);
+
+                        geo = new THREE.BoxGeometry(dims.x * factor, dims.y, dims.z);
+                        mesh = new THREE.Mesh( geo, material);
+                        mesh.position.set(position.x, position.y, position.z);
+
+                        Scene.addObject(mesh);
+
+                        SystemSettings.mySystem.player2_platform = {
+                            geo: geo,
+                            mesh: mesh,
+                            material: material
+                        }
+
+                        SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].xMin = position.x - platformWidth / 2 - (platformWidth * (factor - 1) / 2),
+                        SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].xMax = position.x + platformWidth / 2 + (platformWidth * (factor - 1) / 2),
+                        SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].mesh = mesh;
+                    }
+
                     SystemSettings.mySystem.player2_curWideLifetime = SystemSettings.mySystem.powerupLifetime;
                 }
 
                 if (box.powerup == POWERUP_FREEZE) {
+                    if (SystemSettings.mySystem.player1_curFreezeLifetime <= 0) {
+                        var freezeMaterial = SystemSettings.mySystem.freezeMaterial;
+                        var geo = SystemSettings.mySystem.player1_platform.geo;
+                        var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
+                        var mesh = SystemSettings.mySystem.player1_platform.mesh;
+                        var position = mesh.position.clone();
+
+                        Scene.removeObject(mesh);
+
+                        geo = new THREE.BoxGeometry(dims.x, dims.y, dims.z);
+                        mesh = new THREE.Mesh( geo, freezeMaterial);
+                        mesh.position.set(position.x, position.y, position.z);
+
+                        Scene.addObject(mesh);
+
+                        SystemSettings.mySystem.player1_platform = {
+                            geo: geo,
+                            mesh: mesh,
+                            material: freezeMaterial
+                        }
+
+                        SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].mesh = mesh;
+                    }
+
                     SystemSettings.mySystem.player1_curFreezeLifetime = SystemSettings.mySystem.freezeLifetime;
                 }
 
@@ -249,82 +326,8 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                 } else {
                     document.getElementById("score_2").innerHTML = score + SystemSettings.mySystem.baseScore;
                 }
-
-                var factor = SystemSettings.mySystem.widePlatformFactor;
-                var platformWidth = SystemSettings.mySystem.platformWidth;
-
-                // Increase platform width
-                if (SystemSettings.mySystem.player2_curWideLifetime > 0 && SystemSettings.mySystem.player2_platform.geo.parameters.width <= platformWidth) {
-
-                    var geo = SystemSettings.mySystem.player2_platform.geo;
-                    var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
-                    var mesh = SystemSettings.mySystem.player2_platform.mesh;
-                    var position = mesh.position.clone();
-                    var material = SystemSettings.mySystem.player2_platform.material;
-
-                    Scene.removeObject(mesh);
-
-                    geo = new THREE.BoxGeometry(dims.x * factor, dims.y, dims.z);
-                    mesh = new THREE.Mesh( geo, material);
-                    mesh.position.set(position.x, position.y, position.z);
-
-                    Scene.addObject(mesh);
-
-                    SystemSettings.mySystem.player2_platform = {
-                        geo: geo,
-                        mesh: mesh,
-                        material: material
-                    }
-
-                    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].xMin = position.x - platformWidth / 2 - (platformWidth * (factor - 1) / 2),
-                    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].xMax = position.x + platformWidth / 2 + (platformWidth * (factor - 1) / 2),
-                    SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].mesh = mesh;
-                }
             }
         }
-
-
-        // if (pos.x >= box.xMin && pos.x <= box.xMax && pos.y >= box.yMin && pos.y <= box.yMax && pos.z >= box.zMin && pos.z <= box.zMax) {
-
-        //     var closestPlaneNormal;
-        //     var closestDistance = Number.POSITIVE_INFINITY;
-
-        //     if (Math.abs(pos.x - box.xMin) < closestDistance) {
-        //         closestPlaneNormal = normal_yz_min.clone();
-        //         closestDistance = Math.abs(pos.x - box.xMin);
-        //     }
-
-        //     if (Math.abs(pos.x - box.xMax) < closestDistance) {
-        //         closestPlaneNormal = normal_yz_max.clone();
-        //         closestDistance = Math.abs(pos.x - box.xMax);
-        //     }
-
-        //     if (Math.abs(pos.y - box.yMin) < closestDistance) {
-        //         closestPlaneNormal = normal_xz_min.clone();
-        //         closestDistance = Math.abs(pos.y - box.yMin);
-        //     }
-
-        //     if (Math.abs(pos.y - box.yMin) < closestDistance) {
-        //         closestPlaneNormal = normal_xz_max.clone();
-        //         closestDistance = Math.abs(pos.y - box.yMin);
-        //     }
-
-        //     // if (Math.abs(pos.z - box.zMin) < closestDistance) {
-        //     //     closestPlaneNormal = normal_xy_min.clone();
-        //     //     closestDistance = Math.abs(pos.z - box.zMin);
-        //     // }
-
-        //     // if (Math.abs(pos.z - box.zMin) < closestDistance) {
-        //     //     closestPlaneNormal = normal_xy_max.clone();
-        //     //     closestDistance = Math.abs(pos.z - box.zMin);
-        //     // }
-
-        //     vel.reflect(closestPlaneNormal.clone()).multiplyScalar(damping);
-        //     pos = pos.clone().sub(vel.clone().multiplyScalar(delta_t));
-        //     // pos.add(closestPlaneNormal.clone().multiplyScalar(closestPlaneNormal.clone().dot(pos)));
-        //     box.alive = false;
-        //     Scene.removeObject(box.mesh);
-        // }
 
         setElement( i, positions, pos );
         setElement( i, velocities, vel );
@@ -671,6 +674,64 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
 
             SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].xMin = position.x - platformWidth / 2,
             SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].xMax = position.x + platformWidth / 2,
+            SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].mesh = mesh;
+        }
+    }
+
+    if (SystemSettings.mySystem.player1_curFreezeLifetime > 0) {
+        SystemSettings.mySystem.player1_curFreezeLifetime -= delta_t;
+
+        if (SystemSettings.mySystem.player1_curFreezeLifetime <= 0) {
+            // set platform colour back to normal
+            var material = SystemSettings.mySystem.material_platformDefault1;
+            var geo = SystemSettings.mySystem.player1_platform.geo;
+            var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
+            var mesh = SystemSettings.mySystem.player1_platform.mesh;
+            var position = mesh.position.clone();
+
+            Scene.removeObject(mesh);
+
+            geo = new THREE.BoxGeometry(dims.x, dims.y, dims.z);
+            mesh = new THREE.Mesh( geo, material);
+            mesh.position.set(position.x, position.y, position.z);
+
+            Scene.addObject(mesh);
+
+            SystemSettings.mySystem.player1_platform = {
+                geo: geo,
+                mesh: mesh,
+                material: material
+            }
+
+            SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].mesh = mesh;
+        }
+    }
+
+    if (SystemSettings.mySystem.player2_curFreezeLifetime > 0) {
+        SystemSettings.mySystem.player2_curFreezeLifetime -= delta_t;
+
+        if (SystemSettings.mySystem.player2_curFreezeLifetime <= 0) {
+            // set platform colour back to normal
+            var material = SystemSettings.mySystem.material_platformDefault2;
+            var geo = SystemSettings.mySystem.player2_platform.geo;
+            var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
+            var mesh = SystemSettings.mySystem.player2_platform.mesh;
+            var position = mesh.position.clone();
+
+            Scene.removeObject(mesh);
+
+            geo = new THREE.BoxGeometry(dims.x, dims.y, dims.z);
+            mesh = new THREE.Mesh( geo, material);
+            mesh.position.set(position.x, position.y, position.z);
+
+            Scene.addObject(mesh);
+
+            SystemSettings.mySystem.player2_platform = {
+                geo: geo,
+                mesh: mesh,
+                material: material
+            }
+
             SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].mesh = mesh;
         }
     }

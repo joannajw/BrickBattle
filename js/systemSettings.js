@@ -417,13 +417,14 @@ SystemSettings.mySystem = {
     basePenalty : 250,
     gameLifetime : 120,
     currLifetime : 120,
-    powerupLifetime: 10,
+    powerupLifetime: 5,
     player1_cur2xPointsLifetime : 0,
     player2_cur2xPointsLifetime : 0,
     widePlatformFactor : 1.5,
     player1_curWideLifetime : 0,
     player2_curWideLifetime : 0,
     freezeLifetime : 2,
+    freezeMaterial : new THREE.MeshPhongMaterial( {color: 0x777777, emissive: emissivePowerup, side: THREE.DoubleSide } ),
     player1_curFreezeLifetime : 0,
     player2_curFreezeLifetime : 0,
     isPlayGame : true,
@@ -479,7 +480,7 @@ SystemSettings.mySystem = {
 
         // var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } )];
 
-        var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x777777, emissive: emissivePowerup, side: THREE.DoubleSide } )];
+        var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } ), this.freezeMaterial];
 
         // Ceiling
         var plane_geo_top = new THREE.PlaneBufferGeometry( roomWidth, roomDepth / 2, 1, 1 );
@@ -605,6 +606,7 @@ SystemSettings.mySystem = {
             mesh: platform,
             material: material_player1_normal
         }
+        this.material_platformDefault1 = material_player1_normal;
 
         // Add player 2 platform
         var platform_geo_2   = new THREE.BoxGeometry(platformWidth, platformHeight, platformDepth);
@@ -617,6 +619,7 @@ SystemSettings.mySystem = {
             mesh: platform_2,
             material: material_player2_normal
         }
+        this.material_platformDefault2 = material_player2_normal;
 
         // Add player 1 center line
         var center_line_geo = new THREE.BoxGeometry(roomWidth, spacing / 2, spacing);
