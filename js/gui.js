@@ -170,18 +170,39 @@ Gui.closeAlert = function () {
     // Reset player scores
     var emitters = ParticleEngine.getEmitters();
     var particleAttributes = emitters[0]._particleAttributes;
-    var players      = particleAttributes.player;
+    var players = particleAttributes.player;
 
     for ( var i = 0 ; i < players.length ; ++i ) {
         var player = getElement( i, players );
-            // subtract penalty from score
-            if (player == 1) {
-                document.getElementById("score").innerHTML = 0;
-            }
-            else if (player == 2) {
-                var score = parseInt(document.getElementById("score_2").innerHTML);
-                document.getElementById("score_2").innerHTML = 0;
-            }
+        // subtract penalty from score
+        if (player == 1) {
+            document.getElementById("score").innerHTML = 0;
+        }
+        else if (player == 2) {
+            var score = parseInt(document.getElementById("score_2").innerHTML);
+            document.getElementById("score_2").innerHTML = 0;
+        }
+    }
+
+    // Kill and respawn all particles
+    var positions = particleAttributes.position;
+    var velocities   = particleAttributes.velocity;
+
+    for ( var i = 0 ; i < positions.length ; ++i ) {
+        var pos = getElement( i, positions );
+        var player = getElement( i, players );
+
+        var platform = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0];
+        var platformPos = platform.mesh.position;
+        if (player != platform.player) {
+            platformPos = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].mesh.position;
+        }
+
+        var pos = new THREE.Vector3(platformPos.x, platformPos.y + 15, pos.z);
+        var vel = new THREE.Vector3(0, 0, 0);
+
+        setElement( i, positions, pos );
+        setElement( i, velocities, vel );
     }
 
     // Restart game

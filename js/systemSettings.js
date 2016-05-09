@@ -381,7 +381,7 @@ SystemSettings.mySystem = {
     roomWidth : roomWidth,
     baseScore : 100,
     basePenalty : 500,
-    gameLifetime : 10,
+    gameLifetime : 1,
     isPlayGame : true,
     // // Initialization
     // initializerFunction : FountainInitializer,
