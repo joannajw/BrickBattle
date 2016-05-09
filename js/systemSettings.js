@@ -388,6 +388,10 @@ var platformBox_2 = {   xMin: platformPosition_2.x - platformWidth / 2,
 
 // console.log(bricks.length);
 
+var numPowerups = 5;
+var powerupsPerGame = 5;
+var powerupLifetime = 10;
+
 SystemSettings.mySystem = {
     // Particle material
     particleMaterial :  SystemSettings.standardMaterial,
@@ -396,6 +400,9 @@ SystemSettings.mySystem = {
     basePenalty : 250,
     gameLifetime : 120,
     currLifetime : 120,
+    powerupLifetime: powerupLifetime,
+    player1_cur2xPointsLifetime: 0,
+    player2_cur2xPointsLifetime: 0,
     isPlayGame : true,
     platformsStartPos : [platformPosition, platformPosition_2],
     // // Initialization
@@ -443,24 +450,31 @@ SystemSettings.mySystem = {
     particlesFreq : 100,
     createScene : function () {
 
-        var material_player1_normal = new THREE.MeshPhongMaterial( {color: 0x00FF00, emissive: 0x222222, side: THREE.DoubleSide } );
-        var material_player1_light = new THREE.MeshPhongMaterial( {color: 0x00FF00, emissive: 0x222222, side: THREE.DoubleSide } );
-        var material_player1_dark = new THREE.MeshPhongMaterial( {color: 0x00FF00, emissive: 0x222222, side: THREE.DoubleSide } );
+        var emissive = 0x343434;
+        var emissivePowerup = 0xaaaaaa;
 
-        var material_player2_normal = new THREE.MeshPhongMaterial( {color: 0xCC3399, emissive: 0x222222, side: THREE.DoubleSide } );
-        var material_player2_light = new THREE.MeshPhongMaterial( {color: 0x00FF00, emissive: 0x222222, side: THREE.DoubleSide } );
-        var material_player2_dark = new THREE.MeshPhongMaterial( {color: 0x00FF00, emissive: 0x222222, side: THREE.DoubleSide } );
+        var material_player1_normal = new THREE.MeshPhongMaterial( {color: 0x00FF50, emissive: emissive, side: THREE.DoubleSide } );
+        var material_player1_light  = new THREE.MeshPhongMaterial( {color: 0x00FF50, emissive: emissive, side: THREE.DoubleSide } );
+        var material_player1_dark   = new THREE.MeshPhongMaterial( {color: 0x00FF50, emissive: emissive, side: THREE.DoubleSide } );
+
+        var material_player2_normal = new THREE.MeshPhongMaterial( {color: 0xCC3399, emissive: emissive, side: THREE.DoubleSide } );
+        var material_player2_light  = new THREE.MeshPhongMaterial( {color: 0xCC3399, emissive: emissive, side: THREE.DoubleSide } );
+        var material_player2_dark   = new THREE.MeshPhongMaterial( {color: 0xCC3399, emissive: emissive, side: THREE.DoubleSide } );
+
+        var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } )];
+
+        // var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
 
         // Ceiling
         var plane_geo_top = new THREE.PlaneBufferGeometry( roomWidth, roomDepth / 2, 1, 1 );
-        var plane_top     = new THREE.Mesh( plane_geo_top, material_player1_normal );
+        var plane_top     = new THREE.Mesh( plane_geo_top, material_player1_light );
         plane_top.rotation.x = Math.PI / 2;
         plane_top.position.y = roomHeight + y_offset;
         plane_top.position.z = roomDepth / 4;
         Scene.addObject( plane_top );
 
         var plane_geo_top2 = new THREE.PlaneBufferGeometry( roomWidth, roomDepth / 2, 1, 1 );
-        var plane_top2     = new THREE.Mesh( plane_geo_top2, material_player2_normal );
+        var plane_top2     = new THREE.Mesh( plane_geo_top2, material_player2_light );
         plane_top2.rotation.x = Math.PI / 2;
         plane_top2.position.y = roomHeight + y_offset;
         plane_top2.position.z = -roomDepth / 4;
@@ -468,14 +482,14 @@ SystemSettings.mySystem = {
 
         // Floor (make this a sink plane?)
         var plane_geo_bottom = new THREE.PlaneBufferGeometry( roomWidth, roomDepth / 2, 1, 1 );
-        var plane_bottom     = new THREE.Mesh( plane_geo_bottom, material_player1_normal );
+        var plane_bottom     = new THREE.Mesh( plane_geo_bottom, material_player1_dark );
         plane_bottom.rotation.x = -Math.PI / 2;
         plane_bottom.position.y = 0 + y_offset;
         plane_bottom.position.z = roomDepth / 4;
         Scene.addObject( plane_bottom );
 
         var plane_geo_bottom2 = new THREE.PlaneBufferGeometry( roomWidth, roomDepth / 2, 1, 1 );
-        var plane_bottom2     = new THREE.Mesh( plane_geo_bottom, material_player2_normal );
+        var plane_bottom2     = new THREE.Mesh( plane_geo_bottom, material_player2_dark );
         plane_bottom2.rotation.x = -Math.PI / 2;
         plane_bottom2.position.y = 0 + y_offset;
         plane_bottom2.position.z = -roomDepth / 4;
@@ -483,7 +497,7 @@ SystemSettings.mySystem = {
 
         // Left wall
         var plane_geo_left = new THREE.PlaneBufferGeometry( roomDepth / 2, roomHeight, 1, 1 );
-        var plane_left     = new THREE.Mesh( plane_geo_left, material_player1_normal );
+        var plane_left     = new THREE.Mesh( plane_geo_left, material_player1_light );
         plane_left.rotation.y = Math.PI / 2;
         plane_left.position.x = -roomWidth / 2;
         plane_left.position.y = roomHeight / 2 + y_offset;
@@ -491,7 +505,7 @@ SystemSettings.mySystem = {
         Scene.addObject( plane_left );
 
         var plane_geo_left2 = new THREE.PlaneBufferGeometry( roomDepth / 2, roomHeight, 1, 1 );
-        var plane_left2     = new THREE.Mesh( plane_geo_left2, material_player2_normal );
+        var plane_left2     = new THREE.Mesh( plane_geo_left2, material_player2_light );
         plane_left2.rotation.y = Math.PI / 2;
         plane_left2.position.x = -roomWidth / 2;
         plane_left2.position.y = roomHeight / 2 + y_offset;
@@ -500,7 +514,7 @@ SystemSettings.mySystem = {
 
         // Right wall
         var plane_geo_right = new THREE.PlaneBufferGeometry( roomDepth / 2, roomHeight, 1, 1 );
-        var plane_right     = new THREE.Mesh( plane_geo_right, material_player1_normal );
+        var plane_right     = new THREE.Mesh( plane_geo_right, material_player1_light );
         plane_right.rotation.y = -Math.PI / 2;
         plane_right.position.x = roomWidth / 2;
         plane_right.position.y = roomHeight / 2 + y_offset;
@@ -508,7 +522,7 @@ SystemSettings.mySystem = {
         Scene.addObject( plane_right );
 
         var plane_geo_right2 = new THREE.PlaneBufferGeometry( roomDepth / 2, roomHeight, 1, 1 );
-        var plane_right2     = new THREE.Mesh( plane_geo_right2, material_player2_normal );
+        var plane_right2     = new THREE.Mesh( plane_geo_right2, material_player2_light );
         plane_right2.rotation.y = -Math.PI / 2;
         plane_right2.position.x = roomWidth / 2;
         plane_right2.position.y = roomHeight / 2 + y_offset;
@@ -517,14 +531,14 @@ SystemSettings.mySystem = {
 
         // Back walls
         var plane_geo_back = new THREE.PlaneBufferGeometry( roomWidth, roomHeight, 1, 1 );
-        var plane_back     = new THREE.Mesh( plane_geo_back, material_player1_normal );
+        var plane_back     = new THREE.Mesh( plane_geo_back, material_player1_light );
         plane_back.rotation.y = 0;
         plane_back.position.y = roomHeight / 2 + y_offset;
         plane_back.position.z = roomDepth / 2;
         Scene.addObject( plane_back );
 
         var plane_geo_back2 = new THREE.PlaneBufferGeometry( roomWidth, roomHeight, 1, 1 );
-        var plane_back2     = new THREE.Mesh( plane_geo_back2, material_player2_normal );
+        var plane_back2     = new THREE.Mesh( plane_geo_back2, material_player2_light );
         plane_back2.rotation.y = 0;
         plane_back2.position.y = roomHeight / 2 + y_offset;
         plane_back2.position.z = -roomDepth / 2;
@@ -532,22 +546,38 @@ SystemSettings.mySystem = {
 
         // Add bricks
         for (var i = 0; i < bricks.length; i++) {
+            var powerup = Math.round(Math.random() * numPowerups);
+            var material = material_player1_normal;
+            if (powerup > 0 ) {
+                if (material_powerups[powerup])
+                    material = material_powerups[powerup];
+            }
+
             var bound = bricks[i].box;
             var box_geo   = new THREE.BoxGeometry(bound.xMax - bound.xMin, bound.yMax - bound.yMin, bound.zMax - bound.zMin);
-            var box       = new THREE.Mesh( box_geo, material_player1_normal );
+            var box       = new THREE.Mesh( box_geo, material );
             box.position.set( (bound.xMin + bound.xMax) / 2, (bound.yMin + bound.yMax) / 2, (bound.zMin + bound.zMax) / 2 );
             Scene.addObject( box );
             bound.mesh = box;
+            bound.powerup = powerup;
         }
 
         // Add bricks
         for (var i = 0; i < bricks_2.length; i++) {
+            var powerup = Math.round(Math.random() * numPowerups);
+            var material = material_player2_normal;
+            if (powerup > 0 ) {
+                if (material_powerups[powerup])
+                    material = material_powerups[powerup];
+            }
+
             var bound = bricks_2[i].box;
             var box_geo   = new THREE.BoxGeometry(bound.xMax - bound.xMin, bound.yMax - bound.yMin, bound.zMax - bound.zMin);
-            var box       = new THREE.Mesh( box_geo, material_player2_normal );
+            var box       = new THREE.Mesh( box_geo, material );
             box.position.set( (bound.xMin + bound.xMax) / 2, (bound.yMin + bound.yMax) / 2, (bound.zMin + bound.zMax) / 2 );
             Scene.addObject( box );
             bound.mesh = box;
+            bound.powerup = powerup;
         }
 
         // Add player 1 platform

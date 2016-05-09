@@ -82,6 +82,11 @@ Collisions.SinkBox = function(particleAttributes, alive, delta_t, box) {
     }
 }
 
+var POWERUP_2XPOINTS = 1;
+var POWERUP_WIDE = 2;
+var POWERUP_FREEZE = 3;
+var POWERUP_2XBALLS = 4;
+
 Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping) {
     if (!box.alive) {
         return;
@@ -163,18 +168,39 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
         }
         // reflect if intersection, remove box
         if (closestNormal != undefined) {
+            console.log(box.powerup);
             vel.reflect(closestNormal);
             pos = pos.clone().sub(vel.clone().multiplyScalar(delta_t));
             box.alive = false;
             Scene.removeObject(box.mesh);
+
             // add score
             if (player == 1) {
                 var score = parseInt(document.getElementById("score").innerHTML);
-                document.getElementById("score").innerHTML = score + SystemSettings.mySystem.baseScore;
+
+                if (box.powerup == POWERUP_2XPOINTS) {
+                    SystemSettings.mySystem.player1_cur2xPointsLifetime = SystemSettings.mySystem.powerupLifetime;
+                }
+
+                if (SystemSettings.mySystem.player1_cur2xPointsLifetime > 0) {
+                    document.getElementById("score").innerHTML = score + (SystemSettings.mySystem.baseScore * 2) + " <span style='color:#ff0000'>(2x!)</span>";
+                } else {
+                    document.getElementById("score").innerHTML = score + SystemSettings.mySystem.baseScore;
+                }
             }
             else if (player == 2) {
                 var score = parseInt(document.getElementById("score_2").innerHTML);
-                document.getElementById("score_2").innerHTML = score + SystemSettings.mySystem.baseScore;
+
+                if (box.powerup == POWERUP_2XPOINTS) {
+                    SystemSettings.mySystem.player2_cur2xPointsLifetime = SystemSettings.mySystem.powerupLifetime;
+                }
+
+                if (SystemSettings.mySystem.player2_cur2xPointsLifetime > 0) {
+                    console.log("player 2 - 2x points!");
+                    document.getElementById("score_2").innerHTML = score + (SystemSettings.mySystem.baseScore * 2) + " <span style='color:#ff0000'>(2x!)</span>";
+                } else {
+                    document.getElementById("score_2").innerHTML = score + SystemSettings.mySystem.baseScore;
+                }
             }
         }
 
@@ -489,6 +515,25 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
     // }
     // count down timer
     SystemSettings.mySystem.currLifetime -= delta_t;
+
+    if (SystemSettings.mySystem.player1_cur2xPointsLifetime > 0) {
+        SystemSettings.mySystem.player1_cur2xPointsLifetime -= delta_t;
+
+        if (SystemSettings.mySystem.player1_cur2xPointsLifetime <= 0) {
+            var score = parseInt(document.getElementById("score").innerHTML);
+            document.getElementById("score").innerHTML = score;
+        }
+    }
+
+    if (SystemSettings.mySystem.player2_cur2xPointsLifetime > 0) {
+        SystemSettings.mySystem.player2_cur2xPointsLifetime -= delta_t;
+
+        if (SystemSettings.mySystem.player2_cur2xPointsLifetime <= 0) {
+            var score = parseInt(document.getElementById("score_2").innerHTML);
+            document.getElementById("score_2").innerHTML = score;
+        }
+    }
+
     if (SystemSettings.mySystem.currLifetime < 0) {
         SystemSettings.mySystem.currLifetime = 0;
         SystemSettings.mySystem.isPlayGame = false;

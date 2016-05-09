@@ -25,11 +25,11 @@ Scene.create = function () {
 Scene.setupLighting = function() {
     var light = new THREE.AmbientLight( 0x303030 ); // soft white light
     this._light    = new THREE.PointLight( 0xffffff, 0.5, 10000 );
-    this._light .position.set( 0, 0, 200 );
+    this._light .position.set( 0, 100, 200 );
     Scene._scene.add( this._light  );
 
     this._light2    = new THREE.PointLight( 0xffffff, 0.5, 10000 );
-    this._light2 .position.set( 0, 0, -200 );
+    this._light2 .position.set( 0, 100, -200 );
     Scene._scene.add( this._light2  );
 };
 
