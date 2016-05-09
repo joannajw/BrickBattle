@@ -390,9 +390,9 @@ var platformBox_2 = {   xMin: platformPosition_2.x - platformWidth / 2,
 
 // console.log(bricks.length);
 
-var numPowerups = 2;
+var numPowerups = 3;
 // var powerupsPerGame = 5;
-var powerupLifetime = 10;
+// var powerupLifetime = 10;
 
 var emissive = 0x343434;
 var emissivePowerup = 0xaaaaaa;
@@ -408,21 +408,24 @@ var material_player2_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, e
 var material_powerups   = [[material_player1_normal, material_player2_normal], new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
 
 // var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
- 
+
 
 SystemSettings.mySystem = {
     particleMaterial :  SystemSettings.standardMaterial,
     roomWidth : roomWidth,
     baseScore : 100,
     basePenalty : 250,
-    gameLifetime : 5,
-    currLifetime : 5,
-    powerupLifetime: powerupLifetime,
+    gameLifetime : 120,
+    currLifetime : 120,
+    powerupLifetime: 10,
     player1_cur2xPointsLifetime : 0,
     player2_cur2xPointsLifetime : 0,
     widePlatformFactor : 1.5,
     player1_curWideLifetime : 0,
     player2_curWideLifetime : 0,
+    freezeLifetime : 2,
+    player1_curFreezeLifetime : 0,
+    player2_curFreezeLifetime : 0,
     isPlayGame : true,
     platformsStartPos : [platformPosition, platformPosition_2],
     platformWidth : platformWidth,
@@ -463,6 +466,20 @@ SystemSettings.mySystem = {
     particlesFreq : 100,
 
     createScene : function () {
+        var emissive = 0x343434;
+        var emissivePowerup = 0xaaaaaa;
+
+        var material_player1_normal = new THREE.MeshPhongMaterial( {color: 0x00FF50, emissive: emissive, side: THREE.DoubleSide } );
+        var material_player1_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
+        var material_player1_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
+
+        var material_player2_normal = new THREE.MeshPhongMaterial( {color: 0xCC3399, emissive: emissive, side: THREE.DoubleSide } );
+        var material_player2_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
+        var material_player2_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
+
+        // var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } )];
+
+        var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x777777, emissive: emissivePowerup, side: THREE.DoubleSide } )];
 
         // Ceiling
         var plane_geo_top = new THREE.PlaneBufferGeometry( roomWidth, roomDepth / 2, 1, 1 );
@@ -586,7 +603,7 @@ SystemSettings.mySystem = {
         this.player1_platform = {
             geo: platform_geo,
             mesh: platform,
-            material : material_player1_normal
+            material: material_player1_normal
         }
 
         // Add player 2 platform
@@ -598,7 +615,7 @@ SystemSettings.mySystem = {
         this.player2_platform = {
             geo: platform_geo_2,
             mesh: platform_2,
-            material : material_player2_normal
+            material: material_player2_normal
         }
 
         // Add player 1 center line

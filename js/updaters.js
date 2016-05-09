@@ -182,8 +182,11 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                 }
 
                 if (box.powerup == POWERUP_WIDE) {
-                    console.log("player 1 - increase width");
                     SystemSettings.mySystem.player1_curWideLifetime = SystemSettings.mySystem.powerupLifetime;
+                }
+
+                if (box.powerup == POWERUP_FREEZE) {
+                    SystemSettings.mySystem.player2_curFreezeLifetime = SystemSettings.mySystem.freezeLifetime;
                 }
 
                 // 2x points
@@ -216,7 +219,7 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                     SystemSettings.mySystem.player1_platform = {
                         geo: geo,
                         mesh: mesh,
-                        material : material
+                        material: material
                     }
 
                     SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].xMin = position.x - platformWidth / 2 - (platformWidth * (factor - 1) / 2),
@@ -234,6 +237,10 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                 if (box.powerup == POWERUP_WIDE) {
                     console.log("player 2 - wide platform powerup!");
                     SystemSettings.mySystem.player2_curWideLifetime = SystemSettings.mySystem.powerupLifetime;
+                }
+
+                if (box.powerup == POWERUP_FREEZE) {
+                    SystemSettings.mySystem.player1_curFreezeLifetime = SystemSettings.mySystem.freezeLifetime;
                 }
 
                 // 2x points
@@ -266,7 +273,7 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                     SystemSettings.mySystem.player2_platform = {
                         geo: geo,
                         mesh: mesh,
-                        material : material
+                        material: material
                     }
 
                     SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].xMin = position.x - platformWidth / 2 - (platformWidth * (factor - 1) / 2),
@@ -623,7 +630,7 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
             SystemSettings.mySystem.player1_platform = {
                 geo: geo,
                 mesh: mesh,
-                material : material
+                material: material
             }
 
             SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].xMin = position.x - platformWidth / 2,
@@ -659,7 +666,7 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
             SystemSettings.mySystem.player2_platform = {
                 geo: geo,
                 mesh: mesh,
-                material : material
+                material: material
             }
 
             SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].xMin = position.x - platformWidth / 2,
