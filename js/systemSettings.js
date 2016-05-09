@@ -314,7 +314,7 @@ SystemSettings.cloth = {
 
 var roomHeight = 600;
 var roomWidth = 1200;
-var roomDepth = 600;
+var roomDepth = 2000;
 var y_offset = -roomHeight / 2;
 
 var numCols = 7;
@@ -514,6 +514,21 @@ SystemSettings.mySystem = {
         plane_right2.position.y = roomHeight / 2 + y_offset;
         plane_right2.position.z = -roomDepth / 4;
         Scene.addObject( plane_right2 );
+
+        // Back walls
+        var plane_geo_back = new THREE.PlaneBufferGeometry( roomWidth, roomHeight, 1, 1 );
+        var plane_back     = new THREE.Mesh( plane_geo_back, material_player1_normal );
+        plane_back.rotation.y = 0;
+        plane_back.position.y = roomHeight / 2 + y_offset;
+        plane_back.position.z = roomDepth / 2;
+        Scene.addObject( plane_back );
+
+        var plane_geo_back2 = new THREE.PlaneBufferGeometry( roomWidth, roomHeight, 1, 1 );
+        var plane_back2     = new THREE.Mesh( plane_geo_back2, material_player2_normal );
+        plane_back2.rotation.y = 0;
+        plane_back2.position.y = roomHeight / 2 + y_offset;
+        plane_back2.position.z = -roomDepth / 2;
+        Scene.addObject( plane_back2 );
 
         // Add bricks
         for (var i = 0; i < bricks.length; i++) {

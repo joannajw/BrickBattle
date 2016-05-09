@@ -47,10 +47,10 @@ Renderer.create = function( scene, canvas ) {
     document.body.appendChild( Renderer._renderer.domElement );
 
     // Create camera and setup controls
-    Renderer._camera   = new THREE.PerspectiveCamera ( 55, Renderer._aspect, 0.01, 5000 );
+    Renderer._camera   = new THREE.PerspectiveCamera ( 55, Renderer._aspect, 0.01, 10000 );
     Renderer._camera.position.set( 0, 0, 1000 );
 
-    Renderer._camera2   = new THREE.PerspectiveCamera ( 55, Renderer._aspect, 0.01, 5000 );
+    Renderer._camera2   = new THREE.PerspectiveCamera ( 55, Renderer._aspect, 0.01, 10000 );
     Renderer._camera2.position.set( 0, 0, -1000 );
 
 
