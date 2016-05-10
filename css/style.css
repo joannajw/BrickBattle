@@ -27,10 +27,30 @@ body {
 }
 
 #main_div {
-    margin: 0 auto;
-    max-width: 55em;
-    padding: 30px;
     position: absolute;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+.column_left {
+    width: 50%;
+    float: left;
+}
+
+.column_right {
+    width: 50%;
+    float: right;
+}
+
+.row_top {
+    text-align: center;
+}
+
+.row_bottom {
+    position: absolute;
+    min-width: 100%;
+    bottom: 0px;
+    text-align: center;
 }
 
 .top {
@@ -60,9 +80,12 @@ img {
     font-color:#ddd;
 }
 #overlay_div {
-    position:absolute;
-    top:  50px;
-    left: 50px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;    
+    margin: auto;
     height:100px;
     width: 340px;
     font-size:14px;
