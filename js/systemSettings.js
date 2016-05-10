@@ -23,292 +23,6 @@ SystemSettings.standardMaterial = new THREE.ShaderMaterial( {
 } );
 
 ////////////////////////////////////////////////////////////////////////////////
-// Basic system
-////////////////////////////////////////////////////////////////////////////////
-
-SystemSettings.basic = {
-
-    // Particle material
-    particleMaterial : SystemSettings.standardMaterial,
-
-    // Initialization
-    initializerFunction : SphereInitializer,
-    initializerSettings : {
-        sphere: new THREE.Vector4 ( 0.0, 0.0, 0.0, 10.0),
-        color:    new THREE.Vector4 ( 1.0, 1.0, 1.0, 1.0 ),
-        velocity: new THREE.Vector3 ( 0.0, 0.0, 0.0),
-        lifetime: 7,
-        size:     6.0,
-    },
-
-    // Update
-    updaterFunction : EulerUpdater,
-    updaterSettings : {
-        externalForces : {
-            gravity :     new THREE.Vector3( 0, 0, 0),
-            attractors : [],
-        },
-        collidables: {},
-    },
-
-    // Scene
-    maxParticles :  1000,
-    particlesFreq : 100,
-    createScene : function () {},
-};
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Fountain system
-////////////////////////////////////////////////////////////////////////////////
-
-SystemSettings.fountainBounce = {
-
-    // Particle material
-    particleMaterial :  SystemSettings.standardMaterial,
-
-    // Initialization
-    initializerFunction : FountainInitializer,
-    initializerSettings : {
-        sphere:   new THREE.Vector4 ( 0.0, 30.0, 0.0, 1.0 ),
-        color:    new THREE.Vector4 ( 0.0, 0.0, 1.0, 1.0 ),
-        velocity: new THREE.Vector3 ( 0.0, 30.0, 0.0),
-        lifetime: 7,
-        size:     5.0,
-    },
-
-    // Update
-    updaterFunction : EulerUpdater,
-    updaterSettings : {
-        externalForces : {
-            gravity :     new THREE.Vector3( 0, -20, 0),
-            attractors : [],
-        },
-        collidables: {
-            bouncePlanes: [ {plane : new THREE.Vector4( 0, 1, 0, 0 ), damping : 0.8 } ],
-        },
-    },
-
-    // Scene
-    maxParticles :  5000,
-    particlesFreq : 500,
-    createScene : function () {
-        var plane_geo = new THREE.PlaneBufferGeometry( 1000, 1000, 1, 1 );
-        var phong     = new THREE.MeshPhongMaterial( {color: 0x444444, emissive: 0x222222, side: THREE.DoubleSide } );
-
-        var box_geo   = new THREE.BoxGeometry(10,30,10)
-
-        var plane     = new THREE.Mesh( plane_geo, phong );
-        var box       = new THREE.Mesh( box_geo, phong );
-        box.position.set( 0.0, 15.0, 0.0 );
-
-        plane.rotation.x = -1.57;
-        plane.position.y = 0;
-
-        Scene.addObject( plane );
-        Scene.addObject( box );
-    },
-};
-
-SystemSettings.fountainSink = {
-
-    // Particle material
-    particleMaterial :  SystemSettings.standardMaterial,
-
-    // Initialization
-    initializerFunction : FountainInitializer,
-    initializerSettings : {
-        sphere:   new THREE.Vector4 ( 0.0, 30.0, 0.0, 1.0 ),
-        color:    new THREE.Vector4 ( 0.0, 0.0, 1.0, 1.0 ),
-        velocity: new THREE.Vector3 ( 0.0, 30.0, 0.0),
-        lifetime: 7,
-        size:     5.0,
-    },
-
-    // Update
-    updaterFunction : EulerUpdater,
-    updaterSettings : {
-        externalForces : {
-            gravity :     new THREE.Vector3( 0, -20, 0),
-            attractors : [],
-        },
-        collidables: {
-            sinkPlanes : [ { plane : new THREE.Vector4( 0, 1, 0, 0 ) } ],
-        },
-    },
-
-    // Scene
-    maxParticles :  5000,
-    particlesFreq : 500,
-    createScene : function () {
-        var plane_geo = new THREE.PlaneBufferGeometry( 1000, 1000, 1, 1 );
-        var phong     = new THREE.MeshPhongMaterial( {color: 0x444444, emissive: 0x222222, side: THREE.DoubleSide } );
-
-        var box_geo   = new THREE.BoxGeometry(10,30,10)
-
-        var plane     = new THREE.Mesh( plane_geo, phong );
-        var box       = new THREE.Mesh( box_geo, phong );
-        box.position.set( 0.0, 15.0, 0.0 );
-
-        plane.rotation.x = -1.57;
-        plane.position.y = 0;
-
-        Scene.addObject( plane );
-        Scene.addObject( box );
-    },
-};
-
-////////////////////////////////////////////////////////////////////////////////
-// Attractor system
-////////////////////////////////////////////////////////////////////////////////
-
-SystemSettings.attractor = {
-
-    // Particle material
-    particleMaterial : SystemSettings.standardMaterial,
-
-    // Initialization
-    initializerFunction : SphereInitializer,
-    initializerSettings : {
-        sphere:   new THREE.Vector4 ( 0.0, 0.0, 0.0, 5.0),
-        color:    new THREE.Vector4 ( 1.0, 1.0, 1.0, 1.0 ),
-        velocity: new THREE.Vector3 ( 0.0, 0.0, 0.0),
-        lifetime: 7,
-        size:     6.0,
-    },
-
-    // Update
-    updaterFunction : EulerUpdater,
-    updaterSettings : {
-        externalForces : {
-            gravity :     new THREE.Vector3( 0, 0, 0),
-            attractors : [ new THREE.Sphere( new THREE.Vector3(30.0, 30.0, 30.0), 15.0 ) ],
-        },
-        collidables: {},
-    },
-
-    // Scene
-    maxParticles :  10000,
-    particlesFreq : 1000,
-    createScene : function () {
-        var sphere_geo = new THREE.SphereGeometry( 1.0, 32, 32 );
-        var phong      = new THREE.MeshPhongMaterial( {color: 0x444444, emissive:0x442222, side: THREE.DoubleSide } );
-        var sphere = new THREE.Mesh( sphere_geo, phong )
-
-        sphere.position.set (30.0, 30.0, 30.0);
-        Scene.addObject( sphere );
-    },
-};
-
-////////////////////////////////////////////////////////////////////////////////
-// Horse animation
-////////////////////////////////////////////////////////////////////////////////
-
-SystemSettings.animated = {
-
-    // Particle Material
-    particleMaterial :  SystemSettings.standardMaterial,
-
-    // Initializer
-    initializerFunction : AnimationInitializer,
-    initializerSettings : {
-        position: new THREE.Vector3 ( 0.0, 60.0, 0.0),
-        color:    new THREE.Vector4 ( 1.0, 1.0, 1.0, 1.0 ),
-        velocity: new THREE.Vector3 ( 0.0, 0.0, -40.0),
-        lifetime: 1.25,
-        size:     2.0,
-    },
-
-    // Updater
-    updaterFunction : EulerUpdater,
-    updaterSettings : {
-        externalForces : {
-            gravity :     new THREE.Vector3( 0, 0, 0),
-            attractors : [],
-        },
-        collidables: {
-            bouncePlanes: [ {plane : new THREE.Vector4( 0, 1, 0, 0 ), damping : 0.8 } ],
-        },
-    },
-
-    // Scene
-    // maxParticles:  200,
-    // particlesFreq: 100,
-    maxParticles:  20000,
-    particlesFreq: 10000,
-    createScene : function () {
-        var plane_geo = new THREE.PlaneBufferGeometry( 1000, 1000, 1, 1 );
-        var phong     = new THREE.MeshPhongMaterial( {color: 0x444444, emissive:0x444444, side: THREE.DoubleSide } );
-        var plane = new THREE.Mesh( plane_geo, phong );
-        plane.rotation.x = -1.57;
-        plane.position.y = 0;
-
-        Scene.addObject( plane );
-    },
-
-    // Animation
-    animatedModelName: "animated_models/horse.js",
-    animationLoadFunction : function( geometry ) {
-
-        mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0x606060, morphTargets: true, transparent:true, opacity:0.5 } ) );
-        mesh.scale.set( 0.25, 0.25, 0.25 );
-        // mesh.position.set( 0.0, 30.0, 0.0 );
-        Scene.addObject( mesh );
-        ParticleEngine.addMesh( mesh );
-
-        ParticleEngine.addAnimation( new THREE.MorphAnimation( mesh ) );
-    },
-
-};
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Cloth
-////////////////////////////////////////////////////////////////////////////////
-
-SystemSettings.cloth = {
-
-    // Particle Material
-    particleMaterial :  new THREE.MeshLambertMaterial( { color:0xff0000, side: THREE.DoubleSide  } ),
-
-    // Initializer
-    initializerFunction : ClothInitializer,
-    initializerSettings : {
-        position: new THREE.Vector3 ( 0.0, 60.0, 0.0),
-        color:    new THREE.Vector4 ( 1.0, 0.0, 0.0, 1.0 ),
-        velocity: new THREE.Vector3 ( 0.0, 0.0, 0.0),
-    },
-
-    // Updater
-    updaterFunction : ClothUpdater,
-    updaterSettings : {
-        externalForces : {
-            gravity :     new THREE.Vector3( 0, -10.0, 0),
-            attractors : [],
-        },
-        collidables: {
-            bounceSpheres: [ {sphere : new THREE.Vector4( 0, 0, 0, 52.0 ), damping : 0.0 } ],
-        },
-    },
-
-    // Scene
-    maxParticles:  400,
-    particlesFreq: 1000,
-    createScene : function () {
-        var sphere_geo = new THREE.SphereGeometry( 50.0, 32, 32 );
-        var phong      = new THREE.MeshPhongMaterial( {color: 0x444444, emissive:0x442222, side: THREE.DoubleSide } );
-
-        Scene.addObject( new THREE.Mesh( sphere_geo, phong ) );
-
-    },
-
-    // Cloth specific settings
-    cloth : true,
-    width : 20,
-    height : 20,
-};
-
-////////////////////////////////////////////////////////////////////////////////
 // My System
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -316,7 +30,6 @@ var roomHeight = 600;
 var roomWidth = 1200;
 var roomDepth = 2000;
 var y_offset = -roomHeight / 2;
-
 var numCols = 7;
 var numRows = 7;
 var brickHeight = 25;
@@ -326,7 +39,6 @@ var spacing = 5;
 var yOffset = roomHeight / 2 - (brickHeight * numRows) - spacing - 10;
 var bricks = [];
 var bricks_2 = [];
-
 var distBetween = 50;
 
 for (var j = 0; j < numRows; j++) {
@@ -344,7 +56,6 @@ for (var j = 0; j < numRows; j++) {
                             alive: true,
                             player : 1
                         };
-                        // console.log((bricks[idx].box.zMin + bricks[idx].box.zMax )/ 2);
         bricks[idx].damping = 1;
         bricks_2[idx] = {};
         bricks_2[idx].box = { xMin: brickWidth * i - (roomWidth / 2) + spacing,
@@ -358,7 +69,6 @@ for (var j = 0; j < numRows; j++) {
                             alive: true,
                             player : 2
                         };
-                        // console.log((bricks_2[idx].box.zMin + bricks[idx].box.zMax )/ 2);
         bricks_2[idx].damping = 1;    }
 }
 
@@ -368,9 +78,7 @@ var platformHeight = 10;
 var platformDepth = brickDepth;
 var platformPosition = new THREE.Vector3(0, -roomHeight / 2, brickDepth / 2 + distBetween);
 var platformPosition_2 = new THREE.Vector3(0, -roomHeight / 2, - brickDepth / 2 - distBetween);
-// var platformPosition = new THREE.Vector3(0, -roomHeight / 2 + 20, brickDepth / 2 + spacing);
-// var platformPosition_2 = new THREE.Vector3(0, -roomHeight / 2 + 20, - brickDepth / 2 - spacing);
-// console.log(platformPosition, platformPosition_2);
+
 var platformBox = { xMin: platformPosition.x - platformWidth / 2,
                     xMax: platformPosition.x + platformWidth / 2,
                     yMin: platformPosition.y - platformHeight / 2,
@@ -388,12 +96,6 @@ var platformBox_2 = {   xMin: platformPosition_2.x - platformWidth / 2,
                         player: 2
                         };
 
-// console.log(bricks.length);
-
-var numPowerups = 20;
-// var powerupsPerGame = 5;
-// var powerupLifetime = 10;
-
 var emissive = 0x343434;
 var emissivePowerup = 0xbbbbbb;
 var freezeMaterial = new THREE.MeshPhongMaterial( {color: 0x777777, emissive: emissivePowerup, side: THREE.DoubleSide } );
@@ -406,15 +108,13 @@ var material_player2_normal = new THREE.MeshPhongMaterial( {color: 0xCC3399, emi
 var material_player2_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
 var material_player2_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
 
-// normal, 2x score, widen platform, freeze opponent, add ball
+// order of powerups: normal, 2x score, widen platform, freeze opponent, add ball
 var material_powerups   = [[material_player1_normal, material_player2_normal], new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } ), freezeMaterial, new THREE.MeshPhongMaterial( {color: 0x0066FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
 var material_probs = [40, 2, 3, 2, 3];
 var material_probs_total = 0;
 for (var i = 0; i < material_probs.length; i++) {
     material_probs_total += material_probs[i];
 }
-// var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
-
 
 SystemSettings.mySystem = {
     particleMaterial :  SystemSettings.standardMaterial,
@@ -442,7 +142,7 @@ SystemSettings.mySystem = {
     material_probs_total : material_probs_total,
 
     // Initialization
-    initializerFunction : SphereInitializer,
+    initializerFunction : BallInitializer,
     initializerSettings : {
         sphere: new THREE.Vector4 ( 0, 0, 0, 3.0),
         color:    new THREE.Vector4 ( 1.0, 1.0, 1.0, 1.0 ),
@@ -459,7 +159,6 @@ SystemSettings.mySystem = {
             attractors : [],
         },
         collidables: {
-            // sinkPlanes: [ {plane : new THREE.Vector4( 0, 1, 0, y_offset ), damping : 1.0 } ],
             bouncePlanes: [
                             {plane : new THREE.Vector4( 0, -1, 0, roomHeight + y_offset ), damping : 1.0 },
                             {plane : new THREE.Vector4( 1, 0, 0, -roomWidth / 2 ), damping : 1.0 },
@@ -476,20 +175,6 @@ SystemSettings.mySystem = {
     particlesFreq : 100,
 
     createScene : function () {
-        // var emissive = 0x343434;
-        // var emissivePowerup = 0xaaaaaa;
-
-        // var material_player1_normal = new THREE.MeshPhongMaterial( {color: 0x00FF50, emissive: emissive, side: THREE.DoubleSide } );
-        // var material_player1_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
-        // var material_player1_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
-
-        // var material_player2_normal = new THREE.MeshPhongMaterial( {color: 0xCC3399, emissive: emissive, side: THREE.DoubleSide } );
-        // var material_player2_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
-        // var material_player2_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
-
-        // var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } )];
-
-        // var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } ), this.freezeMaterial];
 
         // Ceiling
         var plane_geo_top = new THREE.PlaneBufferGeometry( roomWidth, roomDepth / 2, 1, 1 );
@@ -506,7 +191,7 @@ SystemSettings.mySystem = {
         plane_top2.position.z = -roomDepth / 4;
         Scene.addObject( plane_top2 );
 
-        // Floor (make this a sink plane?)
+        // Floor 
         var plane_geo_bottom = new THREE.PlaneBufferGeometry( roomWidth, roomDepth / 2, 1, 1 );
         var plane_bottom     = new THREE.Mesh( plane_geo_bottom, material_player1_dark );
         plane_bottom.rotation.x = -Math.PI / 2;

@@ -8,18 +8,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 var applyRenderingEffects = false;
-// var applyRenderingEffects = true;
 var Collisions = Collisions || {};
 
 Collisions.BouncePlatform = function(particleAttributes, alive, delta_t, platform) {
     var positions    = particleAttributes.position;
     var velocities   = particleAttributes.velocity;
-
-    // var normal_xy_min = new THREE.Vector3(0, 0, -1);
-    // var normal_xy_max = new THREE.Vector3(0, 0, 1);
-
-    // var normal_yz_min = new THREE.Vector3(-1, 0, 0);
-    // var normal_yz_max = new THREE.Vector3(1, 0, 0);
 
     var normal_xz_min = new THREE.Vector3(0, -1, 0);
     var normal_xz_max = new THREE.Vector3(0, 1, 0);
@@ -33,6 +26,7 @@ Collisions.BouncePlatform = function(particleAttributes, alive, delta_t, platfor
 
         var newPos = pos.clone().add(vel.clone().multiplyScalar(delta_t));
 
+        // only intersect if ball is falling downward
         if (vel.dot(normal_xz_max) < 0) {
             if ((newPos.x >= platform.xMin && newPos.x <= platform.xMax && newPos.z >= platform.zMin && newPos.z <= platform.zMax) ||
                 (pos.x >= platform.xMin && pos.x <= platform.xMax && pos.z >= platform.zMin && pos.z <= platform.zMax)) {
@@ -57,31 +51,12 @@ Collisions.BouncePlatform = function(particleAttributes, alive, delta_t, platfor
                 }
             }
         }
-
         setElement( i, positions, pos );
         setElement( i, velocities, vel );
     }
 }
 
-Collisions.SinkBox = function(particleAttributes, alive, delta_t, box) {
-    var positions   = particleAttributes.position;
-
-    // var normal_xmin = new THREE.Vector3(plane.x, plane.y, plane.z);
-
-    for ( var i = 0 ; i < alive.length ; ++i ) {
-
-        if ( !alive[i] ) continue;
-        // ----------- STUDENT CODE BEGIN ------------
-        var pos = getElement( i, positions );
-
-        // Kill the particle if it's inside or on the box
-        if (pos.x >= box.xMin && pos.x <= box.xMax && pos.y >= box.yMin && pos.y <= box.yMax && pos.z >= box.zMin && pos.z <= box.zMax) {
-            killPartilce(i, particleAttributes, alive);
-        }
-        // ----------- STUDENT CODE END ------------
-    }
-}
-
+// powerup indices
 var POWERUP_2XPOINTS = 1;
 var POWERUP_WIDE = 2;
 var POWERUP_FREEZE = 3;
@@ -96,23 +71,19 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
     var sizes        = particleAttributes.size;
     var lifetimes    = particleAttributes.lifetime;
 
-    // var normal_xy_min = new THREE.Vector3(0, 0, -1);
-    // var normal_xy_max = new THREE.Vector3(0, 0, 1);
-
     var normal_yz_min = new THREE.Vector3(-1, 0, 0);
     var normal_yz_max = new THREE.Vector3(1, 0, 0);
-
     var normal_xz_min = new THREE.Vector3(0, -1, 0);
     var normal_xz_max = new THREE.Vector3(0, 1, 0);
 
     var EPS = 0.1;
 
     for ( var i = 0 ; i < alive.length ; ++i ) {
+        // only intersect boxes in play
         if (!box.alive) {
             return;
         }
         if ( !alive[i] ) continue;
-        // ----------- STUDENT CODE BEGIN ------------
         var pos = getElement( i, positions );
         var vel = getElement( i, velocities );
         var player = getElement( i, players );
@@ -176,15 +147,19 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
             Scene.removeObject(box.mesh);
             Scene.removeObject(box.backMesh);
 
-            // add score
+            // update score and apply any powerups
             if (player == 1) {
                 var score = parseInt(document.getElementById("score").innerHTML);
 
+                // start the 2x points powerup timer
                 if (box.powerup == POWERUP_2XPOINTS) {
+                    console.log("player 1 - 2x points powerup!");
                     SystemSettings.mySystem.player1_cur2xPointsLifetime = SystemSettings.mySystem.powerupLifetime;
                 }
 
+                // make the platform larger
                 if (box.powerup == POWERUP_WIDE) {
+                    console.log("player 1 - wide platform powerup!");
                     if (SystemSettings.mySystem.player1_curWideLifetime <= 0) {
                         var factor = SystemSettings.mySystem.widePlatformFactor;
                         var platformWidth = SystemSettings.mySystem.platformWidth;
@@ -213,11 +188,13 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                         SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].xMax = position.x + platformWidth / 2 + (platformWidth * (factor - 1) / 2),
                         SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].mesh = mesh;
                     }
-
+                    // set the wide platform powerup timer
                     SystemSettings.mySystem.player1_curWideLifetime = SystemSettings.mySystem.powerupLifetime;
                 }
 
+                // change the color of the opponent's platform to freeze
                 if (box.powerup == POWERUP_FREEZE) {
+                    console.log("player 1 - freeze platform powerup!");
                     if (SystemSettings.mySystem.player2_curFreezeLifetime <= 0) {
                         var freezeMaterial = SystemSettings.mySystem.freezeMaterial;
                         var geo = SystemSettings.mySystem.player2_platform.geo;
@@ -241,11 +218,13 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
 
                         SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].mesh = mesh;
                     }
-
+                    // set the freeze platform powerup timer
                     SystemSettings.mySystem.player2_curFreezeLifetime = SystemSettings.mySystem.freezeLifetime;
                 }
 
+                // add ball powerup
                 if (box.powerup == POWERUP_ADDBALL) {
+                    console.log("player 1 - add ball powerup!");
                     var idx;
                     // get first unused ball
                     for (var j = 0; j < alive.length; j++) {
@@ -273,13 +252,17 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                 }
             }
 
+            // update score and apply any powerups
             else if (player == 2) {
                 var score = parseInt(document.getElementById("score_2").innerHTML);
 
+                // start the 2x points powerup timer
                 if (box.powerup == POWERUP_2XPOINTS) {
+                    console.log("player 2 - 2x points powerup!");
                     SystemSettings.mySystem.player2_cur2xPointsLifetime = SystemSettings.mySystem.powerupLifetime;
                 }
 
+                // make the platform larger
                 if (box.powerup == POWERUP_WIDE) {
                     console.log("player 2 - wide platform powerup!");
 
@@ -311,11 +294,13 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                         SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].xMax = position.x + platformWidth / 2 + (platformWidth * (factor - 1) / 2),
                         SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].mesh = mesh;
                     }
-
+                    // set the wide platform powerup timer
                     SystemSettings.mySystem.player2_curWideLifetime = SystemSettings.mySystem.powerupLifetime;
                 }
 
+                // change the color of the opponent's platform to freeze
                 if (box.powerup == POWERUP_FREEZE) {
+                    console.log("player 2 - freeze platform powerup!");
                     if (SystemSettings.mySystem.player1_curFreezeLifetime <= 0) {
                         var freezeMaterial = SystemSettings.mySystem.freezeMaterial;
                         var geo = SystemSettings.mySystem.player1_platform.geo;
@@ -339,13 +324,14 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
 
                         SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0].mesh = mesh;
                     }
-
+                    // set the freeze platform powerup timer
                     SystemSettings.mySystem.player1_curFreezeLifetime = SystemSettings.mySystem.freezeLifetime;
                 }
 
+                // add ball powerup
                 if (box.powerup == POWERUP_ADDBALL) {
+                    console.log("player 2 - add ball powerup!");
                     var idx;
-                    console.log("ADD BALL");
                     // get first unused ball
                     for (var j = 0; j < alive.length; j++) {
                         if (getElement(j, players) != 1 && getElement(j, players) != 2 ) {
@@ -372,10 +358,8 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                 }
             }
         }
-
         setElement( i, positions, pos );
         setElement( i, velocities, vel );
-        // ----------- STUDENT CODE END ------------
     }
 
 }
@@ -412,7 +396,6 @@ Collisions.BouncePlane = function ( particleAttributes, alive, delta_t, plane, d
             vel = vel.clone().reflect(normal).multiplyScalar(damping);
             pos = new_pos;
         }
-
         setElement( i, positions, pos );
         setElement( i, velocities, vel );
     }
@@ -449,6 +432,7 @@ Collisions.SinkPlane = function ( particleAttributes, alive, delta_t, plane  ) {
                 }
                 // no penalty for extra ball, just remove it
                 else if (SystemSettings.mySystem.player1_numBalls > 1) {
+                    console.log("player 1 - add ball powerup over");
                     SystemSettings.mySystem.player1_numBalls--;
                     pos = new THREE.Vector3(0, 0, 0);
                     setElement(i, sizes, 0);
@@ -463,6 +447,7 @@ Collisions.SinkPlane = function ( particleAttributes, alive, delta_t, plane  ) {
                 }
                 // no penalty for extra ball, just remove it
                 else if (SystemSettings.mySystem.player2_numBalls > 1) {
+                    console.log("player 2 - add ball powerup over");
                     SystemSettings.mySystem.player2_numBalls--;
                     pos = new THREE.Vector3(0, 0, 0);
                     setElement(i, sizes, 0);
@@ -470,58 +455,10 @@ Collisions.SinkPlane = function ( particleAttributes, alive, delta_t, plane  ) {
                 }
             }
         }
-
         setElement( i, positions, pos );
         setElement( i, velocities, vel );
     }
-    // var positions   = particleAttributes.position;
-
-    // var normal = new THREE.Vector3(plane.x, plane.y, plane.z);
-
-    // for ( var i = 0 ; i < alive.length ; ++i ) {
-
-    //     if ( !alive[i] ) continue;
-    //     // ----------- STUDENT CODE BEGIN ------------
-    //     var pos = getElement( i, positions );
-
-    //     // Kill the particle if it's on the wrong side of the plane
-    //     if (normal.dot(pos) < 0) {
-    //         killPartilce(i, particleAttributes, alive);
-    //     }
-    //     // ----------- STUDENT CODE END ------------
-    // }
 };
-
-Collisions.BounceSphere = function ( particleAttributes, alive, delta_t, sphere, damping ) {
-    // meep();
-    var positions    = particleAttributes.position;
-    var velocities   = particleAttributes.velocity;
-
-    var center = new THREE.Vector3(sphere.x, sphere.y, sphere.z);
-    var radius = sphere.w;
-    // radius *= 1.5;
-    var EPS = 0.5;
-
-    for ( var i = 0 ; i < alive.length ; ++i ) {
-
-        if ( !alive[i] ) continue;
-        // ----------- STUDENT CODE BEGIN ------------
-        var pos = getElement( i, positions );
-        var vel = getElement( i, velocities );
-
-        var distance = pos.distanceTo(center);
-
-        if (distance <= radius + EPS) {
-            var normal = pos.clone().sub(center).normalize();
-            pos.add(normal.clone().multiplyScalar(radius - distance + EPS));
-            vel.reflect(normal).multiplyScalar(damping);
-        }
-
-        setElement( i, positions, pos );
-        setElement( i, velocities, vel );
-        // ----------- STUDENT CODE END ------------
-    }
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Null updater - does nothing
@@ -567,7 +504,6 @@ EulerUpdater.prototype.updateVelocities = function ( particleAttributes, alive, 
 
     for ( var i = 0 ; i < alive.length ; ++i ) {
         if ( !alive[i] ) continue;
-        // ----------- STUDENT CODE BEGIN ------------
         var p = getElement( i, positions );
         var v = getElement( i, velocities );
 
@@ -587,7 +523,6 @@ EulerUpdater.prototype.updateVelocities = function ( particleAttributes, alive, 
         }
 
         setElement( i, velocities, v );
-        // ----------- STUDENT CODE END ------------
     }
 
 };
@@ -602,7 +537,6 @@ EulerUpdater.prototype.updateColors = function ( particleAttributes, alive, delt
     for ( var i = 0 ; i < alive.length ; ++i ) {
 
         if ( !alive[i] ) continue;
-        // ----------- STUDENT CODE BEGIN ------------
         var c = getElement( i, colors );
         var p = getElement( i, positions );
 
@@ -614,7 +548,6 @@ EulerUpdater.prototype.updateColors = function ( particleAttributes, alive, delt
         }
 
         setElement( i, colors, c );
-        // ----------- STUDENT CODE END ------------
     }
 };
 
@@ -627,7 +560,6 @@ EulerUpdater.prototype.updateSizes = function ( particleAttributes, alive, delta
 
     for ( var i = 0 ; i < alive.length ; ++i ) {
         if ( !alive[i] ) continue;
-        // ----------- STUDENT CODE BEGIN ------------
         var s = getElement( i, sizes );
         var p = getElement( i, positions );
 
@@ -639,7 +571,6 @@ EulerUpdater.prototype.updateSizes = function ( particleAttributes, alive, delta
         }
 
         setElement( i, sizes, s );
-        // ----------- STUDENT CODE END ------------
     }
 
 };
@@ -655,32 +586,35 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
     // count down timer
     SystemSettings.mySystem.currLifetime -= delta_t;
 
-    // 2x points
+    // 2x points count down
     if (SystemSettings.mySystem.player1_cur2xPointsLifetime > 0) {
         SystemSettings.mySystem.player1_cur2xPointsLifetime -= delta_t;
-
+        // remove 2x points text
         if (SystemSettings.mySystem.player1_cur2xPointsLifetime <= 0) {
+            console.log("player 1 - 2x points powerup over");
             var score = parseInt(document.getElementById("score").innerHTML);
             document.getElementById("score").innerHTML = score;
         }
     }
 
+    // 2x points count down
     if (SystemSettings.mySystem.player2_cur2xPointsLifetime > 0) {
         SystemSettings.mySystem.player2_cur2xPointsLifetime -= delta_t;
-
+        // remove 2x points text
         if (SystemSettings.mySystem.player2_cur2xPointsLifetime <= 0) {
+            console.log("player 2 - 2x points powerup over");
             var score = parseInt(document.getElementById("score_2").innerHTML);
             document.getElementById("score_2").innerHTML = score;
         }
     }
 
-    // Wide platform
+    // Wide platform count down
     if (SystemSettings.mySystem.player1_curWideLifetime > 0) {
         SystemSettings.mySystem.player1_curWideLifetime -= delta_t;
-
+        
+        // Put platform back to original width
         if (SystemSettings.mySystem.player1_curWideLifetime <= 0) {
-            // Put platform back to original width
-
+            console.log("player 1 - wide platform powerup over");
             var factor = SystemSettings.mySystem.widePlatformFactor;
             var platformWidth = SystemSettings.mySystem.platformWidth;
 
@@ -710,12 +644,13 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
         }
     }
 
+    // wide platform count down
     if (SystemSettings.mySystem.player2_curWideLifetime > 0) {
         SystemSettings.mySystem.player2_curWideLifetime -= delta_t;
 
+        // Put platform back to original width
         if (SystemSettings.mySystem.player2_curWideLifetime <= 0) {
-            // Put platform back to original width
-            console.log("player 2 - decrease platform width");
+            console.log("player 2 - wide platform powerup over");
 
             var factor = SystemSettings.mySystem.widePlatformFactor;
             var platformWidth = SystemSettings.mySystem.platformWidth;
@@ -746,11 +681,13 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
         }
     }
 
+    // freeze platform count down
     if (SystemSettings.mySystem.player1_curFreezeLifetime > 0) {
         SystemSettings.mySystem.player1_curFreezeLifetime -= delta_t;
 
+        // set platform colour back to normal
         if (SystemSettings.mySystem.player1_curFreezeLifetime <= 0) {
-            // set platform colour back to normal
+            console.log("player 2 - freeze platform powerup over");
             var material = SystemSettings.mySystem.material_platformDefault1;
             var geo = SystemSettings.mySystem.player1_platform.geo;
             var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
@@ -775,11 +712,13 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
         }
     }
 
+    // freeze platform count down
     if (SystemSettings.mySystem.player2_curFreezeLifetime > 0) {
         SystemSettings.mySystem.player2_curFreezeLifetime -= delta_t;
 
+        // set platform colour back to normal
         if (SystemSettings.mySystem.player2_curFreezeLifetime <= 0) {
-            // set platform colour back to normal
+            console.log("player 1 - freeze platform powerup over");
             var material = SystemSettings.mySystem.material_platformDefault2;
             var geo = SystemSettings.mySystem.player2_platform.geo;
             var dims = new THREE.Vector3(geo.parameters.width, geo.parameters.height, geo.parameters.depth);
@@ -804,6 +743,7 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
         }
     }
 
+    // game over
     if (SystemSettings.mySystem.currLifetime < 0) {
         SystemSettings.mySystem.currLifetime = 0;
         SystemSettings.mySystem.isPlayGame = false;
@@ -838,27 +778,6 @@ EulerUpdater.prototype.collisions = function ( particleAttributes, alive, delta_
         }
     }
 
-    if ( this._opts.collidables.spheres ) {
-        for (var i = 0 ; i < this._opts.collidables.spheres.length ; ++i ) {
-            Collisions.Sphere( particleAttributes, alive, delta_t, this._opts.collidables.spheres[i] );
-        }
-    }
-
-    if ( this._opts.collidables.bounceSpheres ) {
-        for (var i = 0 ; i < this._opts.collidables.bounceSpheres.length ; ++i ) {
-            var sphere = this._opts.collidables.bounceSpheres[i].sphere;
-            var damping = this._opts.collidables.bounceSpheres[i].damping;
-            Collisions.BounceSphere( particleAttributes, alive, delta_t, sphere, damping );
-        }
-    }
-
-    if ( this._opts.collidables.sinkBoxes ) {
-        for (var i = 0 ; i < this._opts.collidables.sinkBoxes.length ; ++i ) {
-            var box = this._opts.collidables.sinkBoxes[i];
-            Collisions.SinkBox( particleAttributes, alive, delta_t, box );
-        }
-    }
-
     if ( this._opts.collidables.bounceBoxes ) {
         for (var i = 0 ; i < this._opts.collidables.bounceBoxes.length ; ++i ) {
             var box = this._opts.collidables.bounceBoxes[i].box;
@@ -872,11 +791,6 @@ EulerUpdater.prototype.collisions = function ( particleAttributes, alive, delta_
             var platform = this._opts.collidables.bouncePlatforms[i];
             Collisions.BouncePlatform( particleAttributes, alive, delta_t, platform );
         }
-        // for (var i = 0 ; i < this._opts.collidables.bounceBoxes.length ; ++i ) {
-        //     var box = this._opts.collidables.bounceBoxes[i].box;
-        //     var damping = this._opts.collidables.bounceBoxes[i].damping;
-        //     Collisions.BounceBox( particleAttributes, alive, delta_t, box, damping );
-        // }
     }
 };
 
@@ -888,9 +802,7 @@ EulerUpdater.prototype.update = function ( particleAttributes, alive, delta_t ) 
     this.updateLifetimes( particleAttributes, alive, delta_t );
     this.updateVelocities( particleAttributes, alive, delta_t );
     this.updatePositions( particleAttributes, alive, delta_t );
-
     this.collisions( particleAttributes, alive, delta_t );
-
     this.updateColors( particleAttributes, alive, delta_t );
     this.updateSizes( particleAttributes, alive, delta_t );
 
@@ -902,146 +814,4 @@ EulerUpdater.prototype.update = function ( particleAttributes, alive, delta_t ) 
     particleAttributes.size.needsUpdate = true;
     particleAttributes.player.needsUpdate = true;
 
-}
-
-
-function ClothUpdater ( opts ) {
-    this._opts = opts;
-    this._s = 10.0;
-    this._k_s = 0.55;
-    return this;
-}
-
-ClothUpdater.prototype.calcHooke = function ( p, q ) {
-    // ----------- STUDENT CODE BEGIN ------------
-    // var k_s = this._k_s;
-    var k_s = 30;
-    var rest_len = this._s;
-
-    var D = q.clone().sub(p).normalize();
-    var d = q.clone().sub(p).length();
-
-    return D.multiplyScalar(k_s * (d - rest_len));
-    // ----------- STUDENT CODE END ------------
-}
-
-ClothUpdater.prototype.updatePositions = function ( particleAttributes, alive, delta_t ) {
-    var positions  = particleAttributes.position;
-    var velocities = particleAttributes.velocity;
-
-    for ( var i  = 0 ; i < alive.length ; ++i ) {
-        if ( !alive[i] ) continue;
-        var p = getElement( i, positions );
-        var v = getElement( i, velocities );
-        p.add( v.clone().multiplyScalar( delta_t ) );
-        setElement( i, positions, p );
-    }
-};
-
-ClothUpdater.prototype.updateVelocities = function ( particleAttributes, alive, delta_t, width, height ) {
-    var positions = particleAttributes.position;
-    var velocities = particleAttributes.velocity;
-    var gravity = this._opts.externalForces.gravity;
-    var attractors = this._opts.externalForces.attractors;
-    var mass = 1;
-
-    for ( var j = 0 ; j < height; ++j ) {
-        for ( var i = 0 ; i < width ; ++i ) {
-            var idx = j * width + i;
-
-            // ----------- STUDENT CODE BEGIN ------------
-            var p = getElement( idx, positions );
-            var v = getElement( idx, velocities );
-
-            // Update velocities based on gravity
-            v.add(gravity.clone().multiplyScalar(delta_t));
-
-            // Calculate forces on this node from neighboring springs
-            var neighbourIdx = [];
-            var newJ, newI;
-
-            // Find neighbour indices
-            newJ = j - 1;
-            newI = i;
-            if (newJ >= 0) {
-                neighbourIdx.push(newJ * width + newI);
-            }
-
-            newJ = j + 1;
-            newI = i;
-            if (newJ < height) {
-                neighbourIdx.push(newJ * width + newI);
-            }
-
-            newJ = j;
-            newI = i - 1;
-            if (newI >= 0) {
-                neighbourIdx.push(newJ * width + newI);
-            }
-
-            newJ = j;
-            newI = i + 1;
-            if (newI < width) {
-                neighbourIdx.push(newJ * width + newI);
-            }
-
-            // Add contribution from spring force from each neighbour
-            for (var k = 0; k < neighbourIdx.length; k++) {
-                if (neighbourIdx[k] >= 0 && neighbourIdx[k] < positions.length) {
-                    neighbourPos = getElement(neighbourIdx[k], positions);
-                    var f = this.calcHooke(p, neighbourPos);
-                    v.add(f.clone().divideScalar(mass).multiplyScalar(delta_t));
-                }
-            }
-
-            setElement( idx, velocities, v );
-            // ----------- STUDENT CODE END ------------
-        }
-    }
-
-};
-
-
-ClothUpdater.prototype.collisions = function ( particleAttributes, alive, delta_t ) {
-    if ( !this._opts.collidables ) {
-        return;
-    }
-    if ( this._opts.collidables.bouncePlanes ) {
-        for (var i = 0 ; i < this._opts.collidables.bouncePlanes.length ; ++i ) {
-            var plane = this._opts.collidables.bouncePlanes[i].plane;
-            var damping = this._opts.collidables.bouncePlanes[i].damping;
-            Collisions.BouncePlane( particleAttributes, alive, delta_t, plane, damping );
-        }
-    }
-
-    if ( this._opts.collidables.sinkPlanes ) {
-        for (var i = 0 ; i < this._opts.collidables.sinkPlanes.length ; ++i ) {
-            var plane = this._opts.collidables.sinkPlanes[i].plane;
-            Collisions.SinkPlane( particleAttributes, alive, delta_t, plane );
-        }
-    }
-
-    if ( this._opts.collidables.bounceSpheres ) {
-        for (var i = 0 ; i < this._opts.collidables.bounceSpheres.length ; ++i ) {
-            var sphere = this._opts.collidables.bounceSpheres[i].sphere;
-            var damping = this._opts.collidables.bounceSpheres[i].damping;
-            Collisions.BounceSphere( particleAttributes, alive, delta_t, sphere, damping );
-        }
-    }
-};
-
-
-ClothUpdater.prototype.update = function ( particleAttributes, alive, delta_t, width, height ) {
-
-    this.updateVelocities( particleAttributes, alive, delta_t, width, height );
-    this.updatePositions( particleAttributes, alive, delta_t, width, height );
-
-    this.collisions( particleAttributes, alive, delta_t );
-
-    // tell webGL these were updated
-    particleAttributes.position.needsUpdate = true;
-    particleAttributes.color.needsUpdate = true;
-    particleAttributes.velocity.needsUpdate = true;
-    particleAttributes.lifetime.needsUpdate = true;
-    particleAttributes.size.needsUpdate = true;
 }
