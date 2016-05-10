@@ -592,7 +592,7 @@ SystemSettings.mySystem = {
             box.position.set( (bound.xMin + bound.xMax) / 2, (bound.yMin + bound.yMax) / 2, (bound.zMin + bound.zMax) / 2 );
             Scene.addObject( box );
             bound.mesh = box;
-            // make the back is all the same color
+            // make the back of bricks all the same color
             var back_brick_geo = new THREE.BoxGeometry(bound.xMax - bound.xMin, bound.yMax - bound.yMin, bound.zMax - bound.zMin);
             var back_brick = new THREE.Mesh(back_brick_geo, material_player1_normal);
             back_brick.position.set(box.position.x, box.position.y, bound.zMin - 0.1);
@@ -623,7 +623,7 @@ SystemSettings.mySystem = {
             box.position.set( (bound.xMin + bound.xMax) / 2, (bound.yMin + bound.yMax) / 2, (bound.zMin + bound.zMax) / 2 );
             Scene.addObject( box );
             bound.mesh = box;
-            // make the back is all the same color
+            // make the back of bricks the same color
             var back_brick_geo = new THREE.BoxGeometry(bound.xMax - bound.xMin, bound.yMax - bound.yMin, bound.zMax - bound.zMin);
             var back_brick = new THREE.Mesh(back_brick_geo, material_player2_normal);
             back_brick.position.set(box.position.x, box.position.y, bound.zMax + 0.1);

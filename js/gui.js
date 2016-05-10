@@ -316,7 +316,7 @@ Gui.closeAlert = function () {
         box.position.set( (bound.xMin + bound.xMax) / 2, (bound.yMin + bound.yMax) / 2, (bound.zMin + bound.zMax) / 2 );
         Scene.addObject( box );
         bound.mesh = box;
-        // make the back is all the same color
+        // make the back of bricks all the same color
         var back_brick_geo = new THREE.BoxGeometry(bound.xMax - bound.xMin, bound.yMax - bound.yMin, bound.zMax - bound.zMin);
         var back_brick = new THREE.Mesh(back_brick_geo, powerups[0][bound.player - 1]);
         var zPosition = bound.zMin - 0.1;
