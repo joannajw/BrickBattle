@@ -293,6 +293,7 @@ Gui.closeAlert = function () {
         // kill all boxes
         if (bound.alive) {
             Scene.removeObject(bound.mesh);
+            Scene.removeObject(bound.backMesh);
         }
         var material = powerups[0][bound.player - 1];
         // select powerup
@@ -317,9 +318,9 @@ Gui.closeAlert = function () {
         bound.mesh = box;
         // make the back is all the same color
         var back_brick_geo = new THREE.BoxGeometry(bound.xMax - bound.xMin, bound.yMax - bound.yMin, bound.zMax - bound.zMin);
-        var back_brick = new THREE.Mesh(back_brick_geo, material);
+        var back_brick = new THREE.Mesh(back_brick_geo, powerups[0][bound.player - 1]);
         var zPosition = bound.zMin - 0.1;
-        if (bound.player == 1) {
+        if (bound.player == 2) {
             zPosition = bound.zMax + 0.1;
         }
         back_brick.position.set(box.position.x, box.position.y, zPosition);
