@@ -254,17 +254,41 @@ SystemSettings.mySystem = {
         plane_back2.position.z = -roomDepth / 2;
         Scene.addObject( plane_back2 );
 
+        /**
+         * Randomize array element order in-place.
+         * Using Durstenfeld shuffle algorithm.
+         *
+         * From http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+         */
+        function shuffleArray(array) {
+            for (var i = array.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+            return array;
+        }
+
+        // determine number of each powerup
+        var powerups = [];
+        var count = 0;
+        for (var j = 1; j < material_probs.length; j++) {
+            var numPowerups = Math.round(material_probs[j] / material_probs_total * bricks.length);
+            for (var k = 0; k < numPowerups; k++) {
+                powerups.push(j);
+                count++;
+            }
+        }
+        for (var j = count; j < bricks.length; j++) {
+            powerups.push(0);
+        }
+        // randomize powerups
+        var shuffledPowerups = shuffleArray(powerups);
+
         // Add bricks
         for (var i = 0; i < bricks.length; i++) {
-            var powerup = Math.random() * material_probs_total;
-            var probSum = 0;
-            for (var j = 0; j < material_probs.length; j++) {
-                probSum += material_probs[j];
-                if (powerup < probSum) {
-                    powerup = j;
-                    break;
-                }
-            }
+            var powerup = shuffledPowerups[i];
             var material = material_player1_normal;
             if (powerup > 0) {
                 material = material_powerups[powerup];
@@ -285,17 +309,25 @@ SystemSettings.mySystem = {
             bound.powerup = powerup;
         }
 
+        // determine number of each powerup
+        powerups = [];
+        count = 0;
+        for (var j = 1; j < material_probs.length; j++) {
+            var numPowerups = Math.round(material_probs[j] / material_probs_total * bricks_2.length);
+            for (var k = 0; k < numPowerups; k++) {
+                powerups.push(j);
+                count++;
+            }
+        }
+        for (var j = count; j < bricks_2.length; j++) {
+            powerups.push(0);
+        }
+        // randomize powerups
+        shuffledPowerups = shuffleArray(powerups);
+
         // Add bricks
         for (var i = 0; i < bricks_2.length; i++) {
-            var powerup = Math.random() * material_probs_total;
-            var probSum = 0;
-            for (var j = 0; j < material_probs.length; j++) {
-                probSum += material_probs[j];
-                if (powerup < probSum) {
-                    powerup = j;
-                    break;
-                }
-            }
+            var powerup = shuffledPowerups[i];
             var material = material_player2_normal;
             if (powerup > 0) {
                 material = material_powerups[powerup];

@@ -286,9 +286,43 @@ Gui.closeAlert = function () {
 
     // Reset the boxes with powerups
     var boxes = SystemSettings.mySystem.updaterSettings.collidables.bounceBoxes;
-    var powerups = SystemSettings.mySystem.materialPowerups;
+    var material_powerups = SystemSettings.mySystem.materialPowerups;
     var material_probs_total = SystemSettings.mySystem.material_probs_total;
     var material_probs = SystemSettings.mySystem.material_probs;
+
+    /**
+     * Randomize array element order in-place.
+     * Using Durstenfeld shuffle algorithm.
+     *
+     * From http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+     */
+    function shuffleArray(array) {
+        for (var i = array.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        return array;
+    }
+
+    // determine number of each powerup
+    var powerups = [];
+    var count = 0;
+    for (var j = 1; j < material_probs.length; j++) {
+        var numPowerups = Math.round(material_probs[j] / material_probs_total * boxes.length / 2);
+        for (var k = 0; k < numPowerups; k++) {
+            powerups.push(j);
+            count++;
+        }
+    }
+    for (var j = count; j < boxes.length / 2; j++) {
+        powerups.push(0);
+    }
+    // randomize powerups
+    var shuffledPowerups = shuffleArray(powerups);
+    shuffledPowerups = shuffledPowerups.concat(shuffleArray(powerups.slice()));
+
     for (var i = 0; i < boxes.length; i++) {
         var bound = boxes[i].box;
         // kill all boxes
@@ -296,19 +330,11 @@ Gui.closeAlert = function () {
             Scene.removeObject(bound.mesh);
             Scene.removeObject(bound.backMesh);
         }
-        var material = powerups[0][bound.player - 1];
+        var material = material_powerups[0][bound.player - 1];
         // select powerup
-        var powerup = Math.random() * material_probs_total;
-        var probSum = 0;
-        for (var j = 0; j < material_probs.length; j++) {
-            probSum += material_probs[j];
-            if (powerup < probSum) {
-                powerup = j;
-                break;
-            }
-        }
+        var powerup = shuffledPowerups[i];
         if (powerup > 0) {
-            material = powerups[powerup];
+            material = material_powerups[powerup];
         }
         // create new boxes
         bound.alive = true;
@@ -319,7 +345,7 @@ Gui.closeAlert = function () {
         bound.mesh = box;
         // make the back of bricks all the same color
         var back_brick_geo = new THREE.BoxGeometry(bound.xMax - bound.xMin, bound.yMax - bound.yMin, bound.zMax - bound.zMin);
-        var back_brick = new THREE.Mesh(back_brick_geo, powerups[0][bound.player - 1]);
+        var back_brick = new THREE.Mesh(back_brick_geo, material_powerups[0][bound.player - 1]);
         var zPosition = bound.zMin - 0.1;
         if (bound.player == 2) {
             zPosition = bound.zMax + 0.1;
