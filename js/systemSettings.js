@@ -344,7 +344,7 @@ for (var j = 0; j < numRows; j++) {
                             alive: true,
                             player : 1
                         };
-                        console.log((bricks[idx].box.zMin + bricks[idx].box.zMax )/ 2);
+                        // console.log((bricks[idx].box.zMin + bricks[idx].box.zMax )/ 2);
         bricks[idx].damping = 1;
         bricks_2[idx] = {};
         bricks_2[idx].box = { xMin: brickWidth * i - (roomWidth / 2) + spacing,
@@ -358,7 +358,7 @@ for (var j = 0; j < numRows; j++) {
                             alive: true,
                             player : 2
                         };
-                        console.log((bricks_2[idx].box.zMin + bricks[idx].box.zMax )/ 2);
+                        // console.log((bricks_2[idx].box.zMin + bricks[idx].box.zMax )/ 2);
         bricks_2[idx].damping = 1;    }
 }
 
@@ -370,7 +370,7 @@ var platformPosition = new THREE.Vector3(0, -roomHeight / 2, brickDepth / 2 + di
 var platformPosition_2 = new THREE.Vector3(0, -roomHeight / 2, - brickDepth / 2 - distBetween);
 // var platformPosition = new THREE.Vector3(0, -roomHeight / 2 + 20, brickDepth / 2 + spacing);
 // var platformPosition_2 = new THREE.Vector3(0, -roomHeight / 2 + 20, - brickDepth / 2 - spacing);
-console.log(platformPosition, platformPosition_2);
+// console.log(platformPosition, platformPosition_2);
 var platformBox = { xMin: platformPosition.x - platformWidth / 2,
                     xMax: platformPosition.x + platformWidth / 2,
                     yMin: platformPosition.y - platformHeight / 2,
@@ -406,8 +406,13 @@ var material_player2_normal = new THREE.MeshPhongMaterial( {color: 0xCC3399, emi
 var material_player2_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
 var material_player2_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
 
+// normal, 2x score, widen platform, freeze opponent, add ball
 var material_powerups   = [[material_player1_normal, material_player2_normal], new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } ), freezeMaterial, new THREE.MeshPhongMaterial( {color: 0x0066FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
-
+var material_probs = [40, 2, 3, 2, 3];
+var material_probs_total = 0;
+for (var i = 0; i < material_probs.length; i++) {
+    material_probs_total += material_probs[i];
+}
 // var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
 
 
@@ -431,9 +436,10 @@ SystemSettings.mySystem = {
     isPlayGame : true,
     platformsStartPos : [platformPosition, platformPosition_2],
     platformWidth : platformWidth,
-    numPowerups: numPowerups,
     player1_numBalls : 0,
     player2_numBalls : 0,
+    material_probs : material_probs,
+    material_probs_total : material_probs_total,
 
     // Initialization
     initializerFunction : SphereInitializer,
@@ -566,9 +572,17 @@ SystemSettings.mySystem = {
 
         // Add bricks
         for (var i = 0; i < bricks.length; i++) {
-            var powerup = Math.round(Math.random() * numPowerups);
+            var powerup = Math.random() * material_probs_total;
+            var probSum = 0;
+            for (var j = 0; j < material_probs.length; j++) {
+                probSum += material_probs[j];
+                if (powerup < probSum) {
+                    powerup = j;
+                    break;
+                }
+            }
             var material = material_player1_normal;
-            if (powerup > 0 && material_powerups[powerup]) {
+            if (powerup > 0) {
                 material = material_powerups[powerup];
             }
 
@@ -583,9 +597,17 @@ SystemSettings.mySystem = {
 
         // Add bricks
         for (var i = 0; i < bricks_2.length; i++) {
-            var powerup = Math.round(Math.random() * numPowerups);
+            var powerup = Math.random() * material_probs_total;
+            var probSum = 0;
+            for (var j = 0; j < material_probs.length; j++) {
+                probSum += material_probs[j];
+                if (powerup < probSum) {
+                    powerup = j;
+                    break;
+                }
+            }
             var material = material_player2_normal;
-            if (powerup > 0 && material_powerups[powerup]) {
+            if (powerup > 0) {
                 material = material_powerups[powerup];
             }
 

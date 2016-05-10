@@ -252,7 +252,7 @@ Gui.closeAlert = function () {
     var positions = particleAttributes.position;
     var velocities   = particleAttributes.velocity;
     var sizes = particleAttributes.size;
-    
+
     for ( var i = 0 ; i < positions.length ; ++i ) {
         var pos = getElement( i, positions );
         var player = getElement( i, players );
@@ -286,7 +286,8 @@ Gui.closeAlert = function () {
     // Reset the boxes with powerups
     var boxes = SystemSettings.mySystem.updaterSettings.collidables.bounceBoxes;
     var powerups = SystemSettings.mySystem.materialPowerups;
-    var numPowerups = SystemSettings.mySystem.numPowerups;
+    var material_probs_total = SystemSettings.mySystem.material_probs_total;
+    var material_probs = SystemSettings.mySystem.material_probs;
     for (var i = 0; i < boxes.length; i++) {
         var bound = boxes[i].box;
         // kill all boxes
@@ -295,8 +296,16 @@ Gui.closeAlert = function () {
         }
         var material = powerups[0][bound.player - 1];
         // select powerup
-        var powerup = Math.round(Math.random() * numPowerups);
-        if (powerup > 0 && powerups[powerup]) {
+        var powerup = Math.random() * material_probs_total;
+        var probSum = 0;
+        for (var j = 0; j < material_probs.length; j++) {
+            probSum += material_probs[j];
+            if (powerup < probSum) {
+                powerup = j;
+                break;
+            }
+        }
+        if (powerup > 0) {
             material = powerups[powerup];
         }
         // create new boxes
