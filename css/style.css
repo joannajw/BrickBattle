@@ -62,6 +62,16 @@ img {
     margin-left: 30px;
 }
 
+.controls {
+    max-width: 200px;
+    width: auto;
+}
+
+.powerups {
+    max-width: 50px;
+    width: auto;
+}
+
 .assignment {
     font-size: 60%;
     color: #ddd;
@@ -109,8 +119,8 @@ img {
     left: 0;
     right: 0;    
     margin: auto;
-    height: 97%;
-    width: 97%;
+    height: 90%;
+    width: 90%;
     color: #000;
     text-align: center;
     align: center;
@@ -119,27 +129,29 @@ img {
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
     border-radius: 8px;
-    display: inline
+    display: inline;
+    padding: 20px;
+    font-size:14px;
+}
+
+#powerups_div {
+    text-align: left;
+    width: 25%;
+    margin: auto;
 }
 
 h1, h2, h3 {
-    font-weight: 700;
     margin: 0em 0em 0em;
     letter-spacing: 2px;
-    opacity: 0.5;
     text-shadow:
-       -1px -1px 1px #000,
-        1px -1px 1px #000,
-        -1px 1px 1px #000,
-         1px 1px 1px #000;
+       -1px 0px 0px #000;
 }
 
 h1 {
-    font-size: 100%;
+    font-size: 150%;
 }
 h2 {
-    margin-top:10px;
-    font-size: 70%;
+    font-size: 100%;
 }
 h3 {
     font-size: 60%;
