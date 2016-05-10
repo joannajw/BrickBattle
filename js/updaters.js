@@ -85,16 +85,16 @@ Collisions.SinkBox = function(particleAttributes, alive, delta_t, box) {
 var POWERUP_2XPOINTS = 1;
 var POWERUP_WIDE = 2;
 var POWERUP_FREEZE = 3;
-var POWERUP_2XBALLS = 4;
+var POWERUP_ADDBALL = 4;
 
 Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping) {
-    if (!box.alive) {
-        return;
-    }
 
     var positions    = particleAttributes.position;
     var velocities   = particleAttributes.velocity;
     var players      = particleAttributes.player;
+    var colors       = particleAttributes.color;
+    var sizes        = particleAttributes.size;
+    var lifetimes    = particleAttributes.lifetime;
 
     // var normal_xy_min = new THREE.Vector3(0, 0, -1);
     // var normal_xy_max = new THREE.Vector3(0, 0, 1);
@@ -108,7 +108,9 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
     var EPS = 0.1;
 
     for ( var i = 0 ; i < alive.length ; ++i ) {
-
+        if (!box.alive) {
+            return;
+        }
         if ( !alive[i] ) continue;
         // ----------- STUDENT CODE BEGIN ------------
         var pos = getElement( i, positions );
@@ -242,6 +244,26 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                     SystemSettings.mySystem.player2_curFreezeLifetime = SystemSettings.mySystem.freezeLifetime;
                 }
 
+                if (box.powerup == POWERUP_ADDBALL) {
+                    var idx;
+                    // get first unused ball
+                    for (var j = 0; j < alive.length; j++) {
+                        if (getElement(j, players) != 1 && getElement(j, players) != 2 ) {
+                            idx = j;
+                            break;
+                        }
+                    }
+                    // add that ball to player 1
+                    setElement(idx, positions, pos);
+                    setElement(idx, players, 1);
+                    setElement(idx, velocities, vel.clone().multiplyScalar(-1));
+                    setElement(idx, colors, new THREE.Vector4 ( 0.7, 1.0, 0.7, 1.0 ));
+                    setElement(idx, sizes, getElement(i, sizes));
+                    setElement(idx, lifetimes, getElement(i, lifetimes));
+                    
+                    SystemSettings.mySystem.player1_numBalls++;
+                }
+
                 // 2x points
                 if (SystemSettings.mySystem.player1_cur2xPointsLifetime > 0) {
                     document.getElementById("score").innerHTML = score + (SystemSettings.mySystem.baseScore * 2) + " <span style='color:#ff0000'>(2x!)</span>";
@@ -320,6 +342,27 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                     SystemSettings.mySystem.player1_curFreezeLifetime = SystemSettings.mySystem.freezeLifetime;
                 }
 
+                if (box.powerup == POWERUP_ADDBALL) {
+                    var idx;
+                    console.log("ADD BALL");
+                    // get first unused ball
+                    for (var j = 0; j < alive.length; j++) {
+                        if (getElement(j, players) != 1 && getElement(j, players) != 2 ) {
+                            idx = j;
+                            break;
+                        }
+                    }
+                    // add that ball to player 2
+                    setElement(idx, positions, pos);
+                    setElement(idx, players, 2);
+                    setElement(idx, velocities, vel.clone().multiplyScalar(-1));
+                    setElement(idx, colors, new THREE.Vector4 ( 1.0, 0.8, 1.0, 1.0 ));
+                    setElement(idx, sizes, getElement(i, sizes));
+                    setElement(idx, lifetimes, getElement(i, lifetimes));
+                    
+                    SystemSettings.mySystem.player2_numBalls++;
+                }
+
                 // 2x points
                 if (SystemSettings.mySystem.player2_cur2xPointsLifetime > 0) {
                     document.getElementById("score_2").innerHTML = score + (SystemSettings.mySystem.baseScore * 2) + " <span style='color:#ff0000'>(2x!)</span>";
@@ -378,6 +421,7 @@ Collisions.SinkPlane = function ( particleAttributes, alive, delta_t, plane  ) {
     var positions    = particleAttributes.position;
     var velocities   = particleAttributes.velocity;
     var players      = particleAttributes.player;
+    var sizes        = particleAttributes.size;
 
     for ( var i = 0 ; i < alive.length ; ++i ) {
 
@@ -387,7 +431,7 @@ Collisions.SinkPlane = function ( particleAttributes, alive, delta_t, plane  ) {
         var player = getElement( i, players );
 
         var new_pos = intersectPlane(pos, vel, plane, delta_t);
-        // collide with plane,  sink
+        // collide with plane
         if (new_pos != undefined) {
             var platform = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0];
             var platformPos = platform.mesh.position;
@@ -396,14 +440,33 @@ Collisions.SinkPlane = function ( particleAttributes, alive, delta_t, plane  ) {
             }
             pos = new THREE.Vector3(platformPos.x, platformPos.y + 15, pos.z);
             vel = new THREE.Vector3(0, 0, 0);
-            // subtract penalty from score
             if (player == 1) {
-                var score = parseInt(document.getElementById("score").innerHTML);
-                document.getElementById("score").innerHTML = score - SystemSettings.mySystem.basePenalty;
+                // subtract penalty from score
+                if (SystemSettings.mySystem.player1_numBalls == 1) {
+                    var score = parseInt(document.getElementById("score").innerHTML);
+                    document.getElementById("score").innerHTML = score - SystemSettings.mySystem.basePenalty;
+                }
+                // no penalty for extra ball, just remove it
+                else if (SystemSettings.mySystem.player1_numBalls > 1) {
+                    SystemSettings.mySystem.player1_numBalls--;
+                    pos = new THREE.Vector3(0, 0, 0);
+                    setElement(i, sizes, 0);
+                    setElement(i, players, -1);
+                }
             }
             else if (player == 2) {
-                var score = parseInt(document.getElementById("score_2").innerHTML);
-                document.getElementById("score_2").innerHTML = score - SystemSettings.mySystem.basePenalty;
+                // subtract penalty from score
+                if (SystemSettings.mySystem.player2_numBalls == 1) {
+                    var score = parseInt(document.getElementById("score_2").innerHTML);
+                    document.getElementById("score_2").innerHTML = score - SystemSettings.mySystem.basePenalty;
+                }
+                // no penalty for extra ball, just remove it
+                else if (SystemSettings.mySystem.player2_numBalls > 1) {
+                    SystemSettings.mySystem.player2_numBalls--;
+                    pos = new THREE.Vector3(0, 0, 0);
+                    setElement(i, sizes, 0);
+                    setElement(i, players, -1);
+                }
             }
         }
 
@@ -581,8 +644,12 @@ EulerUpdater.prototype.updateSizes = function ( particleAttributes, alive, delta
 };
 
 EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, delta_t) {
-    var positions     = particleAttributes.position;
-    var lifetimes     = particleAttributes.lifetime;
+    var positions    = particleAttributes.position;
+    var velocities   = particleAttributes.velocity;
+    var players      = particleAttributes.player;
+    var colors       = particleAttributes.color;
+    var sizes        = particleAttributes.size;
+    var lifetimes    = particleAttributes.lifetime;
 
     // count down timer
     SystemSettings.mySystem.currLifetime -= delta_t;
@@ -832,6 +899,7 @@ EulerUpdater.prototype.update = function ( particleAttributes, alive, delta_t ) 
     particleAttributes.velocity.needsUpdate = true;
     particleAttributes.lifetime.needsUpdate = true;
     particleAttributes.size.needsUpdate = true;
+    particleAttributes.player.needsUpdate = true;
 
 }
 

@@ -395,7 +395,7 @@ var numPowerups = 20;
 // var powerupLifetime = 10;
 
 var emissive = 0x343434;
-var emissivePowerup = 0xaaaaaa;
+var emissivePowerup = 0xbbbbbb;
 var freezeMaterial = new THREE.MeshPhongMaterial( {color: 0x777777, emissive: emissivePowerup, side: THREE.DoubleSide } );
 
 var material_player1_normal = new THREE.MeshPhongMaterial( {color: 0x00FF50, emissive: emissive, side: THREE.DoubleSide } );
@@ -406,7 +406,7 @@ var material_player2_normal = new THREE.MeshPhongMaterial( {color: 0xCC3399, emi
 var material_player2_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
 var material_player2_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
 
-var material_powerups   = [[material_player1_normal, material_player2_normal], new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } ), freezeMaterial];
+var material_powerups   = [[material_player1_normal, material_player2_normal], new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } ), freezeMaterial, new THREE.MeshPhongMaterial( {color: 0x0066FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
 
 // var material_powerups   = [null, new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
 
@@ -416,8 +416,8 @@ SystemSettings.mySystem = {
     roomWidth : roomWidth,
     baseScore : 100,
     basePenalty : 250,
-    gameLifetime : 2,
-    currLifetime : 2,
+    gameLifetime : 60,
+    currLifetime : 60,
     powerupLifetime: 5,
     player1_cur2xPointsLifetime : 0,
     player2_cur2xPointsLifetime : 0,
@@ -432,6 +432,8 @@ SystemSettings.mySystem = {
     platformsStartPos : [platformPosition, platformPosition_2],
     platformWidth : platformWidth,
     numPowerups: numPowerups,
+    player1_numBalls : 0,
+    player2_numBalls : 0,
 
     // Initialization
     initializerFunction : SphereInitializer,
@@ -464,7 +466,7 @@ SystemSettings.mySystem = {
     },
 
     // Scene
-    maxParticles :  2,
+    maxParticles :  20,
     particlesFreq : 100,
 
     createScene : function () {

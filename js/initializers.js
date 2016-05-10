@@ -24,84 +24,82 @@ function SphereInitializer ( opts ) {
 SphereInitializer.prototype.initializePositions = function ( positions, players, toSpawn) {
     var base = this._opts.sphere;
     var base_pos = new THREE.Vector3( base.x, base.y, base.z );
-    var r   = base.w;
 
-    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
-        var idx = toSpawn[i];
-
-        var platform = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[i];
+    if (SystemSettings.mySystem.player1_numBalls < 1) {
+        var idx = toSpawn[0];
+        var platform = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[0];
         var platformPos = platform.mesh.position;
         var pos = new THREE.Vector3(platformPos.x, platformPos.y + 15, platformPos.z);
         setElement( idx, positions, pos );
         setElement( idx, players, platform.player);
+        SystemSettings.mySystem.player1_numBalls++;
     }
+    if (SystemSettings.mySystem.player2_numBalls < 1) {
+        var idx = toSpawn[1];
+        var platform = SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1];
+        var platformPos = platform.mesh.position;
+        var pos = new THREE.Vector3(platformPos.x, platformPos.y + 15, platformPos.z);
+        setElement( idx, positions, pos );
+        setElement( idx, players, platform.player);
+        SystemSettings.mySystem.player2_numBalls++;
+    }
+    
     positions.needUpdate = true;
     players.needUpdate = true;
 }
 
-SphereInitializer.prototype.initializeVelocities = function ( velocities, positions, toSpawn ) {
+SphereInitializer.prototype.initializeVelocities = function ( velocities, positions, players, toSpawn ) {
     var base_vel = this._opts.velocity;
-    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
+    for ( var i = 0 ; i < 2 ; ++i ) {
         var idx = toSpawn[i];
-        // ----------- STUDENT CODE BEGIN ------------
-        // just to get started, make the velocity the same as the initial position
-        var pos = getElement( idx, positions );
-        // var vel = pos.clone().multiplyScalar(200.0);
-        // vel.z = 0;
-
-        // var rand = (Math.random() - 0.5) * 250;
-        // var vel = new THREE.Vector3(rand, 500, 0);
-
         var vel = new THREE.Vector3(0, 0, 0);
-
-        // ----------- STUDENT CODE END ------------
-        setElement( idx, velocities, vel );
+        var player = getElement(idx, players);
+        if (player == 1 || player == 2) {
+            setElement( idx, velocities, vel );
+        }
     }
     velocities.needUpdate = true;
 }
 
 SphereInitializer.prototype.initializeColors = function ( colors, players, toSpawn ) {
     var base_col = this._opts.color;
-    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
+    for ( var i = 0 ; i < 2 ; ++i ) {
         var idx = toSpawn[i];
-        // ----------- STUDENT CODE BEGIN ------------
-        var col = base_col;
         var player = getElement( idx, players );
         if (player == 1) {
-            col = new THREE.Vector4 ( 0.7, 1.0, 0.7, 1.0 );
+            var col = new THREE.Vector4 ( 0.7, 1.0, 0.7, 1.0 );
+            setElement( idx, colors, col );
         }
         else if (player == 2) {
-            col = new THREE.Vector4 ( 1.0, 0.8, 1.0, 1.0 );
+            var col = new THREE.Vector4 ( 1.0, 0.8, 1.0, 1.0 );
+            setElement( idx, colors, col );
         }
-
-        // ----------- STUDENT CODE END ------------
-        setElement( idx, colors, col );
     }
     colors.needUpdate = true;
 }
 
-SphereInitializer.prototype.initializeSizes = function ( sizes, toSpawn ) {
+SphereInitializer.prototype.initializeSizes = function ( sizes, players, toSpawn ) {
 
-    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
+    for ( var i = 0 ; i < 2 ; ++i ) {
         var idx = toSpawn[i];
-        // ----------- STUDENT CODE BEGIN ------------
         var size = this._opts.size;
-
-        // ----------- STUDENT CODE END ------------
-        setElement( idx, sizes, size );
+        var player = getElement(idx, players);
+        if (player == 1 || player == 2) {
+            setElement( idx, sizes, size );
+        }
     }
     sizes.needUpdate = true;
 }
 
-SphereInitializer.prototype.initializeLifetimes = function ( lifetimes, toSpawn ) {
+SphereInitializer.prototype.initializeLifetimes = function ( lifetimes, players, toSpawn ) {
 
-    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
+    for ( var i = 0 ; i < 2 ; ++i ) {
         var idx = toSpawn[i];
-        // ----------- STUDENT CODE BEGIN ------------
         var lifetime = this._opts.lifetime;
-
-        // ----------- STUDENT CODE END ------------
-        setElement( idx, lifetimes, lifetime );
+        var player = getElement(idx, players);
+        if (player == 1 || player == 2) {
+            setElement( idx, lifetimes, lifetime );
+        }
     }
     lifetimes.needUpdate = true;
 }
@@ -113,13 +111,13 @@ SphereInitializer.prototype.initialize = function ( particleAttributes, toSpawn 
     // update required values
     this.initializePositions( particleAttributes.position, particleAttributes.player, toSpawn );
 
-    this.initializeVelocities( particleAttributes.velocity, particleAttributes.position, toSpawn );
+    this.initializeVelocities( particleAttributes.velocity, particleAttributes.position, particleAttributes.player, toSpawn );
 
     this.initializeColors( particleAttributes.color, particleAttributes.player, toSpawn );
 
-    this.initializeLifetimes( particleAttributes.lifetime, toSpawn );
+    this.initializeLifetimes( particleAttributes.lifetime, particleAttributes.player, toSpawn );
 
-    this.initializeSizes( particleAttributes.size, toSpawn );
+    this.initializeSizes( particleAttributes.size, particleAttributes.player, toSpawn );
 };
 
 

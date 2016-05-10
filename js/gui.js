@@ -248,10 +248,11 @@ Gui.closeAlert = function () {
     SystemSettings.mySystem.updaterSettings.collidables.bouncePlatforms[1].mesh = mesh;
 
 
-    // Move all particles to initial position
+    // Move all particles to initial position, delete extra ones
     var positions = particleAttributes.position;
     var velocities   = particleAttributes.velocity;
-
+    var sizes = particleAttributes.size;
+    
     for ( var i = 0 ; i < positions.length ; ++i ) {
         var pos = getElement( i, positions );
         var player = getElement( i, players );
@@ -263,6 +264,20 @@ Gui.closeAlert = function () {
 
         var pos = new THREE.Vector3(platformPos.x, platformPos.y + 15, pos.z);
         var vel = new THREE.Vector3(0, 0, 0);
+
+        // delete extra balls
+        if (SystemSettings.mySystem.player1_numBalls > 1 && player == 1) {
+            pos = new THREE.Vector3(0, 0, 0);
+            setElement(i, sizes, 0);
+            setElement(i, players, -1);
+            SystemSettings.mySystem.player1_numBalls--;
+        }
+        else if (SystemSettings.mySystem.player2_numBalls > 1 && player == 2) {
+            pos = new THREE.Vector3(0, 0, 0);
+            setElement(i, sizes, 0);
+            setElement(i, players, -1);
+            SystemSettings.mySystem.player2_numBalls--;
+        }
 
         setElement( i, positions, pos );
         setElement( i, velocities, vel );
