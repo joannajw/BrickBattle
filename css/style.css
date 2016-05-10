@@ -98,12 +98,12 @@ img {
     right: 0;    
     margin: auto;
     height:100px;
-    width: 340px;
-    font-size:14px;
+    width: 250px;
+    font-size:20px;
     font-weight:bold;
     text-align: center;
     align: center;
-    font-color:#ddd;
+    color:#000;
     background-color:#abcdef;
     border:1px solid #333;
     -webkit-border-radius: 8px;

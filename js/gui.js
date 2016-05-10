@@ -156,7 +156,7 @@ Gui.alertGameOver = function( msg ) {
     var mainDiv = document.getElementById('main_div');
     mainDiv.style.opacity = "0.3";
     var overlayDiv = document.getElementById('overlay_div');
-    overlayDiv.innerHTML = '<p>'+ msg + '</p><button id="ok" onclick="Gui.closeAlert()">Play Again</button>';
+    overlayDiv.innerHTML = '<p>'+ msg + '<br><button id="ok" onclick="Gui.closeAlert()">Play Again</button>';
     overlayDiv.style.display = 'inline';
 };
 
