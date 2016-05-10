@@ -40,12 +40,12 @@ Gui.alertOnce = function( msg ) {
     overlayDiv.style.display = 'inline';
 };
 
-Gui.closeAlert = function () {
-    var mainDiv = document.getElementById('main_div');
-    mainDiv.style.opacity = "1";
-    var overlayDiv = document.getElementById('overlay_div');
-    overlayDiv.style.display = 'none';
-};
+// Gui.closeAlert = function () {
+//     var mainDiv = document.getElementById('main_div');
+//     mainDiv.style.opacity = "1";
+//     var overlayDiv = document.getElementById('overlay_div');
+//     overlayDiv.style.display = 'none';
+// };
 
 Gui.toCommandString = function () {
     var url = '';
@@ -152,8 +152,10 @@ Gui.init = function ( meshChangeCallback, controlsChangeCallback, displayChangeC
     // } );
 };
 
-// non-implemented alert functionality
+var isGameOver = false;
+
 Gui.alertGameOver = function( msg ) {
+    isGameOver = true;
     var mainDiv = document.getElementById('main_div');
     mainDiv.style.opacity = "0.3";
     var overlayDiv = document.getElementById('overlay_div');
@@ -162,6 +164,7 @@ Gui.alertGameOver = function( msg ) {
 };
 
 Gui.closeAlert = function () {
+    isGameOver = false;
     var mainDiv = document.getElementById('main_div');
     mainDiv.style.opacity = "1";
     var overlayDiv = document.getElementById('overlay_div');
@@ -334,3 +337,11 @@ Gui.closeAlert = function () {
     SystemSettings.mySystem.currLifetime = SystemSettings.mySystem.gameLifetime;
     SystemSettings.mySystem.isPlayGame = true;
 };
+
+// Enter will also restart the game after game over
+window.addEventListener("keydown", function(e) {
+    if (isGameOver && e.keyCode == 13) {
+        e.preventDefault();
+        Gui.closeAlert();
+    }
+}, false);
