@@ -49,8 +49,6 @@ for (var j = 0; j < numRows; j++) {
                             xMax: brickWidth * (i + 1) - (roomWidth / 2) - spacing,
                             yMin: j * brickHeight + spacing + yOffset,
                             yMax: (j + 1) * brickHeight - spacing + yOffset,
-                            // zMin: distFromCenter,
-                            // zMax: distFromCenter + brickDepth,
                             zMin: -brickDepth / 2 + brickDepth / 2 + distBetween,
                             zMax: brickDepth / 2 + brickDepth / 2 + distBetween,
                             alive: true,
@@ -62,8 +60,6 @@ for (var j = 0; j < numRows; j++) {
                             xMax: brickWidth * (i + 1) - (roomWidth / 2) - spacing,
                             yMin: j * brickHeight + spacing + yOffset,
                             yMax: (j + 1) * brickHeight - spacing + yOffset,
-                            // zMin: -distFromCenter,
-                            // zMax: -distFromCenter - brickDepth / 2,
                             zMin: -brickDepth / 2 - brickDepth / 2 - distBetween,
                             zMax: brickDepth / 2 - brickDepth / 2 - distBetween,
                             alive: true,
@@ -98,7 +94,10 @@ var platformBox_2 = {   xMin: platformPosition_2.x - platformWidth / 2,
 
 var emissive = 0x343434;
 var emissivePowerup = 0xbbbbbb;
-var freezeMaterial = new THREE.MeshPhongMaterial( {color: 0x777777, emissive: emissivePowerup, side: THREE.DoubleSide } );
+var scoreMaterial = new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } );
+var wideMaterial = new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } );
+var freezeMaterial = new THREE.MeshPhongMaterial( {color: 0x0066FF, emissive: emissivePowerup, side: THREE.DoubleSide } );
+var ballMaterial = new THREE.MeshPhongMaterial( {color: 0x00FF00, emissive: emissivePowerup, side: THREE.DoubleSide } );
 
 var material_player1_normal = new THREE.MeshPhongMaterial( {color: 0x00FF50, emissive: emissive, side: THREE.DoubleSide } );
 var material_player1_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
@@ -109,7 +108,7 @@ var material_player2_light  = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, e
 var material_player2_dark   = new THREE.MeshLambertMaterial( {color: 0xaaaaaa, emissive: emissive, side: THREE.DoubleSide } );
 
 // order of powerups: normal, 2x score, widen platform, freeze opponent, add ball
-var material_powerups   = [[material_player1_normal, material_player2_normal], new THREE.MeshPhongMaterial( {color: 0xFF0000, emissive: emissivePowerup, side: THREE.DoubleSide } ), new THREE.MeshPhongMaterial( {color: 0x0000FF, emissive: emissivePowerup, side: THREE.DoubleSide } ), freezeMaterial, new THREE.MeshPhongMaterial( {color: 0x0066FF, emissive: emissivePowerup, side: THREE.DoubleSide } )];
+var material_powerups   = [[material_player1_normal, material_player2_normal], scoreMaterial, wideMaterial, freezeMaterial, ballMaterial];
 var material_probs = [40, 2, 3, 2, 3];
 var material_probs_total = 0;
 for (var i = 0; i < material_probs.length; i++) {
