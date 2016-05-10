@@ -174,6 +174,7 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
             pos = pos.clone().sub(vel.clone().multiplyScalar(delta_t));
             box.alive = false;
             Scene.removeObject(box.mesh);
+            Scene.removeObject(box.backMesh);
 
             // add score
             if (player == 1) {
