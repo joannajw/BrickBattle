@@ -152,10 +152,7 @@ Gui.init = function ( meshChangeCallback, controlsChangeCallback, displayChangeC
     // } );
 };
 
-var isGameOver = false;
-
 Gui.alertGameOver = function( msg ) {
-    isGameOver = true;
     var mainDiv = document.getElementById('main_div');
     mainDiv.style.opacity = "0.3";
     var overlayDiv = document.getElementById('overlay_div');
@@ -164,11 +161,12 @@ Gui.alertGameOver = function( msg ) {
 };
 
 Gui.closeAlert = function () {
-    isGameOver = false;
     var mainDiv = document.getElementById('main_div');
     mainDiv.style.opacity = "1";
     var overlayDiv = document.getElementById('overlay_div');
     overlayDiv.style.display = 'none';
+    var instructionsDiv = document.getElementById('instructions_div');
+    instructionsDiv.style.display = 'none';
 
     // Reset powerups
     SystemSettings.mySystem.player1_cur2xPointsLifetime = 0;
@@ -338,9 +336,9 @@ Gui.closeAlert = function () {
     SystemSettings.mySystem.isPlayGame = true;
 };
 
-// Enter will also restart the game after game over
+// Enter or space will also restart the game after game over
 window.addEventListener("keydown", function(e) {
-    if (isGameOver && e.keyCode == 13) {
+    if (!SystemSettings.mySystem.isPlayGame && (e.keyCode == 13 || e.keyCode == 32)) {
         e.preventDefault();
         Gui.closeAlert();
     }

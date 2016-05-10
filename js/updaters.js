@@ -757,6 +757,7 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
         Gui.alertGameOver(winString);
     }
     document.getElementById("time").innerHTML = SystemSettings.mySystem.currLifetime.toFixed(3);
+    document.getElementById("time_2").innerHTML = SystemSettings.mySystem.currLifetime.toFixed(3);
 };
 
 EulerUpdater.prototype.collisions = function ( particleAttributes, alive, delta_t ) {

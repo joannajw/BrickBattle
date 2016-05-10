@@ -79,6 +79,7 @@ img {
     font-weight:bold;
     font-color:#ddd;
 }
+
 #overlay_div {
     position: absolute;
     top: 0;
@@ -99,12 +100,26 @@ img {
     -moz-border-radius: 8px;
     border-radius: 8px;
     display: none;
-
 }
-#result_div {
-    margin: 0 auto;
+
+#instructions_div {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;    
+    margin: auto;
+    height: 97%;
+    width: 97%;
+    color: #000;
     text-align: center;
-    font-color:#FF0;
+    align: center;
+    background-color:rgba(255,255,255,0.9);
+    border:1px solid #333;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    display: inline
 }
 
 h1, h2, h3 {
