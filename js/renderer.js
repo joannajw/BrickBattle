@@ -37,9 +37,7 @@ Renderer.create = function( scene, canvas ) {
     Renderer._renderer.setPixelRatio( window.devicePixelRatio );
     Renderer._renderer.setSize( Renderer._width, Renderer._height );
     Renderer._renderer.setClearColor( 0x444444 );//c5e1d7
-    // Renderer._renderer.autoClear = false;
 
-    // Renderer._renderer.autoClear = false;
     window.addEventListener( "resize",    Renderer.onWindowResize, false );
     canvas.addEventListener( "mouseup",   Renderer.onMouseUp,      false );
     canvas.addEventListener( "mousedown", Renderer.onMouseDown,    false );
@@ -71,6 +69,9 @@ Renderer.onWindowResize = function () {
     Renderer._camera.aspect = Renderer._aspect;
     Renderer._camera.updateProjectionMatrix();
 
+    Renderer._camera2.aspect = Renderer._aspect;
+    Renderer._camera2.updateProjectionMatrix();
+
     Renderer._renderer.setSize( Renderer._width, Renderer._height );
 };
 
@@ -96,11 +97,6 @@ Renderer.update = function () {
     r.render(Renderer._scene, Renderer._camera2);
 
     Renderer._renderer.autoClear = true;
-
-    // r.setViewport(Renderer._width / 2, 0, Renderer._width / 2, Renderer._height);
-    // r.render(Renderer._scene, Renderer._camera2);
-
-    // Renderer._renderer.render( Renderer._scene, Renderer._camera );
 
     requestAnimationFrame( Renderer.update );
 
@@ -132,6 +128,6 @@ window.addEventListener( 'keyup', function( event ) {
 window.addEventListener( 'keyup', function( event ) {
     // only respond to 'Spacebar' key
     if ( event.which == 32 ) {
-        ParticleEngine.pause();
+        // ParticleEngine.pause();
     }
 });
