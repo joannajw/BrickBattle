@@ -71,11 +71,11 @@ BallInitializer.prototype.initializeColors = function ( colors, players, toSpawn
         var player = getElement( idx, players );
         // color corresponds to each player
         if (player == 1) {
-            var col = new THREE.Vector4 ( 0.7, 1.0, 0.7, 1.0 );
+            var col = new THREE.Vector4 ( 0.7, 1.0, 0.7, 3.0 );
             setElement( idx, colors, col );
         }
         else if (player == 2) {
-            var col = new THREE.Vector4 ( 1.0, 0.8, 1.0, 1.0 );
+            var col = new THREE.Vector4 ( 1.0, 0.8, 1.0, 3.0 );
             setElement( idx, colors, col );
         }
     }

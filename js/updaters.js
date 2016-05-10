@@ -237,7 +237,7 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                     setElement(idx, positions, pos);
                     setElement(idx, players, 1);
                     setElement(idx, velocities, vel.clone().multiplyScalar(-1));
-                    setElement(idx, colors, new THREE.Vector4 ( 0.7, 1.0, 0.7, 1.0 ));
+                    setElement(idx, colors, new THREE.Vector4 ( 0.7, 1.0, 0.7, 3.0 ));
                     setElement(idx, sizes, getElement(i, sizes));
                     setElement(idx, lifetimes, getElement(i, lifetimes));
                     
@@ -343,7 +343,7 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                     setElement(idx, positions, pos);
                     setElement(idx, players, 2);
                     setElement(idx, velocities, vel.clone().multiplyScalar(-1));
-                    setElement(idx, colors, new THREE.Vector4 ( 1.0, 0.8, 1.0, 1.0 ));
+                    setElement(idx, colors, new THREE.Vector4 ( 1.0, 0.8, 1.0, 3.0 ));
                     setElement(idx, sizes, getElement(i, sizes));
                     setElement(idx, lifetimes, getElement(i, lifetimes));
                     

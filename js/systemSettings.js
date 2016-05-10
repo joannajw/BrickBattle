@@ -28,7 +28,7 @@ SystemSettings.standardMaterial = new THREE.ShaderMaterial( {
 
 var roomHeight = 600;
 var roomWidth = 1200;
-var roomDepth = 2000;
+var roomDepth = 1600;
 var y_offset = -roomHeight / 2;
 var numCols = 7;
 var numRows = 7;
