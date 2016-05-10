@@ -240,7 +240,7 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                     setElement(idx, colors, new THREE.Vector4 ( 0.7, 1.0, 0.7, 3.0 ));
                     setElement(idx, sizes, getElement(i, sizes));
                     setElement(idx, lifetimes, getElement(i, lifetimes));
-                    
+
                     SystemSettings.mySystem.player1_numBalls++;
                 }
 
@@ -346,7 +346,7 @@ Collisions.BounceBox = function(particleAttributes, alive, delta_t, box, damping
                     setElement(idx, colors, new THREE.Vector4 ( 1.0, 0.8, 1.0, 3.0 ));
                     setElement(idx, sizes, getElement(i, sizes));
                     setElement(idx, lifetimes, getElement(i, lifetimes));
-                    
+
                     SystemSettings.mySystem.player2_numBalls++;
                 }
 
@@ -611,7 +611,7 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
     // Wide platform count down
     if (SystemSettings.mySystem.player1_curWideLifetime > 0) {
         SystemSettings.mySystem.player1_curWideLifetime -= delta_t;
-        
+
         // Put platform back to original width
         if (SystemSettings.mySystem.player1_curWideLifetime <= 0) {
             console.log("player 1 - wide platform powerup over");
@@ -757,7 +757,7 @@ EulerUpdater.prototype.updateLifetimes = function ( particleAttributes, alive, d
         Gui.alertGameOver(winString);
     }
     document.getElementById("time").innerHTML = SystemSettings.mySystem.currLifetime.toFixed(3);
-    document.getElementById("time_2").innerHTML = SystemSettings.mySystem.currLifetime.toFixed(3);
+    // document.getElementById("time_2").innerHTML = SystemSettings.mySystem.currLifetime.toFixed(3);
 };
 
 EulerUpdater.prototype.collisions = function ( particleAttributes, alive, delta_t ) {
