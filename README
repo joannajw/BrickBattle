@@ -1,0 +1,8 @@
+BRICK BATTLE
+by Brian Chen and Joanna Wang
+(adapted from COS426 Assignment 4)
+
+=== HOW TO RUN ===
+
+run 'python -m SimpleHTTPServer'
+then, go to localhost:800 to begin playing Brick Battle!
