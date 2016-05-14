@@ -120,9 +120,9 @@ SystemSettings.mySystem = {
     roomWidth : roomWidth,
     baseScore : 100,
     basePenalty : 250,
-    gameLifetime : 60,
-    currLifetime : 60,
-    powerupLifetime: 5,
+    gameLifetime : 30,
+    currLifetime : 30,
+    powerupLifetime: 7,
     player1_cur2xPointsLifetime : 0,
     player2_cur2xPointsLifetime : 0,
     widePlatformFactor : 1.5,
@@ -190,7 +190,7 @@ SystemSettings.mySystem = {
         plane_top2.position.z = -roomDepth / 4;
         Scene.addObject( plane_top2 );
 
-        // Floor 
+        // Floor
         var plane_geo_bottom = new THREE.PlaneBufferGeometry( roomWidth, roomDepth / 2, 1, 1 );
         var plane_bottom     = new THREE.Mesh( plane_geo_bottom, material_player1_dark );
         plane_bottom.rotation.x = -Math.PI / 2;
